@@ -54,8 +54,8 @@ namespace Microsoft.Azure.Management.DataMigration
         /// Get available resource provider actions (operations)
         /// </summary>
         /// <remarks>
-        /// Lists all available actions exposed by the Data Migration Service resource
-        /// provider.
+        /// Lists all available actions exposed by the Database Migration Service
+        /// resource provider.
         /// </remarks>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -226,8 +226,8 @@ namespace Microsoft.Azure.Management.DataMigration
         /// Get available resource provider actions (operations)
         /// </summary>
         /// <remarks>
-        /// Lists all available actions exposed by the Data Migration Service resource
-        /// provider.
+        /// Lists all available actions exposed by the Database Migration Service
+        /// resource provider.
         /// </remarks>
         /// <param name='nextPageLink'>
         /// The NextLink from the previous successful call to List operation.

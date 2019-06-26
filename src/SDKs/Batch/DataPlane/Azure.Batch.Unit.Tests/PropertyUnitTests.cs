@@ -63,6 +63,7 @@ namespace Azure.Batch.Unit.Tests
                 new ComparerPropertyMapping(typeof(PoolSpecification), typeof(Protocol.Models.PoolSpecification), "TargetLowPriorityComputeNodes", "TargetLowPriorityNodes"),
 
                 new ComparerPropertyMapping(typeof(CloudServiceConfiguration), typeof(Protocol.Models.CloudServiceConfiguration), "OSFamily", "OsFamily"),
+                new ComparerPropertyMapping(typeof(CloudServiceConfiguration), typeof(Protocol.Models.CloudServiceConfiguration), "OSVersion", "OsVersion"),
 
                 new ComparerPropertyMapping(typeof(TaskInformation), typeof(Protocol.Models.TaskInformation), "ExecutionInformation", "TaskExecutionInformation"),
 
@@ -136,6 +137,7 @@ namespace Azure.Batch.Unit.Tests
                 new ComparerPropertyMapping(typeof(ComputeNode), typeof(Protocol.Models.ComputeNode), "IPAddress", "IpAddress"),
                 new ComparerPropertyMapping(typeof(ComputeNode), typeof(Protocol.Models.ComputeNode), "VirtualMachineSize", "VmSize"),
                 new ComparerPropertyMapping(typeof(ComputeNode), typeof(Protocol.Models.ComputeNode), "StartTaskInformation", "StartTaskInfo"),
+                new ComparerPropertyMapping(typeof(ComputeNode), typeof(Protocol.Models.ComputeNode), "NodeAgentInformation", "NodeAgentInfo"),
 
                 new ComparerPropertyMapping(typeof(ComputeNodeInformation), typeof(Protocol.Models.ComputeNodeInformation), "ComputeNodeId", "NodeId"),
                 new ComparerPropertyMapping(typeof(ComputeNodeInformation), typeof(Protocol.Models.ComputeNodeInformation), "ComputeNodeUrl", "NodeUrl"),
@@ -327,7 +329,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void TestRandomBoundCloudPoolProperties()
         {
-            using (BatchClient client = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient client = ClientUnitTestCommon.CreateDummyClient())
             {
                 for (int i = 0; i < TestRunCount; i++)
                 {
@@ -345,7 +347,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void TestRandomBoundCloudJobProperties()
         {
-            using (BatchClient client = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient client = ClientUnitTestCommon.CreateDummyClient())
             {
                 for (int i = 0; i < TestRunCount; i++)
                 {
@@ -365,7 +367,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void TestRandomBoundCloudJobScheduleProperties()
         {
-            using (BatchClient client = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient client = ClientUnitTestCommon.CreateDummyClient())
             {
                 for (int i = 0; i < TestRunCount; i++)
                 {
@@ -384,7 +386,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void TestRandomBoundCloudTaskProperties()
         {
-            using (BatchClient client = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient client = ClientUnitTestCommon.CreateDummyClient())
             {
                 for (int i = 0; i < TestRunCount; i++)
                 {
@@ -402,7 +404,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void TestRandomBoundComputeNodeProperties()
         {
-            using (BatchClient client = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient client = ClientUnitTestCommon.CreateDummyClient())
             {
                 for (int i = 0; i < TestRunCount; i++)
                 {
@@ -421,7 +423,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void TestRandomBoundCertificateProperties()
         {
-            using (BatchClient client = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient client = ClientUnitTestCommon.CreateDummyClient())
             {
                 for (int i = 0; i < TestRunCount; i++)
                 {
@@ -440,7 +442,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void TestRandomBoundPrepReleaseTaskExecutionInformationProperties()
         {
-            using (BatchClient client = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient client = ClientUnitTestCommon.CreateDummyClient())
             {
                 for (int i = 0; i < TestRunCount; i++)
                 {
@@ -588,7 +590,7 @@ namespace Azure.Batch.Unit.Tests
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void Bug1432987CloudTaskTaskConstraints()
         {
-            using (BatchClient batchCli = BatchClient.Open(ClientUnitTestCommon.CreateDummySharedKeyCredential()))
+            using (BatchClient batchCli = ClientUnitTestCommon.CreateDummyClient())
             {
                 CloudTask badTask = new CloudTask("bug1432987TaskConstraints", "hostname");
 
@@ -617,11 +619,11 @@ namespace Azure.Batch.Unit.Tests
             const string blobPath = "Bar";
             const string mode = "0700";
 
-            ResourceFile resourceFile = new ResourceFile(blobPath, filePath, mode);
+            ResourceFile resourceFile = ResourceFile.FromUrl(blobPath, filePath, mode);
             Protocol.Models.ResourceFile protoFile = resourceFile.GetTransportObject();
 
             Assert.Equal(filePath, protoFile.FilePath);
-            Assert.Equal(blobPath, protoFile.BlobSource);
+            Assert.Equal(blobPath, protoFile.HttpUrl);
             Assert.Equal(mode, protoFile.FileMode);
         }
 

@@ -49,19 +49,20 @@ namespace Microsoft.Azure.Management.Sql
         string SubscriptionId { get; set; }
 
         /// <summary>
-        /// Gets or sets the preferred language for the response.
+        /// The preferred language for the response.
         /// </summary>
         string AcceptLanguage { get; set; }
 
         /// <summary>
-        /// Gets or sets the retry timeout in seconds for Long Running
-        /// Operations. Default value is 30.
+        /// The retry timeout in seconds for Long Running Operations. Default
+        /// value is 30.
         /// </summary>
         int? LongRunningOperationRetryTimeout { get; set; }
 
         /// <summary>
-        /// When set to true a unique x-ms-client-request-id value is generated
-        /// and included in each request. Default is true.
+        /// Whether a unique x-ms-client-request-id should be generated. When
+        /// set to true a unique x-ms-client-request-id value is generated and
+        /// included in each request. Default is true.
         /// </summary>
         bool? GenerateClientRequestId { get; set; }
 
@@ -322,9 +323,19 @@ namespace Microsoft.Azure.Management.Sql
         IBackupLongTermRetentionPoliciesOperations BackupLongTermRetentionPolicies { get; }
 
         /// <summary>
+        /// Gets the IManagedBackupShortTermRetentionPoliciesOperations.
+        /// </summary>
+        IManagedBackupShortTermRetentionPoliciesOperations ManagedBackupShortTermRetentionPolicies { get; }
+
+        /// <summary>
         /// Gets the IManagedDatabasesOperations.
         /// </summary>
         IManagedDatabasesOperations ManagedDatabases { get; }
+
+        /// <summary>
+        /// Gets the IManagedRestorableDroppedDatabaseBackupShortTermRetentionPoliciesOperations.
+        /// </summary>
+        IManagedRestorableDroppedDatabaseBackupShortTermRetentionPoliciesOperations ManagedRestorableDroppedDatabaseBackupShortTermRetentionPolicies { get; }
 
         /// <summary>
         /// Gets the IServerAutomaticTuningOperations.
@@ -342,9 +353,24 @@ namespace Microsoft.Azure.Management.Sql
         IServerSecurityAlertPoliciesOperations ServerSecurityAlertPolicies { get; }
 
         /// <summary>
+        /// Gets the IRestorableDroppedManagedDatabasesOperations.
+        /// </summary>
+        IRestorableDroppedManagedDatabasesOperations RestorableDroppedManagedDatabases { get; }
+
+        /// <summary>
         /// Gets the IRestorePointsOperations.
         /// </summary>
         IRestorePointsOperations RestorePoints { get; }
+
+        /// <summary>
+        /// Gets the IManagedDatabaseSecurityAlertPoliciesOperations.
+        /// </summary>
+        IManagedDatabaseSecurityAlertPoliciesOperations ManagedDatabaseSecurityAlertPolicies { get; }
+
+        /// <summary>
+        /// Gets the IManagedServerSecurityAlertPoliciesOperations.
+        /// </summary>
+        IManagedServerSecurityAlertPoliciesOperations ManagedServerSecurityAlertPolicies { get; }
 
         /// <summary>
         /// Gets the IDatabaseOperations.
@@ -367,6 +393,21 @@ namespace Microsoft.Azure.Management.Sql
         IDatabaseVulnerabilityAssessmentScansOperations DatabaseVulnerabilityAssessmentScans { get; }
 
         /// <summary>
+        /// Gets the IManagedDatabaseVulnerabilityAssessmentRuleBaselinesOperations.
+        /// </summary>
+        IManagedDatabaseVulnerabilityAssessmentRuleBaselinesOperations ManagedDatabaseVulnerabilityAssessmentRuleBaselines { get; }
+
+        /// <summary>
+        /// Gets the IManagedDatabaseVulnerabilityAssessmentScansOperations.
+        /// </summary>
+        IManagedDatabaseVulnerabilityAssessmentScansOperations ManagedDatabaseVulnerabilityAssessmentScans { get; }
+
+        /// <summary>
+        /// Gets the IManagedDatabaseVulnerabilityAssessmentsOperations.
+        /// </summary>
+        IManagedDatabaseVulnerabilityAssessmentsOperations ManagedDatabaseVulnerabilityAssessments { get; }
+
+        /// <summary>
         /// Gets the IInstanceFailoverGroupsOperations.
         /// </summary>
         IInstanceFailoverGroupsOperations InstanceFailoverGroups { get; }
@@ -385,6 +426,26 @@ namespace Microsoft.Azure.Management.Sql
         /// Gets the IManagedInstanceTdeCertificatesOperations.
         /// </summary>
         IManagedInstanceTdeCertificatesOperations ManagedInstanceTdeCertificates { get; }
+
+        /// <summary>
+        /// Gets the IManagedInstanceKeysOperations.
+        /// </summary>
+        IManagedInstanceKeysOperations ManagedInstanceKeys { get; }
+
+        /// <summary>
+        /// Gets the IManagedInstanceEncryptionProtectorsOperations.
+        /// </summary>
+        IManagedInstanceEncryptionProtectorsOperations ManagedInstanceEncryptionProtectors { get; }
+
+        /// <summary>
+        /// Gets the IManagedInstanceVulnerabilityAssessmentsOperations.
+        /// </summary>
+        IManagedInstanceVulnerabilityAssessmentsOperations ManagedInstanceVulnerabilityAssessments { get; }
+
+        /// <summary>
+        /// Gets the IServerVulnerabilityAssessmentsOperations.
+        /// </summary>
+        IServerVulnerabilityAssessmentsOperations ServerVulnerabilityAssessments { get; }
 
     }
 }

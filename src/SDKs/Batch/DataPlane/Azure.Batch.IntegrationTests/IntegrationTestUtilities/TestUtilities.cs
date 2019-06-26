@@ -11,13 +11,13 @@ namespace BatchClientIntegrationTests.IntegrationTestUtilities
     using System.Linq;
     using System.Net;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using System.Text.RegularExpressions;
     using Microsoft.Azure.Batch;
     using Microsoft.Azure.Batch.Auth;
     using Microsoft.Azure.Batch.Common;
-    using Microsoft.Azure.Batch.FileStaging;
     using Newtonsoft.Json;
     using Xunit;
     using Xunit.Abstractions;
@@ -39,7 +39,7 @@ namespace BatchClientIntegrationTests.IntegrationTestUtilities
 
         public static async Task<BatchClient> OpenBatchClientAsync(BatchSharedKeyCredentials sharedKeyCredentials, bool addDefaultRetryPolicy = true)
         {
-            BatchClient client = await BatchClient.OpenAsync(sharedKeyCredentials);
+            BatchClient client = BatchClient.Open(sharedKeyCredentials);
 
             //Force us to get exception if the server returns something we don't expect
             //TODO: To avoid including this test assembly via "InternalsVisibleTo" we resort to some reflection trickery... maybe this property
@@ -48,10 +48,9 @@ namespace BatchClientIntegrationTests.IntegrationTestUtilities
             //TODO: Disabled for now because the swagger spec does not accurately reflect all properties returned by the server
             //SetDeserializationSettings(client);
 
-            //Set up some common stuff like a retry policy
-            if (addDefaultRetryPolicy)
+            if (!addDefaultRetryPolicy)
             {
-                client.CustomBehaviors.Add(RetryPolicyProvider.LinearRetryProvider(TimeSpan.FromSeconds(3), 5));
+                client.CustomBehaviors = client.CustomBehaviors.Where(behavior => !(behavior is RetryPolicyProvider)).ToList();
             }
 
             return client;
@@ -190,6 +189,30 @@ namespace BatchClientIntegrationTests.IntegrationTestUtilities
         #endregion
 
         #region Naming helpers
+
+        public static string GenerateResourceId(
+            string baseId = null,
+            int? maxLength = null,
+            [CallerMemberName] string caller = null)
+        {
+            int actualMaxLength = maxLength ?? 50;
+
+            var guid = Guid.NewGuid().ToString("N");
+            if (baseId == null && caller == null)
+            {
+                return guid;
+            }
+            else
+            {
+                const int minRandomCharacters = 10;
+                // make the ID only contain alphanumeric or underscore or dash:
+                var id = baseId ?? caller;
+                var safeBaseId = Regex.Replace(id, "[^A-Za-z0-9_-]", "");
+                safeBaseId = safeBaseId.Length > actualMaxLength - minRandomCharacters ? safeBaseId.Substring(0, actualMaxLength - minRandomCharacters) : safeBaseId;
+                var result = $"{safeBaseId}_{guid}";
+                return result.Length > actualMaxLength ? result.Substring(0, actualMaxLength) : result;
+            }
+        }
 
         public static string GetMyName()
         {

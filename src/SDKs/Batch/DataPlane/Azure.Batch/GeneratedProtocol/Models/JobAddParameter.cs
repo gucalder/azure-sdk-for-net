@@ -10,7 +10,6 @@
 
 namespace Microsoft.Azure.Batch.Protocol.Models
 {
-    using Microsoft.Rest;
     using Newtonsoft.Json;
     using System.Collections;
     using System.Collections.Generic;
@@ -58,7 +57,9 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// the job as metadata.</param>
         /// <param name="usesTaskDependencies">Whether tasks in the job can
         /// define dependencies on each other. The default is false.</param>
-        public JobAddParameter(string id, PoolInformation poolInfo, string displayName = default(string), int? priority = default(int?), JobConstraints constraints = default(JobConstraints), JobManagerTask jobManagerTask = default(JobManagerTask), JobPreparationTask jobPreparationTask = default(JobPreparationTask), JobReleaseTask jobReleaseTask = default(JobReleaseTask), IList<EnvironmentSetting> commonEnvironmentSettings = default(IList<EnvironmentSetting>), OnAllTasksComplete? onAllTasksComplete = default(OnAllTasksComplete?), OnTaskFailure? onTaskFailure = default(OnTaskFailure?), IList<MetadataItem> metadata = default(IList<MetadataItem>), bool? usesTaskDependencies = default(bool?))
+        /// <param name="networkConfiguration">The network configuration for
+        /// the job.</param>
+        public JobAddParameter(string id, PoolInformation poolInfo, string displayName = default(string), int? priority = default(int?), JobConstraints constraints = default(JobConstraints), JobManagerTask jobManagerTask = default(JobManagerTask), JobPreparationTask jobPreparationTask = default(JobPreparationTask), JobReleaseTask jobReleaseTask = default(JobReleaseTask), IList<EnvironmentSetting> commonEnvironmentSettings = default(IList<EnvironmentSetting>), OnAllTasksComplete? onAllTasksComplete = default(OnAllTasksComplete?), OnTaskFailure? onTaskFailure = default(OnTaskFailure?), IList<MetadataItem> metadata = default(IList<MetadataItem>), bool? usesTaskDependencies = default(bool?), JobNetworkConfiguration networkConfiguration = default(JobNetworkConfiguration))
         {
             Id = id;
             DisplayName = displayName;
@@ -73,6 +74,7 @@ namespace Microsoft.Azure.Batch.Protocol.Models
             OnTaskFailure = onTaskFailure;
             Metadata = metadata;
             UsesTaskDependencies = usesTaskDependencies;
+            NetworkConfiguration = networkConfiguration;
             CustomInit();
         }
 
@@ -239,57 +241,10 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         public bool? UsesTaskDependencies { get; set; }
 
         /// <summary>
-        /// Validate the object.
+        /// Gets or sets the network configuration for the job.
         /// </summary>
-        /// <exception cref="ValidationException">
-        /// Thrown if validation fails
-        /// </exception>
-        public virtual void Validate()
-        {
-            if (Id == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "Id");
-            }
-            if (PoolInfo == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "PoolInfo");
-            }
-            if (JobManagerTask != null)
-            {
-                JobManagerTask.Validate();
-            }
-            if (JobPreparationTask != null)
-            {
-                JobPreparationTask.Validate();
-            }
-            if (JobReleaseTask != null)
-            {
-                JobReleaseTask.Validate();
-            }
-            if (CommonEnvironmentSettings != null)
-            {
-                foreach (var element in CommonEnvironmentSettings)
-                {
-                    if (element != null)
-                    {
-                        element.Validate();
-                    }
-                }
-            }
-            if (PoolInfo != null)
-            {
-                PoolInfo.Validate();
-            }
-            if (Metadata != null)
-            {
-                foreach (var element1 in Metadata)
-                {
-                    if (element1 != null)
-                    {
-                        element1.Validate();
-                    }
-                }
-            }
-        }
+        [JsonProperty(PropertyName = "networkConfiguration")]
+        public JobNetworkConfiguration NetworkConfiguration { get; set; }
+
     }
 }

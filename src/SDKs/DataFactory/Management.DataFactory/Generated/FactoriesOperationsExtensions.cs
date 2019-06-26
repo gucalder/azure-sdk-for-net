@@ -311,6 +311,98 @@ namespace Microsoft.Azure.Management.DataFactory
             }
 
             /// <summary>
+            /// Get GitHub Access Token.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The resource group name.
+            /// </param>
+            /// <param name='factoryName'>
+            /// The factory name.
+            /// </param>
+            /// <param name='gitHubAccessTokenRequest'>
+            /// Get GitHub access token request definition.
+            /// </param>
+            public static GitHubAccessTokenResponse GetGitHubAccessToken(this IFactoriesOperations operations, string resourceGroupName, string factoryName, GitHubAccessTokenRequest gitHubAccessTokenRequest)
+            {
+                return operations.GetGitHubAccessTokenAsync(resourceGroupName, factoryName, gitHubAccessTokenRequest).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Get GitHub Access Token.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The resource group name.
+            /// </param>
+            /// <param name='factoryName'>
+            /// The factory name.
+            /// </param>
+            /// <param name='gitHubAccessTokenRequest'>
+            /// Get GitHub access token request definition.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<GitHubAccessTokenResponse> GetGitHubAccessTokenAsync(this IFactoriesOperations operations, string resourceGroupName, string factoryName, GitHubAccessTokenRequest gitHubAccessTokenRequest, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetGitHubAccessTokenWithHttpMessagesAsync(resourceGroupName, factoryName, gitHubAccessTokenRequest, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Get Data Plane access.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The resource group name.
+            /// </param>
+            /// <param name='factoryName'>
+            /// The factory name.
+            /// </param>
+            /// <param name='policy'>
+            /// Data Plane user access policy definition.
+            /// </param>
+            public static AccessPolicyResponse GetDataPlaneAccess(this IFactoriesOperations operations, string resourceGroupName, string factoryName, UserAccessPolicy policy)
+            {
+                return operations.GetDataPlaneAccessAsync(resourceGroupName, factoryName, policy).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Get Data Plane access.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The resource group name.
+            /// </param>
+            /// <param name='factoryName'>
+            /// The factory name.
+            /// </param>
+            /// <param name='policy'>
+            /// Data Plane user access policy definition.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<AccessPolicyResponse> GetDataPlaneAccessAsync(this IFactoriesOperations operations, string resourceGroupName, string factoryName, UserAccessPolicy policy, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetDataPlaneAccessWithHttpMessagesAsync(resourceGroupName, factoryName, policy, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
             /// Lists factories under the specified subscription.
             /// </summary>
             /// <param name='operations'>

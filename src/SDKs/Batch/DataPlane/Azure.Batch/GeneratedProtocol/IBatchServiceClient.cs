@@ -23,7 +23,6 @@ namespace Microsoft.Azure.Batch.Protocol
         /// <summary>
         /// The base URI of the service.
         /// </summary>
-        System.Uri BaseUri { get; set; }
 
         /// <summary>
         /// Gets or sets json serialization settings.
@@ -46,19 +45,25 @@ namespace Microsoft.Azure.Batch.Protocol
         string ApiVersion { get; }
 
         /// <summary>
-        /// Gets or sets the preferred language for the response.
+        /// The base URL for all Azure Batch service requests.
+        /// </summary>
+        string BatchUrl { get; set; }
+
+        /// <summary>
+        /// The preferred language for the response.
         /// </summary>
         string AcceptLanguage { get; set; }
 
         /// <summary>
-        /// Gets or sets the retry timeout in seconds for Long Running
-        /// Operations. Default value is 30.
+        /// The retry timeout in seconds for Long Running Operations. Default
+        /// value is 30.
         /// </summary>
         int? LongRunningOperationRetryTimeout { get; set; }
 
         /// <summary>
-        /// When set to true a unique x-ms-client-request-id value is generated
-        /// and included in each request. Default is true.
+        /// Whether a unique x-ms-client-request-id should be generated. When
+        /// set to true a unique x-ms-client-request-id value is generated and
+        /// included in each request. Default is true.
         /// </summary>
         bool? GenerateClientRequestId { get; set; }
 

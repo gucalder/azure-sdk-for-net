@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.CognitiveServices.ContentModerator;
-using Microsoft.CognitiveServices.ContentModerator.Models;
+using Microsoft.Azure.CognitiveServices.ContentModerator;
+using Microsoft.Azure.CognitiveServices.ContentModerator.Models;
 using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json;
@@ -26,7 +26,6 @@ namespace ContentModeratorTests
         static ContentModeratorAPI api;
         public static List<ImageList> allImageLists;
         public static ImageIds allImages;
-        string imageListIdToDelete, imageListIdToUpdate, imageListId, imageId;
 
         
         BodyModel ImageUrlToModerate = new BodyModel ("URL", "https://pbs.twimg.com/media/BfopodJCUAAjmkU.jpg:large");
@@ -41,8 +40,7 @@ namespace ContentModeratorTests
             
         }
 
-        
-        public void TestCleanup()
+        internal void TestCleanup()
         {
             TestCleanupConfiguration();
         }

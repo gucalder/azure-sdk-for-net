@@ -80,13 +80,13 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<CertificateAddHeaders>> AddWithHttpMessagesAsync(CertificateAddParameter certificate, CertificateAddOptions certificateAddOptions = default(CertificateAddOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (certificate == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "certificate");
-            }
-            if (certificate != null)
-            {
-                certificate.Validate();
             }
             if (Client.ApiVersion == null)
             {
@@ -128,8 +128,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Add", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "certificates").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "certificates";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             List<string> _queryParameters = new List<string>();
             if (Client.ApiVersion != null)
             {
@@ -314,6 +315,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationResponse<IPage<Certificate>,CertificateListHeaders>> ListWithHttpMessagesAsync(CertificateListOptions certificateListOptions = default(CertificateListOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (Client.ApiVersion == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.ApiVersion");
@@ -371,8 +376,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "List", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "certificates").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "certificates";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             List<string> _queryParameters = new List<string>();
             if (Client.ApiVersion != null)
             {
@@ -592,6 +598,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<CertificateCancelDeletionHeaders>> CancelDeletionWithHttpMessagesAsync(string thumbprintAlgorithm, string thumbprint, CertificateCancelDeletionOptions certificateCancelDeletionOptions = default(CertificateCancelDeletionOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (thumbprintAlgorithm == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "thumbprintAlgorithm");
@@ -641,8 +651,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "CancelDeletion", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "certificates(thumbprintAlgorithm={thumbprintAlgorithm},thumbprint={thumbprint})/canceldelete").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "certificates(thumbprintAlgorithm={thumbprintAlgorithm},thumbprint={thumbprint})/canceldelete";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{thumbprintAlgorithm}", System.Uri.EscapeDataString(thumbprintAlgorithm));
             _url = _url.Replace("{thumbprint}", System.Uri.EscapeDataString(thumbprint));
             List<string> _queryParameters = new List<string>();
@@ -837,6 +848,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<CertificateDeleteHeaders>> DeleteWithHttpMessagesAsync(string thumbprintAlgorithm, string thumbprint, CertificateDeleteOptions certificateDeleteOptions = default(CertificateDeleteOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (thumbprintAlgorithm == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "thumbprintAlgorithm");
@@ -886,8 +901,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Delete", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "certificates(thumbprintAlgorithm={thumbprintAlgorithm},thumbprint={thumbprint})").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "certificates(thumbprintAlgorithm={thumbprintAlgorithm},thumbprint={thumbprint})";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{thumbprintAlgorithm}", System.Uri.EscapeDataString(thumbprintAlgorithm));
             _url = _url.Replace("{thumbprint}", System.Uri.EscapeDataString(thumbprint));
             List<string> _queryParameters = new List<string>();
@@ -1073,6 +1089,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationResponse<Certificate,CertificateGetHeaders>> GetWithHttpMessagesAsync(string thumbprintAlgorithm, string thumbprint, CertificateGetOptions certificateGetOptions = default(CertificateGetOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (thumbprintAlgorithm == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "thumbprintAlgorithm");
@@ -1128,8 +1148,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Get", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "certificates(thumbprintAlgorithm={thumbprintAlgorithm},thumbprint={thumbprint})").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "certificates(thumbprintAlgorithm={thumbprintAlgorithm},thumbprint={thumbprint})";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{thumbprintAlgorithm}", System.Uri.EscapeDataString(thumbprintAlgorithm));
             _url = _url.Replace("{thumbprint}", System.Uri.EscapeDataString(thumbprint));
             List<string> _queryParameters = new List<string>();

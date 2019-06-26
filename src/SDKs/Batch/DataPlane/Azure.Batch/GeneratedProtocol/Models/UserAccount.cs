@@ -10,7 +10,6 @@
 
 namespace Microsoft.Azure.Batch.Protocol.Models
 {
-    using Microsoft.Rest;
     using Newtonsoft.Json;
     using System.Linq;
 
@@ -37,12 +36,15 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// account.</param>
         /// <param name="linuxUserConfiguration">The Linux-specific user
         /// configuration for the user account.</param>
-        public UserAccount(string name, string password, ElevationLevel? elevationLevel = default(ElevationLevel?), LinuxUserConfiguration linuxUserConfiguration = default(LinuxUserConfiguration))
+        /// <param name="windowsUserConfiguration">The Windows-specific user
+        /// configuration for the user account.</param>
+        public UserAccount(string name, string password, ElevationLevel? elevationLevel = default(ElevationLevel?), LinuxUserConfiguration linuxUserConfiguration = default(LinuxUserConfiguration), WindowsUserConfiguration windowsUserConfiguration = default(WindowsUserConfiguration))
         {
             Name = name;
             Password = password;
             ElevationLevel = elevationLevel;
             LinuxUserConfiguration = linuxUserConfiguration;
+            WindowsUserConfiguration = windowsUserConfiguration;
             CustomInit();
         }
 
@@ -67,10 +69,8 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// Gets or sets the elevation level of the user account.
         /// </summary>
         /// <remarks>
-        /// nonAdmin - The auto user is a standard user without elevated
-        /// access. admin - The auto user is a user with elevated access and
-        /// operates with full Administrator permissions. The default value is
-        /// nonAdmin. Possible values include: 'nonAdmin', 'admin'
+        /// The default value is nonAdmin. Possible values include: 'nonAdmin',
+        /// 'admin'
         /// </remarks>
         [JsonProperty(PropertyName = "elevationLevel")]
         public ElevationLevel? ElevationLevel { get; set; }
@@ -87,21 +87,16 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         public LinuxUserConfiguration LinuxUserConfiguration { get; set; }
 
         /// <summary>
-        /// Validate the object.
+        /// Gets or sets the Windows-specific user configuration for the user
+        /// account.
         /// </summary>
-        /// <exception cref="ValidationException">
-        /// Thrown if validation fails
-        /// </exception>
-        public virtual void Validate()
-        {
-            if (Name == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "Name");
-            }
-            if (Password == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "Password");
-            }
-        }
+        /// <remarks>
+        /// This property can only be specified if the user is on a Windows
+        /// pool. If not specified and on a Windows pool, the user is created
+        /// with the default options.
+        /// </remarks>
+        [JsonProperty(PropertyName = "windowsUserConfiguration")]
+        public WindowsUserConfiguration WindowsUserConfiguration { get; set; }
+
     }
 }

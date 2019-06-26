@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
-using Microsoft.CognitiveServices.ContentModerator.Models;
-using Microsoft.CognitiveServices.ContentModerator;
+using Microsoft.Azure.CognitiveServices.ContentModerator.Models;
+using Microsoft.Azure.CognitiveServices.ContentModerator;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
@@ -23,7 +23,7 @@ namespace ContentModeratorTests
         static ContentModeratorAPI api;
         public static List<TermList> allTermLists;
         public static Terms allTerms;
-        string TermListIdToDelete, TermListIdToUpdate, TermListId, terms;
+        string TermListId;
         public TextModerator()
         {
             TestSetUpConfiguration();

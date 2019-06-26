@@ -53,8 +53,8 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// 'Standard_GS4', 'Standard_GS5'</param>
         /// <param name="dnsPrefix">DNS prefix to be used to create the FQDN
         /// for the agent pool.</param>
-        /// <param name="fqdn">FDQN for the agent pool.</param>
-        public ContainerServiceAgentPoolProfile(string name, int count, ContainerServiceVMSizeTypes vmSize, string dnsPrefix, string fqdn = default(string))
+        /// <param name="fqdn">FQDN for the agent pool.</param>
+        public ContainerServiceAgentPoolProfile(string name, int count, string vmSize, string dnsPrefix, string fqdn = default(string))
         {
             Name = name;
             Count = count;
@@ -101,7 +101,7 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// 'Standard_GS4', 'Standard_GS5'
         /// </summary>
         [JsonProperty(PropertyName = "vmSize")]
-        public ContainerServiceVMSizeTypes VmSize { get; set; }
+        public string VmSize { get; set; }
 
         /// <summary>
         /// Gets or sets DNS prefix to be used to create the FQDN for the agent
@@ -111,7 +111,7 @@ namespace Microsoft.Azure.Management.Compute.Models
         public string DnsPrefix { get; set; }
 
         /// <summary>
-        /// Gets FDQN for the agent pool.
+        /// Gets FQDN for the agent pool.
         /// </summary>
         [JsonProperty(PropertyName = "fqdn")]
         public string Fqdn { get; private set; }
@@ -127,6 +127,10 @@ namespace Microsoft.Azure.Management.Compute.Models
             if (Name == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "Name");
+            }
+            if (VmSize == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "VmSize");
             }
             if (DnsPrefix == null)
             {

@@ -1496,59 +1496,6 @@ namespace Microsoft.Azure.Batch
             asyncTask.WaitAndUnaggregateException(this.CustomBehaviors, additionalBehaviors);
         }
 
-        /// <summary>
-        /// Changes the operating system version of the specified pool.
-        /// </summary>
-        /// <param name="poolId">The id of the pool.</param>
-        /// <param name="targetOSVersion">The Azure Guest OS version to be installed on the virtual machines in the pool.</param>
-        /// <param name="additionalBehaviors">A collection of <see cref="BatchClientBehavior"/> instances that are applied to the Batch service request after the <see cref="CustomBehaviors"/>.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> for controlling the lifetime of the asynchronous operation.</param>
-        /// <returns>A <see cref="System.Threading.Tasks.Task"/> that represents the asynchronous operation.</returns>
-        /// <remarks>
-        /// <para>During the change OS version operation, the Batch service traverses the nodes of the pool, changing the OS version of compute nodes.  When a compute node is chosen, any tasks running on that node are removed from the node and requeued to be rerun later (or on a different compute node).  The node will be unavailable until the version change is complete.</para>
-        /// <para>The operation will result in temporarily reduced pool capacity as nodes are taken out of service to have their OS version changed. Although the Batch service tries to avoid changing all compute nodes at the same time, it does not guarantee to do this (particularly on small pools); therefore, the operation may result in the pool being temporarily unavailable to run tasks.</para>
-        /// <para>When you request an OS version change, the pool state changes to <see cref="Common.PoolState.Upgrading"/>.  When all compute nodes have finished changing version, the pool state returns to <see cref="Common.PoolState.Active"/>.</para>
-        /// <para>While the version change is in progress, the pool's <see cref="Microsoft.Azure.Batch.CloudServiceConfiguration.CurrentOSVersion"/> reflects the OS version that nodes are changing from, and <see cref="Microsoft.Azure.Batch.CloudServiceConfiguration.TargetOSVersion"/> reflects the OS version that nodes are changing to. Once the change is complete, CurrentOSVersion is updated to reflect the OS version now running on all nodes.</para>
-        /// <para>The change version operation runs asynchronously.</para>
-        /// </remarks>
-        public System.Threading.Tasks.Task ChangeOSVersionAsync(
-            string poolId, 
-            string targetOSVersion,
-            IEnumerable<BatchClientBehavior> additionalBehaviors = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            // create the behavior manager
-            BehaviorManager bhMgr = new BehaviorManager(this.CustomBehaviors, additionalBehaviors);
-
-            System.Threading.Tasks.Task asyncTask = _parentBatchClient.ProtocolLayer.UpgradePoolOS(
-                poolId,
-                targetOSVersion, 
-                bhMgr,
-                cancellationToken);
-
-            return asyncTask;
-        }
-
-        /// <summary>
-        /// Changes the operating system version of the specified pool.
-        /// </summary>
-        /// <param name="poolId">The id of the pool.</param>
-        /// <param name="targetOSVersion">The Azure Guest OS version to be installed on the virtual machines in the pool.</param>
-        /// <param name="additionalBehaviors">A collection of <see cref="BatchClientBehavior"/> instances that are applied to the Batch service request after the <see cref="CustomBehaviors"/>.</param>
-        /// <remarks>
-        /// <para>During the change OS version operation, the Batch service traverses the nodes of the pool, changing the OS version of compute nodes.  When a compute node is chosen, any tasks running on that node are removed from the node and requeued to be rerun later (or on a different compute node).  The node will be unavailable until the version change is complete.</para>
-        /// <para>The operation will result in temporarily reduced pool capacity as nodes are taken out of service to have their OS version changed. Although the Batch service tries to avoid changing all compute nodes at the same time, it does not guarantee to do this (particularly on small pools); therefore, the operation may result in the pool being temporarily unavailable to run tasks.</para>
-        /// <para>When you request an OS version change, the pool state changes to <see cref="Common.PoolState.Upgrading"/>.  When all compute nodes have finished changing version, the pool state returns to <see cref="Common.PoolState.Active"/>.</para>
-        /// <para>While the version change is in progress, the pool's <see cref="Microsoft.Azure.Batch.CloudServiceConfiguration.CurrentOSVersion"/> reflects the OS version that nodes are changing from, and <see cref="Microsoft.Azure.Batch.CloudServiceConfiguration.TargetOSVersion"/> reflects the OS version that nodes are changing to. Once the change is complete, CurrentOSVersion is updated to reflect the OS version now running on all nodes.</para>
-        /// <para>This is a blocking operation. For a non-blocking equivalent, see <see cref="ChangeOSVersionAsync"/>.</para>
-        /// </remarks>
-        public void ChangeOSVersion(string poolId, string targetOSVersion,
-            IEnumerable<BatchClientBehavior> additionalBehaviors = null)
-        {
-            Task asyncTask = ChangeOSVersionAsync(poolId, targetOSVersion, additionalBehaviors);
-            asyncTask.WaitAndUnaggregateException(this.CustomBehaviors, additionalBehaviors);
-        }
-
         internal async System.Threading.Tasks.Task<NodeFile> GetNodeFileAsyncImpl(
             string poolId,
             string computeNodeId,
@@ -1614,6 +1561,137 @@ namespace Microsoft.Azure.Batch
             IEnumerable<BatchClientBehavior> additionalBehaviors = null)
         {
             Task<NodeFile> asyncTask = this.GetNodeFileAsync(poolId, computeNodeId, filePath, additionalBehaviors);
+            return asyncTask.WaitAndUnaggregateException(this.CustomBehaviors, additionalBehaviors);
+        }
+
+        internal async Task CopyNodeFileContentToStreamAsyncImpl(
+            string poolId,
+            string computeNodeId,
+            string filePath,
+            Stream stream,
+            GetFileRequestByteRange byteRange,
+            BehaviorManager bhMgr,
+            CancellationToken cancellationToken)
+        {
+            await this.ParentBatchClient.ProtocolLayer.GetNodeFileByNode(
+                poolId,
+                computeNodeId,
+                filePath,
+                stream,
+                byteRange,
+                bhMgr,
+                cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        }
+
+        /// <summary>
+        /// Copies the contents of a file from the specified node to the given <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="poolId">The id of the pool that contains the compute node.</param>
+        /// <param name="computeNodeId">The id of the compute node.</param>
+        /// <param name="filePath">The path of the file to retrieve.</param>
+        /// <param name="stream">The stream to copy the file contents to.</param>
+        /// <param name="byteRange">A byte range defining what section of the file to copy. If omitted, the entire file is downloaded.</param>
+        /// <param name="additionalBehaviors">A collection of <see cref="BatchClientBehavior"/> instances that are applied to the Batch service request after the <see cref="CustomBehaviors"/>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> for controlling the lifetime of the asynchronous operation.</param>
+        /// <remarks>The get file operation runs asynchronously.</remarks>
+        public Task CopyNodeFileContentToStreamAsync(
+            string poolId,
+            string computeNodeId,
+            string filePath,
+            Stream stream,
+            GetFileRequestByteRange byteRange = null,
+            IEnumerable<BatchClientBehavior> additionalBehaviors = null,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // set up behavior manager
+            BehaviorManager bhMgr = new BehaviorManager(this.CustomBehaviors, additionalBehaviors);
+            return this.CopyNodeFileContentToStreamAsyncImpl(poolId, computeNodeId, filePath, stream, byteRange, bhMgr, cancellationToken);
+        }
+
+        /// <summary>
+        /// Copies the contents of a file from the specified node to the given <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="poolId">The id of the pool that contains the compute node.</param>
+        /// <param name="computeNodeId">The id of the compute node.</param>
+        /// <param name="filePath">The path of the file to retrieve.</param>
+        /// <param name="stream">The stream to copy the file contents to.</param>
+        /// <param name="byteRange">A byte range defining what section of the file to copy. If omitted, the entire file is downloaded.</param>
+        /// <param name="additionalBehaviors">A collection of <see cref="BatchClientBehavior"/> instances that are applied to the Batch service request after the <see cref="CustomBehaviors"/>.</param>
+        /// <remarks>This is a blocking operation.  For a non-blocking equivalent, see <see cref="CopyNodeFileContentToStreamAsync"/>.</remarks>
+        public void CopyNodeFileContentToStream(
+            string poolId,
+            string computeNodeId,
+            string filePath,
+            Stream stream,
+            GetFileRequestByteRange byteRange = null,
+            IEnumerable<BatchClientBehavior> additionalBehaviors = null)
+        {
+            Task asyncTask = this.CopyNodeFileContentToStreamAsync(poolId, computeNodeId, filePath, stream, byteRange, additionalBehaviors);
+            asyncTask.WaitAndUnaggregateException(this.CustomBehaviors, additionalBehaviors);
+        }
+
+        internal Task<string> CopyNodeFileContentToStringAsyncImpl(
+            string poolId,
+            string computeNodeId,
+            string filePath,
+            Encoding encoding,
+            GetFileRequestByteRange byteRange,
+            BehaviorManager bhMgr,
+            CancellationToken cancellationToken)
+        {
+            return UtilitiesInternal.ReadNodeFileAsStringAsync(
+                // Note that behaviors is purposefully dropped in the below call since it's already managed by the bhMgr
+                (stream, bRange, behaviors, ct) => this.CopyNodeFileContentToStreamAsyncImpl(poolId, computeNodeId, filePath, stream, bRange, bhMgr, ct),
+                encoding,
+                byteRange,
+                additionalBehaviors: null,
+                cancellationToken: cancellationToken);
+        }
+
+        /// <summary>
+        /// Reads the contents of a file from the specified node into a string.
+        /// </summary>
+        /// <param name="poolId">The id of the pool that contains the compute node.</param>
+        /// <param name="computeNodeId">The id of the compute node.</param>
+        /// <param name="filePath">The path of the file to retrieve.</param>
+        /// <param name="encoding">The encoding to use. If no value or null is specified, UTF8 is used.</param>
+        /// <param name="byteRange">A byte range defining what section of the file to copy. If omitted, the entire file is downloaded.</param>
+        /// <param name="additionalBehaviors">A collection of <see cref="BatchClientBehavior"/> instances that are applied to the Batch service request after the <see cref="CustomBehaviors"/>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> for controlling the lifetime of the asynchronous operation.</param>
+        /// <returns>The contents of the file, as a string</returns>
+        public Task<string> CopyNodeFileContentToStringAsync(
+            string poolId,
+            string computeNodeId,
+            string filePath,
+            Encoding encoding = null,
+            GetFileRequestByteRange byteRange = null,
+            IEnumerable<BatchClientBehavior> additionalBehaviors = null,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // set up behavior manager
+            BehaviorManager bhMgr = new BehaviorManager(this.CustomBehaviors, additionalBehaviors);
+            return CopyNodeFileContentToStringAsyncImpl(poolId, computeNodeId, filePath, encoding, byteRange, bhMgr, cancellationToken);
+        }
+
+        /// <summary>
+        /// Reads the contents of a file from the specified node into a string.
+        /// </summary>
+        /// <param name="poolId">The id of the pool that contains the compute node.</param>
+        /// <param name="computeNodeId">The id of the compute node.</param>
+        /// <param name="filePath">The path of the file to retrieve.</param>
+        /// <param name="encoding">The encoding to use. If no value or null is specified, UTF8 is used.</param>
+        /// <param name="byteRange">A byte range defining what section of the file to copy. If omitted, the entire file is downloaded.</param>
+        /// <param name="additionalBehaviors">A collection of <see cref="BatchClientBehavior"/> instances that are applied to the Batch service request after the <see cref="CustomBehaviors"/>.</param>
+        /// <returns>The contents of the file, as a string</returns>
+        public string CopyNodeFileContentToString(
+            string poolId,
+            string computeNodeId,
+            string filePath,
+            Encoding encoding = null,
+            GetFileRequestByteRange byteRange = null,
+            IEnumerable<BatchClientBehavior> additionalBehaviors = null)
+        {
+            Task<string> asyncTask = this.CopyNodeFileContentToStringAsync(poolId, computeNodeId, filePath, encoding, byteRange, additionalBehaviors);
             return asyncTask.WaitAndUnaggregateException(this.CustomBehaviors, additionalBehaviors);
         }
 

@@ -86,9 +86,19 @@ namespace Microsoft.Azure.Management.DataFactory
         public virtual IFactoriesOperations Factories { get; private set; }
 
         /// <summary>
+        /// Gets the IExposureControlOperations.
+        /// </summary>
+        public virtual IExposureControlOperations ExposureControl { get; private set; }
+
+        /// <summary>
         /// Gets the IIntegrationRuntimesOperations.
         /// </summary>
         public virtual IIntegrationRuntimesOperations IntegrationRuntimes { get; private set; }
+
+        /// <summary>
+        /// Gets the IIntegrationRuntimeObjectMetadataOperations.
+        /// </summary>
+        public virtual IIntegrationRuntimeObjectMetadataOperations IntegrationRuntimeObjectMetadata { get; private set; }
 
         /// <summary>
         /// Gets the IIntegrationRuntimeNodesOperations.
@@ -126,9 +136,27 @@ namespace Microsoft.Azure.Management.DataFactory
         public virtual ITriggersOperations Triggers { get; private set; }
 
         /// <summary>
+        /// Gets the IRerunTriggersOperations.
+        /// </summary>
+        public virtual IRerunTriggersOperations RerunTriggers { get; private set; }
+
+        /// <summary>
         /// Gets the ITriggerRunsOperations.
         /// </summary>
         public virtual ITriggerRunsOperations TriggerRuns { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the DataFactoryManagementClient class.
+        /// </summary>
+        /// <param name='httpClient'>
+        /// HttpClient to be used
+        /// </param>
+        /// <param name='disposeHttpClient'>
+        /// True: will dispose the provided httpClient on calling DataFactoryManagementClient.Dispose(). False: will not dispose provided httpClient</param>
+        protected DataFactoryManagementClient(HttpClient httpClient, bool disposeHttpClient) : base(httpClient, disposeHttpClient)
+        {
+            Initialize();
+        }
 
         /// <summary>
         /// Initializes a new instance of the DataFactoryManagementClient class.
@@ -213,6 +241,33 @@ namespace Microsoft.Azure.Management.DataFactory
         /// Thrown when a required parameter is null
         /// </exception>
         public DataFactoryManagementClient(ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
+        {
+            if (credentials == null)
+            {
+                throw new System.ArgumentNullException("credentials");
+            }
+            Credentials = credentials;
+            if (Credentials != null)
+            {
+                Credentials.InitializeServiceClient(this);
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the DataFactoryManagementClient class.
+        /// </summary>
+        /// <param name='credentials'>
+        /// Required. Credentials needed for the client to connect to Azure.
+        /// </param>
+        /// <param name='httpClient'>
+        /// HttpClient to be used
+        /// </param>
+        /// <param name='disposeHttpClient'>
+        /// True: will dispose the provided httpClient on calling DataFactoryManagementClient.Dispose(). False: will not dispose provided httpClient</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        public DataFactoryManagementClient(ServiceClientCredentials credentials, HttpClient httpClient, bool disposeHttpClient) : this(httpClient, disposeHttpClient)
         {
             if (credentials == null)
             {
@@ -333,7 +388,9 @@ namespace Microsoft.Azure.Management.DataFactory
         {
             Operations = new Operations(this);
             Factories = new FactoriesOperations(this);
+            ExposureControl = new ExposureControlOperations(this);
             IntegrationRuntimes = new IntegrationRuntimesOperations(this);
+            IntegrationRuntimeObjectMetadata = new IntegrationRuntimeObjectMetadataOperations(this);
             IntegrationRuntimeNodes = new IntegrationRuntimeNodesOperations(this);
             LinkedServices = new LinkedServicesOperations(this);
             Datasets = new DatasetsOperations(this);
@@ -341,6 +398,7 @@ namespace Microsoft.Azure.Management.DataFactory
             PipelineRuns = new PipelineRunsOperations(this);
             ActivityRuns = new ActivityRunsOperations(this);
             Triggers = new TriggersOperations(this);
+            RerunTriggers = new RerunTriggersOperations(this);
             TriggerRuns = new TriggerRunsOperations(this);
             BaseUri = new System.Uri("https://management.azure.com");
             ApiVersion = "2018-06-01";
@@ -389,6 +447,8 @@ namespace Microsoft.Azure.Management.DataFactory
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<Activity>("type"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<Trigger>("type"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<Trigger>("type"));
+            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<DependencyReference>("type"));
+            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<DependencyReference>("type"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<WebLinkedServiceTypeProperties>("authenticationType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<WebLinkedServiceTypeProperties>("authenticationType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<DatasetCompression>("type"));
@@ -403,6 +463,8 @@ namespace Microsoft.Azure.Management.DataFactory
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<CopySink>("type"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<LinkedIntegrationRuntimeType>("authorizationType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<LinkedIntegrationRuntimeType>("authorizationType"));
+            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<SsisObjectMetadata>("type"));
+            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<SsisObjectMetadata>("type"));
             CustomInitialize();
             DeserializationSettings.Converters.Add(new TransformationJsonConverter());
             DeserializationSettings.Converters.Add(new CloudErrorJsonConverter());

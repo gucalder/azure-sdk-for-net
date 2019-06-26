@@ -27,8 +27,8 @@ namespace Microsoft.Azure.Batch.Protocol
         /// Adds a task to the specified job.
         /// </summary>
         /// <remarks>
-        /// The maximum lifetime of a task from addition to completion is 7
-        /// days. If a task has not completed within 7 days of being added it
+        /// The maximum lifetime of a task from addition to completion is 180
+        /// days. If a task has not completed within 180 days of being added it
         /// will be terminated by the Batch service and left in whatever state
         /// it was in at that time.
         /// </remarks>
@@ -101,20 +101,21 @@ namespace Microsoft.Azure.Batch.Protocol
         /// add, a client can retry the request. In a retry, it is most
         /// efficient to resubmit only tasks that failed to add, and to omit
         /// tasks that were successfully added on the first attempt. The
-        /// maximum lifetime of a task from addition to completion is 7 days.
-        /// If a task has not completed within 7 days of being added it will be
-        /// terminated by the Batch service and left in whatever state it was
-        /// in at that time.
+        /// maximum lifetime of a task from addition to completion is 180 days.
+        /// If a task has not completed within 180 days of being added it will
+        /// be terminated by the Batch service and left in whatever state it
+        /// was in at that time.
         /// </remarks>
         /// <param name='jobId'>
         /// The ID of the job to which the task collection is to be added.
         /// </param>
         /// <param name='value'>
-        /// The collection of tasks to add. The total serialized size of this
-        /// collection must be less than 4MB. If it is greater than 4MB (for
-        /// example if each task has 100's of resource files or environment
-        /// variables), the request will fail with code 'RequestBodyTooLarge'
-        /// and should be retried again with fewer tasks.
+        /// The collection of tasks to add. The maximum count of tasks is 100.
+        /// The total serialized size of this collection must be less than 1MB.
+        /// If it is greater than 1MB (for example if each task has 100's of
+        /// resource files or environment variables), the request will fail
+        /// with code 'RequestBodyTooLarge' and should be retried again with
+        /// fewer tasks.
         /// </param>
         /// <param name='taskAddCollectionOptions'>
         /// Additional parameters for the operation

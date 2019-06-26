@@ -40,6 +40,12 @@ namespace Microsoft.Azure.Batch
         /// request.
         /// </summary>
         public static readonly TimeSpan DefaultSingleRestRequestClientTimeout = TimeSpan.FromSeconds(60);
+
+        /// <summary>
+        /// The default amount of time to wait for a response from the Batch service before automatically cancelling the 
+        /// request. This is used for "long running" requests such as get file and bulk add task.
+        /// </summary>
+        public static readonly TimeSpan DefaultLongRestRequestClientTimeout = TimeSpan.FromSeconds(180);
     }
 
     internal static class InternalConstants
@@ -52,5 +58,7 @@ namespace Microsoft.Azure.Batch
         internal const string ClientRequestIdHeader = "client-request-id";
 
         internal const string RequestIdHeader = "request-id";
+
+        internal const string RetryAfterHeader = "retry-after";
     }
 }

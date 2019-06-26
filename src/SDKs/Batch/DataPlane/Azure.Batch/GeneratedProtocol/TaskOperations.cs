@@ -55,9 +55,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// Adds a task to the specified job.
         /// </summary>
         /// <remarks>
-        /// The maximum lifetime of a task from addition to completion is 7 days. If a
-        /// task has not completed within 7 days of being added it will be terminated
-        /// by the Batch service and left in whatever state it was in at that time.
+        /// The maximum lifetime of a task from addition to completion is 180 days. If
+        /// a task has not completed within 180 days of being added it will be
+        /// terminated by the Batch service and left in whatever state it was in at
+        /// that time.
         /// </remarks>
         /// <param name='jobId'>
         /// The ID of the job to which the task is to be added.
@@ -88,6 +89,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<TaskAddHeaders>> AddWithHttpMessagesAsync(string jobId, TaskAddParameter task, TaskAddOptions taskAddOptions = default(TaskAddOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -95,10 +100,6 @@ namespace Microsoft.Azure.Batch.Protocol
             if (task == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "task");
-            }
-            if (task != null)
-            {
-                task.Validate();
             }
             if (Client.ApiVersion == null)
             {
@@ -141,8 +142,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Add", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             List<string> _queryParameters = new List<string>();
             if (Client.ApiVersion != null)
@@ -335,6 +337,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationResponse<IPage<CloudTask>,TaskListHeaders>> ListWithHttpMessagesAsync(string jobId, TaskListOptions taskListOptions = default(TaskListOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -403,8 +409,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "List", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             List<string> _queryParameters = new List<string>();
             if (Client.ApiVersion != null)
@@ -604,19 +611,19 @@ namespace Microsoft.Azure.Batch.Protocol
         /// client can retry the request. In a retry, it is most efficient to resubmit
         /// only tasks that failed to add, and to omit tasks that were successfully
         /// added on the first attempt. The maximum lifetime of a task from addition to
-        /// completion is 7 days. If a task has not completed within 7 days of being
-        /// added it will be terminated by the Batch service and left in whatever state
-        /// it was in at that time.
+        /// completion is 180 days. If a task has not completed within 180 days of
+        /// being added it will be terminated by the Batch service and left in whatever
+        /// state it was in at that time.
         /// </remarks>
         /// <param name='jobId'>
         /// The ID of the job to which the task collection is to be added.
         /// </param>
         /// <param name='value'>
-        /// The collection of tasks to add. The total serialized size of this
-        /// collection must be less than 4MB. If it is greater than 4MB (for example if
-        /// each task has 100's of resource files or environment variables), the
-        /// request will fail with code 'RequestBodyTooLarge' and should be retried
-        /// again with fewer tasks.
+        /// The collection of tasks to add. The maximum count of tasks is 100. The
+        /// total serialized size of this collection must be less than 1MB. If it is
+        /// greater than 1MB (for example if each task has 100's of resource files or
+        /// environment variables), the request will fail with code
+        /// 'RequestBodyTooLarge' and should be retried again with fewer tasks.
         /// </param>
         /// <param name='taskAddCollectionOptions'>
         /// Additional parameters for the operation
@@ -644,6 +651,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationResponse<TaskAddCollectionResult,TaskAddCollectionHeaders>> AddCollectionWithHttpMessagesAsync(string jobId, IList<TaskAddParameter> value, TaskAddCollectionOptions taskAddCollectionOptions = default(TaskAddCollectionOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -655,20 +666,6 @@ namespace Microsoft.Azure.Batch.Protocol
             if (value == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "value");
-            }
-            if (value != null)
-            {
-                if (value.Count > 100)
-                {
-                    throw new ValidationException(ValidationRules.MaxItems, "value", 100);
-                }
-                foreach (var element in value)
-                {
-                    if (element != null)
-                    {
-                        element.Validate();
-                    }
-                }
             }
             int? timeout = default(int?);
             if (taskAddCollectionOptions != null)
@@ -712,8 +709,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "AddCollection", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/addtaskcollection").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/addtaskcollection";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             List<string> _queryParameters = new List<string>();
             if (Client.ApiVersion != null)
@@ -926,6 +924,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<TaskDeleteHeaders>> DeleteWithHttpMessagesAsync(string jobId, string taskId, TaskDeleteOptions taskDeleteOptions = default(TaskDeleteOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -999,8 +1001,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Delete", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks/{taskId}").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks/{taskId}";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             _url = _url.Replace("{taskId}", System.Uri.EscapeDataString(taskId));
             List<string> _queryParameters = new List<string>();
@@ -1223,6 +1226,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationResponse<CloudTask,TaskGetHeaders>> GetWithHttpMessagesAsync(string jobId, string taskId, TaskGetOptions taskGetOptions = default(TaskGetOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -1308,8 +1315,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Get", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks/{taskId}").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks/{taskId}";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             _url = _url.Replace("{taskId}", System.Uri.EscapeDataString(taskId));
             List<string> _queryParameters = new List<string>();
@@ -1555,6 +1563,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<TaskUpdateHeaders>> UpdateWithHttpMessagesAsync(string jobId, string taskId, TaskConstraints constraints = default(TaskConstraints), TaskUpdateOptions taskUpdateOptions = default(TaskUpdateOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -1634,8 +1646,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Update", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks/{taskId}").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks/{taskId}";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             _url = _url.Replace("{taskId}", System.Uri.EscapeDataString(taskId));
             List<string> _queryParameters = new List<string>();
@@ -1864,6 +1877,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationResponse<CloudTaskListSubtasksResult,TaskListSubtasksHeaders>> ListSubtasksWithHttpMessagesAsync(string jobId, string taskId, TaskListSubtasksOptions taskListSubtasksOptions = default(TaskListSubtasksOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -1919,8 +1936,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "ListSubtasks", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks/{taskId}/subtasksinfo").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks/{taskId}/subtasksinfo";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             _url = _url.Replace("{taskId}", System.Uri.EscapeDataString(taskId));
             List<string> _queryParameters = new List<string>();
@@ -2131,6 +2149,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<TaskTerminateHeaders>> TerminateWithHttpMessagesAsync(string jobId, string taskId, TaskTerminateOptions taskTerminateOptions = default(TaskTerminateOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -2204,8 +2226,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Terminate", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks/{taskId}/terminate").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks/{taskId}/terminate";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             _url = _url.Replace("{taskId}", System.Uri.EscapeDataString(taskId));
             List<string> _queryParameters = new List<string>();
@@ -2431,6 +2454,10 @@ namespace Microsoft.Azure.Batch.Protocol
         /// </return>
         public async Task<AzureOperationHeaderResponse<TaskReactivateHeaders>> ReactivateWithHttpMessagesAsync(string jobId, string taskId, TaskReactivateOptions taskReactivateOptions = default(TaskReactivateOptions), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Client.BatchUrl == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.BatchUrl");
+            }
             if (jobId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "jobId");
@@ -2504,8 +2531,9 @@ namespace Microsoft.Azure.Batch.Protocol
                 ServiceClientTracing.Enter(_invocationId, this, "Reactivate", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "jobs/{jobId}/tasks/{taskId}/reactivate").ToString();
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "jobs/{jobId}/tasks/{taskId}/reactivate";
+            _url = _url.Replace("{batchUrl}", Client.BatchUrl);
             _url = _url.Replace("{jobId}", System.Uri.EscapeDataString(jobId));
             _url = _url.Replace("{taskId}", System.Uri.EscapeDataString(taskId));
             List<string> _queryParameters = new List<string>();

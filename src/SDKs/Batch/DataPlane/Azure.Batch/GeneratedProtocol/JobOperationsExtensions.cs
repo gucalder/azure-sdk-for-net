@@ -229,7 +229,7 @@ namespace Microsoft.Azure.Batch.Protocol
             /// Updates the properties of the specified job.
             /// </summary>
             /// <remarks>
-            /// This fully replaces all the updateable properties of the job. For example,
+            /// This fully replaces all the updatable properties of the job. For example,
             /// if the job has constraints associated with it and if constraints is not
             /// specified with this request, then the Batch service will remove the
             /// existing constraints.
@@ -255,7 +255,7 @@ namespace Microsoft.Azure.Batch.Protocol
             /// Updates the properties of the specified job.
             /// </summary>
             /// <remarks>
-            /// This fully replaces all the updateable properties of the job. For example,
+            /// This fully replaces all the updatable properties of the job. For example,
             /// if the job has constraints associated with it and if constraints is not
             /// specified with this request, then the Batch service will remove the
             /// existing constraints.
@@ -358,9 +358,9 @@ namespace Microsoft.Azure.Batch.Protocol
             /// When you call this API, the Batch service sets a disabled job to the
             /// enabling state. After the this operation is completed, the job moves to the
             /// active state, and scheduling of new tasks under the job resumes. The Batch
-            /// service does not allow a task to remain in the active state for more than 7
-            /// days. Therefore, if you enable a job containing active tasks which were
-            /// added more than 7 days ago, those tasks will not run.
+            /// service does not allow a task to remain in the active state for more than
+            /// 180 days. Therefore, if you enable a job containing active tasks which were
+            /// added more than 180 days ago, those tasks will not run.
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -383,9 +383,9 @@ namespace Microsoft.Azure.Batch.Protocol
             /// When you call this API, the Batch service sets a disabled job to the
             /// enabling state. After the this operation is completed, the job moves to the
             /// active state, and scheduling of new tasks under the job resumes. The Batch
-            /// service does not allow a task to remain in the active state for more than 7
-            /// days. Therefore, if you enable a job containing active tasks which were
-            /// added more than 7 days ago, those tasks will not run.
+            /// service does not allow a task to remain in the active state for more than
+            /// 180 days. Therefore, if you enable a job containing active tasks which were
+            /// added more than 180 days ago, those tasks will not run.
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -673,11 +673,7 @@ namespace Microsoft.Azure.Batch.Protocol
             /// <remarks>
             /// Task counts provide a count of the tasks by active, running or completed
             /// task state, and a count of tasks which succeeded or failed. Tasks in the
-            /// preparing state are counted as running. If the validationStatus is
-            /// unvalidated, then the Batch service has not been able to check state counts
-            /// against the task states as reported in the List Tasks API. The
-            /// validationStatus may be unvalidated if the job contains more than 200,000
-            /// tasks.
+            /// preparing state are counted as running.
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -699,11 +695,7 @@ namespace Microsoft.Azure.Batch.Protocol
             /// <remarks>
             /// Task counts provide a count of the tasks by active, running or completed
             /// task state, and a count of tasks which succeeded or failed. Tasks in the
-            /// preparing state are counted as running. If the validationStatus is
-            /// unvalidated, then the Batch service has not been able to check state counts
-            /// against the task states as reported in the List Tasks API. The
-            /// validationStatus may be unvalidated if the job contains more than 200,000
-            /// tasks.
+            /// preparing state are counted as running.
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.

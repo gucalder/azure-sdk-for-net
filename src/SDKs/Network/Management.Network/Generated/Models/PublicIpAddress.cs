@@ -50,10 +50,14 @@ namespace Microsoft.Azure.Management.Network.Models
         /// the public IP address.</param>
         /// <param name="dnsSettings">The FQDN of the DNS record associated
         /// with the public IP address.</param>
+        /// <param name="ddosSettings">The DDoS protection custom policy
+        /// associated with the public IP address.</param>
         /// <param name="ipTags">The list of tags associated with the public IP
         /// address.</param>
         /// <param name="ipAddress">The IP address associated with the public
         /// IP address resource.</param>
+        /// <param name="publicIPPrefix">The Public IP Prefix this Public IP
+        /// Address should be allocated from.</param>
         /// <param name="idleTimeoutInMinutes">The idle timeout of the public
         /// IP address.</param>
         /// <param name="resourceGuid">The resource GUID property of the public
@@ -65,7 +69,7 @@ namespace Microsoft.Azure.Management.Network.Models
         /// the resource is updated.</param>
         /// <param name="zones">A list of availability zones denoting the IP
         /// allocated for the resource needs to come from.</param>
-        public PublicIPAddress(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), PublicIPAddressSku sku = default(PublicIPAddressSku), string publicIPAllocationMethod = default(string), string publicIPAddressVersion = default(string), IPConfiguration ipConfiguration = default(IPConfiguration), PublicIPAddressDnsSettings dnsSettings = default(PublicIPAddressDnsSettings), IList<IpTag> ipTags = default(IList<IpTag>), string ipAddress = default(string), int? idleTimeoutInMinutes = default(int?), string resourceGuid = default(string), string provisioningState = default(string), string etag = default(string), IList<string> zones = default(IList<string>))
+        public PublicIPAddress(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), PublicIPAddressSku sku = default(PublicIPAddressSku), string publicIPAllocationMethod = default(string), string publicIPAddressVersion = default(string), IPConfiguration ipConfiguration = default(IPConfiguration), PublicIPAddressDnsSettings dnsSettings = default(PublicIPAddressDnsSettings), DdosSettings ddosSettings = default(DdosSettings), IList<IpTag> ipTags = default(IList<IpTag>), string ipAddress = default(string), SubResource publicIPPrefix = default(SubResource), int? idleTimeoutInMinutes = default(int?), string resourceGuid = default(string), string provisioningState = default(string), string etag = default(string), IList<string> zones = default(IList<string>))
             : base(id, name, type, location, tags)
         {
             Sku = sku;
@@ -73,8 +77,10 @@ namespace Microsoft.Azure.Management.Network.Models
             PublicIPAddressVersion = publicIPAddressVersion;
             IpConfiguration = ipConfiguration;
             DnsSettings = dnsSettings;
+            DdosSettings = ddosSettings;
             IpTags = ipTags;
             IpAddress = ipAddress;
+            PublicIPPrefix = publicIPPrefix;
             IdleTimeoutInMinutes = idleTimeoutInMinutes;
             ResourceGuid = resourceGuid;
             ProvisioningState = provisioningState;
@@ -123,6 +129,13 @@ namespace Microsoft.Azure.Management.Network.Models
         public PublicIPAddressDnsSettings DnsSettings { get; set; }
 
         /// <summary>
+        /// Gets or sets the DDoS protection custom policy associated with the
+        /// public IP address.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.ddosSettings")]
+        public DdosSettings DdosSettings { get; set; }
+
+        /// <summary>
         /// Gets or sets the list of tags associated with the public IP
         /// address.
         /// </summary>
@@ -135,6 +148,13 @@ namespace Microsoft.Azure.Management.Network.Models
         /// </summary>
         [JsonProperty(PropertyName = "properties.ipAddress")]
         public string IpAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Public IP Prefix this Public IP Address should be
+        /// allocated from.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.publicIPPrefix")]
+        public SubResource PublicIPPrefix { get; set; }
 
         /// <summary>
         /// Gets or sets the idle timeout of the public IP address.

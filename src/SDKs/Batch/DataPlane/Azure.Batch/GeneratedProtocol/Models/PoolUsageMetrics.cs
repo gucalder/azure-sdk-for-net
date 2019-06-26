@@ -10,7 +10,6 @@
 
 namespace Microsoft.Azure.Batch.Protocol.Models
 {
-    using Microsoft.Rest;
     using Newtonsoft.Json;
     using System.Linq;
 
@@ -40,19 +39,13 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// VMs in a pool are the same size.</param>
         /// <param name="totalCoreHours">The total core hours used in the pool
         /// during this aggregation interval.</param>
-        /// <param name="dataIngressGiB">The cross data center network ingress
-        /// to the pool during this interval, in GiB.</param>
-        /// <param name="dataEgressGiB">The cross data center network egress
-        /// from the pool during this interval, in GiB.</param>
-        public PoolUsageMetrics(string poolId, System.DateTime startTime, System.DateTime endTime, string vmSize, double totalCoreHours, double dataIngressGiB, double dataEgressGiB)
+        public PoolUsageMetrics(string poolId, System.DateTime startTime, System.DateTime endTime, string vmSize, double totalCoreHours)
         {
             PoolId = poolId;
             StartTime = startTime;
             EndTime = endTime;
             VmSize = vmSize;
             TotalCoreHours = totalCoreHours;
-            DataIngressGiB = dataIngressGiB;
-            DataEgressGiB = dataEgressGiB;
             CustomInit();
         }
 
@@ -89,18 +82,7 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// <remarks>
         /// For information about available sizes of virtual machines in pools,
         /// see Choose a VM size for compute nodes in an Azure Batch pool
-        /// (https://docs.microsoft.com/azure/batch/batch-pool-vm-sizes). Batch
-        /// supports all Cloud Services VM sizes except ExtraSmall,
-        /// STANDARD_A1_V2 and STANDARD_A2_V2. For information about available
-        /// VM sizes for pools using images from the Virtual Machines
-        /// Marketplace (pools created with virtualMachineConfiguration) see
-        /// Sizes for Virtual Machines (Linux)
-        /// (https://azure.microsoft.com/documentation/articles/virtual-machines-linux-sizes/)
-        /// or Sizes for Virtual Machines (Windows)
-        /// (https://azure.microsoft.com/documentation/articles/virtual-machines-windows-sizes/).
-        /// Batch supports all Azure VM sizes except STANDARD_A0 and those with
-        /// premium storage (STANDARD_GS, STANDARD_DS, and STANDARD_DSV2
-        /// series).
+        /// (https://docs.microsoft.com/azure/batch/batch-pool-vm-sizes).
         /// </remarks>
         [JsonProperty(PropertyName = "vmSize")]
         public string VmSize { get; set; }
@@ -112,36 +94,5 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         [JsonProperty(PropertyName = "totalCoreHours")]
         public double TotalCoreHours { get; set; }
 
-        /// <summary>
-        /// Gets or sets the cross data center network ingress to the pool
-        /// during this interval, in GiB.
-        /// </summary>
-        [JsonProperty(PropertyName = "dataIngressGiB")]
-        public double DataIngressGiB { get; set; }
-
-        /// <summary>
-        /// Gets or sets the cross data center network egress from the pool
-        /// during this interval, in GiB.
-        /// </summary>
-        [JsonProperty(PropertyName = "dataEgressGiB")]
-        public double DataEgressGiB { get; set; }
-
-        /// <summary>
-        /// Validate the object.
-        /// </summary>
-        /// <exception cref="ValidationException">
-        /// Thrown if validation fails
-        /// </exception>
-        public virtual void Validate()
-        {
-            if (PoolId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "PoolId");
-            }
-            if (VmSize == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "VmSize");
-            }
-        }
     }
 }

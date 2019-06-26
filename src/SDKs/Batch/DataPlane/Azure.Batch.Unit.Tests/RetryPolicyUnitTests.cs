@@ -31,10 +31,7 @@
         public RetryPolicyUnitTests(ITestOutputHelper testOutputHelper)
         {
             this.testOutputHelper = testOutputHelper;
-            this.credentials = new Microsoft.Azure.Batch.Auth.BatchSharedKeyCredentials(
-                ClientUnitTestCommon.DummyBaseUrl,
-                ClientUnitTestCommon.DummyAccountName,
-                ClientUnitTestCommon.DummyAccountKey);
+            this.credentials = ClientUnitTestCommon.CreateDummySharedKeyCredential();
         }
 
         #region Built in Retry Policy Tests
@@ -64,7 +61,7 @@
             RetryDecision retryDecision = await linearRetry.ShouldRetryAsync(timeoutException, new OperationContext());
 
             Assert.Equal(interval, retryDecision.RetryDelay);
-            Assert.Equal(true, retryDecision.ShouldRetry);
+            Assert.True(retryDecision.ShouldRetry);
         }
 
         [Fact]
@@ -81,7 +78,7 @@
             RetryDecision retryDecision = await linearRetry.ShouldRetryAsync(batchException, new OperationContext());
 
             Assert.Equal(interval, retryDecision.RetryDelay);
-            Assert.Equal(true, retryDecision.ShouldRetry);
+            Assert.True(retryDecision.ShouldRetry);
         }
 
         [Fact]
@@ -150,6 +147,31 @@
 
         [Fact]
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
+        public async Task LinearRetryHonorsRetryAfter()
+        {
+            TimeSpan interval = TimeSpan.FromSeconds(60);
+            TimeSpan retryAfter = TimeSpan.FromSeconds(10);
+            const int maxRetries = 10;
+            var linearRetry = new LinearRetry(interval, maxRetries);
+
+            RequestInformation reqInfo = new RequestInformation()
+            {
+                HttpStatusCode = (HttpStatusCode)429,
+                RetryAfter = retryAfter
+            };
+            BatchException batchException = new BatchException(reqInfo, "Message", null);
+
+            OperationContext context = new OperationContext();
+            context.RequestResults.Add(new RequestResult(new RequestInformation(), batchException));
+
+            RetryDecision retryDecision = await linearRetry.ShouldRetryAsync(batchException, context);
+
+            Assert.Equal(retryAfter, retryDecision.RetryDelay);
+            Assert.True(retryDecision.ShouldRetry);
+        }
+
+        [Fact]
+        [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
         public void ExponentialRetryPropertiesSetCorrect()
         {
             TimeSpan interval = TimeSpan.FromSeconds(5);
@@ -175,7 +197,7 @@
             RetryDecision retryDecision = await exponentialRetry.ShouldRetryAsync(timeoutException, context);
 
             Assert.Equal(interval, retryDecision.RetryDelay);
-            Assert.Equal(true, retryDecision.ShouldRetry);
+            Assert.True(retryDecision.ShouldRetry);
         }
 
         [Fact]
@@ -195,17 +217,20 @@
             RetryDecision retryDecision = await exponentialRetry.ShouldRetryAsync(batchException, context);
 
             Assert.Equal(interval, retryDecision.RetryDelay);
-            Assert.Equal(true, retryDecision.ShouldRetry);
+            Assert.True(retryDecision.ShouldRetry);
         }
 
-        [Fact]
+        [Theory]
+        [InlineData(null)]
+        [InlineData(20)]
         [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
-        public async Task ExponentialRetryAbortsRetriesAfterMaxRetryCount()
+        public async Task ExponentialRetryAbortsRetriesAfterMaxRetryCount(int? maxBackoffSeconds)
         {
             const int delayInSeconds = 3;
             TimeSpan interval = TimeSpan.FromSeconds(delayInSeconds);
             const int maxRetries = 5;
-            ExponentialRetry exponentialRetry = new ExponentialRetry(interval, maxRetries);
+            TimeSpan? maxBackoff = maxBackoffSeconds.HasValue ? TimeSpan.FromSeconds(maxBackoffSeconds.Value) : (TimeSpan?)null;
+            ExponentialRetry exponentialRetry = new ExponentialRetry(interval, maxRetries, maxBackoff);
 
             TimeoutException timeoutException = new TimeoutException();
 
@@ -222,6 +247,11 @@
                 if (retryDecision.ShouldRetry)
                 {
                     TimeSpan expectedDelay = TimeSpan.FromSeconds(Math.Pow(2, requestCount) * delayInSeconds);
+                    if (maxBackoff.HasValue && expectedDelay > maxBackoff.Value)
+                    {
+                        expectedDelay = maxBackoff.Value;
+                    }
+
                     Assert.Equal(expectedDelay, retryDecision.RetryDelay);
                 }
 
@@ -263,6 +293,31 @@
             IRetryPolicy policy = new ExponentialRetry(deltaBackoff, maxRetries);
 
             await this.AssertPolicyDoesNotRetryOnValidationExceptions(policy);
+        }
+
+        [Fact]
+        [Trait(TestTraits.Duration.TraitName, TestTraits.Duration.Values.VeryShortDuration)]
+        public async Task ExponentialRetryHonorsRetryAfter()
+        {
+            TimeSpan interval = TimeSpan.FromSeconds(60);
+            TimeSpan retryAfter = TimeSpan.FromSeconds(10);
+            const int maxRetries = 10;
+            ExponentialRetry exponentialRetry = new ExponentialRetry(interval, maxRetries);
+
+            RequestInformation reqInfo = new RequestInformation()
+            {
+                HttpStatusCode = (HttpStatusCode)429,
+                RetryAfter = retryAfter
+            };
+            BatchException batchException = new BatchException(reqInfo, "Message", null);
+
+            OperationContext context = new OperationContext();
+            context.RequestResults.Add(new RequestResult(new RequestInformation(), batchException));
+
+            RetryDecision retryDecision = await exponentialRetry.ShouldRetryAsync(batchException, context);
+
+            Assert.Equal(retryAfter, retryDecision.RetryDelay);
+            Assert.True(retryDecision.ShouldRetry);
         }
 
         #endregion
@@ -592,18 +647,15 @@
                     {
                         var stronglyTypedRequest = (Microsoft.Azure.Batch.Protocol.BatchRequests.JobAddBatchRequest)req;
 
-                        var originalServiceRequestFunc = stronglyTypedRequest.ServiceRequestFunc;
-
                         stronglyTypedRequest.ServiceRequestFunc = (token) =>
                         {
                             ++callCount;
-                            return originalServiceRequestFunc(token);
+                            throw new Microsoft.Rest.ValidationException();
                         };
                     }));
 
                 client.CustomBehaviors.Add(new RetryPolicyProvider(policy));
 
-                //This will throw an exception since a job has required parameters such as id which are not specified
                 CloudJob job = client.JobOperations.CreateJob();
                 await Assert.ThrowsAsync<Microsoft.Rest.ValidationException>(async () => await job.CommitAsync());
 

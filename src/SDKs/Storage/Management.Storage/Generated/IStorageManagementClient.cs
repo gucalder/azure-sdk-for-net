@@ -46,11 +46,6 @@ namespace Microsoft.Azure.Management.Storage
         string SubscriptionId { get; set; }
 
         /// <summary>
-        /// The API version to use for this operation.
-        /// </summary>
-        string ApiVersion { get; }
-
-        /// <summary>
         /// The preferred language for the response.
         /// </summary>
         string AcceptLanguage { get; set; }
@@ -90,9 +85,19 @@ namespace Microsoft.Azure.Management.Storage
         IUsagesOperations Usages { get; }
 
         /// <summary>
+        /// Gets the IBlobServicesOperations.
+        /// </summary>
+        IBlobServicesOperations BlobServices { get; }
+
+        /// <summary>
         /// Gets the IBlobContainersOperations.
         /// </summary>
         IBlobContainersOperations BlobContainers { get; }
+
+        /// <summary>
+        /// Gets the IManagementPoliciesOperations.
+        /// </summary>
+        IManagementPoliciesOperations ManagementPolicies { get; }
 
     }
 }
