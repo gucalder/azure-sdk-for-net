@@ -14,8 +14,9 @@ namespace Microsoft.Azure.Management.Batch.Models
     using System.Linq;
 
     /// <summary>
-    /// Data Disk settings which will be used by the data disks associated to
-    /// Compute Nodes in the pool.
+    /// Settings which will be used by the data disks associated to Compute
+    /// Nodes in the Pool. When using attached data disks, you need to mount
+    /// and format the disks from within a VM to use them.
     /// </summary>
     public partial class DataDisk
     {
@@ -56,7 +57,8 @@ namespace Microsoft.Azure.Management.Batch.Models
         /// </summary>
         /// <remarks>
         /// The lun is used to uniquely identify each data disk. If attaching
-        /// multiple disks, each should have a distinct lun.
+        /// multiple disks, each should have a distinct lun. The value must be
+        /// between 0 and 63, inclusive.
         /// </remarks>
         [JsonProperty(PropertyName = "lun")]
         public int Lun { get; set; }

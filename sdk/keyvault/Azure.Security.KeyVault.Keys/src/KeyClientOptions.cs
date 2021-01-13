@@ -1,23 +1,22 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See License.txt in the project root for
-// license information.
+// Licensed under the MIT License.
 
-using Azure.Core.Pipeline;
 using System;
+using Azure.Core;
 
 namespace Azure.Security.KeyVault.Keys
 {
     /// <summary>
-    /// Options that allow to configure the management of the request sent to Key Vault
+    /// Options that allow you to configure the requests sent to Key Vault.
     /// </summary>
     public class KeyClientOptions : ClientOptions
     {
         /// <summary>
         /// The latest service version supported by this client library.
         /// For more information, see
-        /// <see href="https://docs.microsoft.com/en-us/rest/api/keyvault/key-vault-versions"/>
+        /// <see href="https://docs.microsoft.com/rest/api/keyvault/key-vault-versions">Key Vault versions</see>.
         /// </summary>
-        internal const ServiceVersion LatestVersion = ServiceVersion.V7_0;
+        internal const ServiceVersion LatestVersion = ServiceVersion.V7_1;
 
         /// <summary>
         /// The versions of Azure Key Vault supported by this client
@@ -29,45 +28,45 @@ namespace Azure.Security.KeyVault.Keys
             /// <summary>
             /// The Key Vault API version 7.0.
             /// </summary>
-            V7_0 = 0
+            V7_0 = 0,
+
+            /// <summary>
+            /// The Key Vault API version 7.1.
+            /// </summary>
+            V7_1 = 1,
 #pragma warning restore CA1707 // Identifiers should not contain underscores
         }
 
         /// <summary>
         /// Gets the <see cref="ServiceVersion"/> of the service API used when
         /// making requests. For more information, see
-        /// <see href="https://docs.microsoft.com/en-us/rest/api/keyvault/key-vault-versions"/>
+        /// <see href="https://docs.microsoft.com/rest/api/keyvault/key-vault-versions">Key Vault versions</see>.
         /// </summary>
         public ServiceVersion Version { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyClientOptions"/>
+        /// Initializes a new instance of the <see cref="KeyClientOptions"/> class.
         /// class.
         /// </summary>
         /// <param name="version">
         /// The <see cref="ServiceVersion"/> of the service API used when
         /// making requests.
         /// </param>
-        public KeyClientOptions(ServiceVersion version = ServiceVersion.V7_0)
+        public KeyClientOptions(ServiceVersion version = LatestVersion)
         {
-            this.Version = version;
+            Version = version;
+
+            this.ConfigureLogging();
         }
 
         internal string GetVersionString()
         {
-            var version = string.Empty;
-
-            switch (this.Version)
+            return Version switch
             {
-                case ServiceVersion.V7_0:
-                    version = "7.0";
-                    break;
-
-                default:
-                    throw new ArgumentException(this.Version.ToString());
-            }
-
-            return version;
+                ServiceVersion.V7_0 => "7.0",
+                ServiceVersion.V7_1 => "7.1",
+                _ => throw new ArgumentException(Version.ToString()),
+            };
         }
     }
 }

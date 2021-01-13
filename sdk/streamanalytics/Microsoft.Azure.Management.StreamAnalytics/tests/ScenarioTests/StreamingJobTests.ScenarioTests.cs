@@ -21,7 +21,7 @@ namespace StreamAnalytics.Tests
         [Fact]
         public async Task StreamingJobOperationsTest_JobShell()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 string resourceGroupName = TestUtilities.GenerateName("sjrg");
                 string jobName = TestUtilities.GenerateName("sj");
@@ -48,9 +48,9 @@ namespace StreamAnalytics.Tests
                     OutputErrorPolicy = OutputErrorPolicy.Drop,
                     DataLocale = "en-US",
                     CompatibilityLevel = CompatibilityLevel.OneFullStopZero,
-                    Sku = new Microsoft.Azure.Management.StreamAnalytics.Models.Sku()
+                    Sku = new Microsoft.Azure.Management.StreamAnalytics.Models.StreamingJobSku()
                     {
-                        Name = SkuName.Standard
+                        Name = StreamingJobSkuName.Standard
                     },
                     Inputs = new List<Input>(),
                     Outputs = new List<Output>(),
@@ -124,7 +124,7 @@ namespace StreamAnalytics.Tests
         [Fact(Skip = "ReRecord due to CR change")]
         public async Task StreamingJobOperationsTest_FullJob()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 string resourceGroupName = TestUtilities.GenerateName("sjrg");
                 string jobName = TestUtilities.GenerateName("sj");
@@ -194,9 +194,9 @@ namespace StreamAnalytics.Tests
                     OutputErrorPolicy = OutputErrorPolicy.Drop,
                     DataLocale = "en-US",
                     CompatibilityLevel = "1.0",
-                    Sku = new Microsoft.Azure.Management.StreamAnalytics.Models.Sku()
+                    Sku = new Microsoft.Azure.Management.StreamAnalytics.Models.StreamingJobSku()
                     {
-                        Name = SkuName.Standard
+                        Name = StreamingJobSkuName.Standard
                     },
                     Inputs = new List<Input>() { input },
                     Transformation = new Transformation(id: expectedTransformationResourceId)

@@ -39,6 +39,8 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="type">Resource type.</param>
         /// <param name="location">Resource location.</param>
         /// <param name="tags">Resource tags.</param>
+        /// <param name="extendedLocation">The extended location of the virtual
+        /// network.</param>
         /// <param name="addressSpace">The AddressSpace that contains an array
         /// of IP address ranges that can be used by subnets.</param>
         /// <param name="dhcpOptions">The dhcpOptions that contains an array of
@@ -51,8 +53,8 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="resourceGuid">The resourceGuid property of the Virtual
         /// Network resource.</param>
         /// <param name="provisioningState">The provisioning state of the
-        /// PublicIP resource. Possible values are: 'Updating', 'Deleting', and
-        /// 'Failed'.</param>
+        /// virtual network resource. Possible values include: 'Succeeded',
+        /// 'Updating', 'Deleting', 'Failed'</param>
         /// <param name="enableDdosProtection">Indicates if DDoS protection is
         /// enabled for all the protected resources in the virtual network. It
         /// requires a DDoS protection plan associated with the
@@ -61,11 +63,16 @@ namespace Microsoft.Azure.Management.Network.Models
         /// enabled for all the subnets in the virtual network.</param>
         /// <param name="ddosProtectionPlan">The DDoS protection plan
         /// associated with the virtual network.</param>
-        /// <param name="etag">Gets a unique read-only string that changes
-        /// whenever the resource is updated.</param>
-        public VirtualNetwork(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), AddressSpace addressSpace = default(AddressSpace), DhcpOptions dhcpOptions = default(DhcpOptions), IList<Subnet> subnets = default(IList<Subnet>), IList<VirtualNetworkPeering> virtualNetworkPeerings = default(IList<VirtualNetworkPeering>), string resourceGuid = default(string), string provisioningState = default(string), bool? enableDdosProtection = default(bool?), bool? enableVmProtection = default(bool?), SubResource ddosProtectionPlan = default(SubResource), string etag = default(string))
+        /// <param name="bgpCommunities">Bgp Communities sent over ExpressRoute
+        /// with each route corresponding to a prefix in this VNET.</param>
+        /// <param name="ipAllocations">Array of IpAllocation which reference
+        /// this VNET.</param>
+        /// <param name="etag">A unique read-only string that changes whenever
+        /// the resource is updated.</param>
+        public VirtualNetwork(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), ExtendedLocation extendedLocation = default(ExtendedLocation), AddressSpace addressSpace = default(AddressSpace), DhcpOptions dhcpOptions = default(DhcpOptions), IList<Subnet> subnets = default(IList<Subnet>), IList<VirtualNetworkPeering> virtualNetworkPeerings = default(IList<VirtualNetworkPeering>), string resourceGuid = default(string), string provisioningState = default(string), bool? enableDdosProtection = default(bool?), bool? enableVmProtection = default(bool?), SubResource ddosProtectionPlan = default(SubResource), VirtualNetworkBgpCommunities bgpCommunities = default(VirtualNetworkBgpCommunities), IList<SubResource> ipAllocations = default(IList<SubResource>), string etag = default(string))
             : base(id, name, type, location, tags)
         {
+            ExtendedLocation = extendedLocation;
             AddressSpace = addressSpace;
             DhcpOptions = dhcpOptions;
             Subnets = subnets;
@@ -75,6 +82,8 @@ namespace Microsoft.Azure.Management.Network.Models
             EnableDdosProtection = enableDdosProtection;
             EnableVmProtection = enableVmProtection;
             DdosProtectionPlan = ddosProtectionPlan;
+            BgpCommunities = bgpCommunities;
+            IpAllocations = ipAllocations;
             Etag = etag;
             CustomInit();
         }
@@ -83,6 +92,12 @@ namespace Microsoft.Azure.Management.Network.Models
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
         partial void CustomInit();
+
+        /// <summary>
+        /// Gets or sets the extended location of the virtual network.
+        /// </summary>
+        [JsonProperty(PropertyName = "extendedLocation")]
+        public ExtendedLocation ExtendedLocation { get; set; }
 
         /// <summary>
         /// Gets or sets the AddressSpace that contains an array of IP address
@@ -111,18 +126,18 @@ namespace Microsoft.Azure.Management.Network.Models
         public IList<VirtualNetworkPeering> VirtualNetworkPeerings { get; set; }
 
         /// <summary>
-        /// Gets or sets the resourceGuid property of the Virtual Network
-        /// resource.
+        /// Gets the resourceGuid property of the Virtual Network resource.
         /// </summary>
         [JsonProperty(PropertyName = "properties.resourceGuid")]
-        public string ResourceGuid { get; set; }
+        public string ResourceGuid { get; private set; }
 
         /// <summary>
-        /// Gets or sets the provisioning state of the PublicIP resource.
-        /// Possible values are: 'Updating', 'Deleting', and 'Failed'.
+        /// Gets the provisioning state of the virtual network resource.
+        /// Possible values include: 'Succeeded', 'Updating', 'Deleting',
+        /// 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
         /// Gets or sets indicates if DDoS protection is enabled for all the
@@ -147,11 +162,51 @@ namespace Microsoft.Azure.Management.Network.Models
         public SubResource DdosProtectionPlan { get; set; }
 
         /// <summary>
+        /// Gets or sets bgp Communities sent over ExpressRoute with each route
+        /// corresponding to a prefix in this VNET.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.bgpCommunities")]
+        public VirtualNetworkBgpCommunities BgpCommunities { get; set; }
+
+        /// <summary>
+        /// Gets or sets array of IpAllocation which reference this VNET.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.ipAllocations")]
+        public IList<SubResource> IpAllocations { get; set; }
+
+        /// <summary>
         /// Gets a unique read-only string that changes whenever the resource
         /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
 
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            if (ExtendedLocation != null)
+            {
+                ExtendedLocation.Validate();
+            }
+            if (VirtualNetworkPeerings != null)
+            {
+                foreach (var element in VirtualNetworkPeerings)
+                {
+                    if (element != null)
+                    {
+                        element.Validate();
+                    }
+                }
+            }
+            if (BgpCommunities != null)
+            {
+                BgpCommunities.Validate();
+            }
+        }
     }
 }

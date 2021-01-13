@@ -1,11 +1,15 @@
-﻿using Azure.Core.Pipeline;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Azure.Core.Pipeline;
 using Azure;
 using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
-using Azure.Core.Http;
+using Azure.Core;
+using System.Collections.Generic;
 
 namespace Azure.Identity
 {
@@ -17,11 +21,11 @@ namespace Azure.Identity
 
             pipelineRequest.Method = RequestMethod.Parse(request.Method.Method);
 
-            pipelineRequest.UriBuilder.Uri = request.RequestUri;
+            pipelineRequest.Uri.Reset(request.RequestUri);
 
             pipelineRequest.Content = await request.Content.ToPipelineRequestContentAsync().ConfigureAwait(false);
 
-            foreach (var header in request.Headers)
+            foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IEnumerable<string>> header in request.Headers)
             {
                 foreach (var value in header.Value)
                 {
@@ -29,37 +33,39 @@ namespace Azure.Identity
                 }
             }
 
+            if (request.Content != null)
+            {
+                foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IEnumerable<string>> header in request.Content.Headers)
+                {
+                    foreach (var value in header.Value)
+                    {
+                        pipelineRequest.Headers.Add(header.Key, value);
+                    }
+                }
+            }
+
             return pipelineRequest;
-        }
-
-        private static void AddHeader(HttpResponseMessage request, HttpHeader header)
-        {
-            if (request.Headers.TryAddWithoutValidation(header.Name, header.Value))
-            {
-                return;
-            }
-
-            if (!request.Content.Headers.TryAddWithoutValidation(header.Name, header.Value))
-            {
-                throw new InvalidOperationException("Unable to add header to request or content");
-            }
         }
 
         public static HttpResponseMessage ToHttpResponseMessage(this Response response)
         {
-            HttpResponseMessage responseMessage = new HttpResponseMessage();
-
-            responseMessage.StatusCode = (HttpStatusCode)response.Status;
-
-            responseMessage.Content = new StreamContent(response.ContentStream);
-
-            foreach (var header in response.Headers)
+            HttpResponseMessage responseMessage = new HttpResponseMessage
             {
-                if (!responseMessage.Headers.TryAddWithoutValidation(header.Name, header.Value))
+                StatusCode = (HttpStatusCode)response.Status,
+
+                Content = new StreamContent(response.ContentStream)
+            };
+
+            foreach (HttpHeader header in response.Headers)
+            {
+                if (response.Headers.TryGetValues(header.Name, out IEnumerable<string> values))
                 {
-                    if (!responseMessage.Content.Headers.TryAddWithoutValidation(header.Name, header.Value))
+                    if (!responseMessage.Headers.TryAddWithoutValidation(header.Name, values))
                     {
-                        throw new InvalidOperationException("Unable to add header to request or content");
+                        if ((responseMessage.Content == null) || !responseMessage.Content.Headers.TryAddWithoutValidation(header.Name, values))
+                        {
+                            throw new InvalidOperationException("Unable to add header to response or content");
+                        }
                     }
                 }
             }
@@ -67,15 +73,14 @@ namespace Azure.Identity
             return responseMessage;
         }
 
-        public static async Task<HttpPipelineRequestContent> ToPipelineRequestContentAsync(this HttpContent content)
+        public static async Task<RequestContent> ToPipelineRequestContentAsync(this HttpContent content)
         {
             if (content != null)
             {
-                return HttpPipelineRequestContent.Create(await content.ReadAsStreamAsync().ConfigureAwait(false));
+                return RequestContent.Create(await content.ReadAsStreamAsync().ConfigureAwait(false));
             }
 
             return null;
         }
-
     }
 }

@@ -22,377 +22,244 @@ namespace Microsoft.Azure.Management.Billing
     public static partial class InvoiceSectionsOperationsExtensions
     {
             /// <summary>
-            /// Lists all invoice sections for a user which he has access to.
+            /// Lists the invoice sections that a user has access to. The operation is
+            /// supported only for billing accounts with agreement type Microsoft Customer
+            /// Agreement.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='expand'>
-            /// May be used to expand the billingProfiles.
-            /// </param>
-            public static InvoiceSectionListResult ListByBillingAccountName(this IInvoiceSectionsOperations operations, string billingAccountName, string expand = default(string))
-            {
-                return operations.ListByBillingAccountNameAsync(billingAccountName, expand).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Lists all invoice sections for a user which he has access to.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='expand'>
-            /// May be used to expand the billingProfiles.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<InvoiceSectionListResult> ListByBillingAccountNameAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string expand = default(string), CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.ListByBillingAccountNameWithHttpMessagesAsync(billingAccountName, expand, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// The operation to create a InvoiceSection.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
-            /// </param>
-            public static InvoiceSection Create(this IInvoiceSectionsOperations operations, string billingAccountName, InvoiceSectionProperties parameters)
-            {
-                return operations.CreateAsync(billingAccountName, parameters).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// The operation to create a InvoiceSection.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<InvoiceSection> CreateAsync(this IInvoiceSectionsOperations operations, string billingAccountName, InvoiceSectionProperties parameters, CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.CreateWithHttpMessagesAsync(billingAccountName, parameters, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// Lists all invoice sections under a billing profile for a user which he has
-            /// access to.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
             /// </param>
             /// <param name='billingProfileName'>
-            /// Billing Profile Id.
+            /// The ID that uniquely identifies a billing profile.
             /// </param>
-            public static InvoiceSectionListResult ListByBillingProfileName(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName)
+            public static IPage<InvoiceSection> ListByBillingProfile(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName)
             {
-                return operations.ListByBillingProfileNameAsync(billingAccountName, billingProfileName).GetAwaiter().GetResult();
+                return operations.ListByBillingProfileAsync(billingAccountName, billingProfileName).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Lists all invoice sections under a billing profile for a user which he has
-            /// access to.
+            /// Lists the invoice sections that a user has access to. The operation is
+            /// supported only for billing accounts with agreement type Microsoft Customer
+            /// Agreement.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
             /// </param>
             /// <param name='billingProfileName'>
-            /// Billing Profile Id.
+            /// The ID that uniquely identifies a billing profile.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<InvoiceSectionListResult> ListByBillingProfileNameAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IPage<InvoiceSection>> ListByBillingProfileAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ListByBillingProfileNameWithHttpMessagesAsync(billingAccountName, billingProfileName, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ListByBillingProfileWithHttpMessagesAsync(billingAccountName, billingProfileName, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
             }
 
             /// <summary>
-            /// Lists all invoiceSections with create subscription permission for a user.
+            /// Gets an invoice section by its ID. The operation is supported only for
+            /// billing accounts with agreement type Microsoft Customer Agreement.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
             /// </param>
-            /// <param name='expand'>
-            /// May be used to expand the billingProfiles.
+            /// <param name='billingProfileName'>
+            /// The ID that uniquely identifies a billing profile.
             /// </param>
-            public static InvoiceSectionListResult ListByCreateSubscriptionPermission(this IInvoiceSectionsOperations operations, string billingAccountName, string expand = default(string))
+            /// <param name='invoiceSectionName'>
+            /// The ID that uniquely identifies an invoice section.
+            /// </param>
+            public static InvoiceSection Get(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, string invoiceSectionName)
             {
-                return operations.ListByCreateSubscriptionPermissionAsync(billingAccountName, expand).GetAwaiter().GetResult();
+                return operations.GetAsync(billingAccountName, billingProfileName, invoiceSectionName).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Lists all invoiceSections with create subscription permission for a user.
+            /// Gets an invoice section by its ID. The operation is supported only for
+            /// billing accounts with agreement type Microsoft Customer Agreement.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
             /// </param>
-            /// <param name='expand'>
-            /// May be used to expand the billingProfiles.
+            /// <param name='billingProfileName'>
+            /// The ID that uniquely identifies a billing profile.
+            /// </param>
+            /// <param name='invoiceSectionName'>
+            /// The ID that uniquely identifies an invoice section.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<InvoiceSectionListResult> ListByCreateSubscriptionPermissionAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string expand = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<InvoiceSection> GetAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, string invoiceSectionName, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ListByCreateSubscriptionPermissionWithHttpMessagesAsync(billingAccountName, expand, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetWithHttpMessagesAsync(billingAccountName, billingProfileName, invoiceSectionName, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
             }
 
             /// <summary>
-            /// Get the InvoiceSection by id.
+            /// Creates or updates an invoice section. The operation is supported only for
+            /// billing accounts with agreement type Microsoft Customer Agreement.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
+            /// </param>
+            /// <param name='billingProfileName'>
+            /// The ID that uniquely identifies a billing profile.
             /// </param>
             /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
+            /// The ID that uniquely identifies an invoice section.
             /// </param>
-            /// <param name='expand'>
-            /// May be used to expand the billingProfiles.
+            /// <param name='parameters'>
+            /// The new or updated invoice section.
             /// </param>
-            public static InvoiceSection Get(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName, string expand = default(string))
+            public static InvoiceSection CreateOrUpdate(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, string invoiceSectionName, InvoiceSection parameters)
             {
-                return operations.GetAsync(billingAccountName, invoiceSectionName, expand).GetAwaiter().GetResult();
+                return operations.CreateOrUpdateAsync(billingAccountName, billingProfileName, invoiceSectionName, parameters).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Get the InvoiceSection by id.
+            /// Creates or updates an invoice section. The operation is supported only for
+            /// billing accounts with agreement type Microsoft Customer Agreement.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
+            /// </param>
+            /// <param name='billingProfileName'>
+            /// The ID that uniquely identifies a billing profile.
             /// </param>
             /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
+            /// The ID that uniquely identifies an invoice section.
             /// </param>
-            /// <param name='expand'>
-            /// May be used to expand the billingProfiles.
+            /// <param name='parameters'>
+            /// The new or updated invoice section.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<InvoiceSection> GetAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName, string expand = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<InvoiceSection> CreateOrUpdateAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, string invoiceSectionName, InvoiceSection parameters, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetWithHttpMessagesAsync(billingAccountName, invoiceSectionName, expand, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.CreateOrUpdateWithHttpMessagesAsync(billingAccountName, billingProfileName, invoiceSectionName, parameters, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
             }
 
             /// <summary>
-            /// The operation to update a InvoiceSection.
+            /// Creates or updates an invoice section. The operation is supported only for
+            /// billing accounts with agreement type Microsoft Customer Agreement.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
+            /// </param>
+            /// <param name='billingProfileName'>
+            /// The ID that uniquely identifies a billing profile.
             /// </param>
             /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
+            /// The ID that uniquely identifies an invoice section.
             /// </param>
             /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
+            /// The new or updated invoice section.
             /// </param>
-            public static InvoiceSection Update(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName, InvoiceSection parameters)
+            public static InvoiceSection BeginCreateOrUpdate(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, string invoiceSectionName, InvoiceSection parameters)
             {
-                return operations.UpdateAsync(billingAccountName, invoiceSectionName, parameters).GetAwaiter().GetResult();
+                return operations.BeginCreateOrUpdateAsync(billingAccountName, billingProfileName, invoiceSectionName, parameters).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// The operation to update a InvoiceSection.
+            /// Creates or updates an invoice section. The operation is supported only for
+            /// billing accounts with agreement type Microsoft Customer Agreement.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
+            /// </param>
+            /// <param name='billingProfileName'>
+            /// The ID that uniquely identifies a billing profile.
             /// </param>
             /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
+            /// The ID that uniquely identifies an invoice section.
             /// </param>
             /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
+            /// The new or updated invoice section.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<InvoiceSection> UpdateAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName, InvoiceSection parameters, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<InvoiceSection> BeginCreateOrUpdateAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string billingProfileName, string invoiceSectionName, InvoiceSection parameters, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.UpdateWithHttpMessagesAsync(billingAccountName, invoiceSectionName, parameters, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.BeginCreateOrUpdateWithHttpMessagesAsync(billingAccountName, billingProfileName, invoiceSectionName, parameters, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
             }
 
             /// <summary>
-            /// Elevates the caller's access to match their billing profile access.
+            /// Lists the invoice sections that a user has access to. The operation is
+            /// supported only for billing accounts with agreement type Microsoft Customer
+            /// Agreement.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// <param name='nextPageLink'>
+            /// The NextLink from the previous successful call to List operation.
             /// </param>
-            /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
-            /// </param>
-            public static void ElevateToBillingProfile(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName)
+            public static IPage<InvoiceSection> ListByBillingProfileNext(this IInvoiceSectionsOperations operations, string nextPageLink)
             {
-                operations.ElevateToBillingProfileAsync(billingAccountName, invoiceSectionName).GetAwaiter().GetResult();
+                return operations.ListByBillingProfileNextAsync(nextPageLink).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Elevates the caller's access to match their billing profile access.
+            /// Lists the invoice sections that a user has access to. The operation is
+            /// supported only for billing accounts with agreement type Microsoft Customer
+            /// Agreement.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
+            /// <param name='nextPageLink'>
+            /// The NextLink from the previous successful call to List operation.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ElevateToBillingProfileAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IPage<InvoiceSection>> ListByBillingProfileNextAsync(this IInvoiceSectionsOperations operations, string nextPageLink, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.ElevateToBillingProfileWithHttpMessagesAsync(billingAccountName, invoiceSectionName, null, cancellationToken).ConfigureAwait(false)).Dispose();
-            }
-
-            /// <summary>
-            /// The operation to create a InvoiceSection.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
-            /// </param>
-            public static InvoiceSection BeginCreate(this IInvoiceSectionsOperations operations, string billingAccountName, InvoiceSectionProperties parameters)
-            {
-                return operations.BeginCreateAsync(billingAccountName, parameters).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// The operation to create a InvoiceSection.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<InvoiceSection> BeginCreateAsync(this IInvoiceSectionsOperations operations, string billingAccountName, InvoiceSectionProperties parameters, CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.BeginCreateWithHttpMessagesAsync(billingAccountName, parameters, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// The operation to update a InvoiceSection.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
-            /// </param>
-            public static InvoiceSection BeginUpdate(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName, InvoiceSection parameters)
-            {
-                return operations.BeginUpdateAsync(billingAccountName, invoiceSectionName, parameters).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// The operation to update a InvoiceSection.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the Create InvoiceSection operation.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<InvoiceSection> BeginUpdateAsync(this IInvoiceSectionsOperations operations, string billingAccountName, string invoiceSectionName, InvoiceSection parameters, CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.BeginUpdateWithHttpMessagesAsync(billingAccountName, invoiceSectionName, parameters, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ListByBillingProfileNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

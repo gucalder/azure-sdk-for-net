@@ -13,18 +13,83 @@ namespace Microsoft.Azure.EventHubs.Tests
 
     internal static class TestUtility
     {
-        private static readonly Lazy<string> EventHubsConnectionStringInstance =
-            new Lazy<string>( () => BuildEventHubsConnectionString(ReadEnvironmentVariable(TestConstants.EventHubsConnectionStringEnvironmentVariableName)), LazyThreadSafetyMode.PublicationOnly);
+        private static readonly Lazy<string> EventHubsSubscriptionInstance =
+          new Lazy<string>(() => ReadEnvironmentVariable(TestConstants.EventHubsSubscriptionEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
 
-        private static readonly Lazy<string> StorageConnectionStringInstance =
-            new Lazy<string>( () => ReadEnvironmentVariable(TestConstants.StorageConnectionStringEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
+        private static readonly Lazy<string> EventHubsResourceGroupInstance =
+            new Lazy<string>(() => ReadEnvironmentVariable(TestConstants.EventHubsResourceGroupEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
 
-        internal static string EventHubsConnectionString => EventHubsConnectionStringInstance.Value;
+        private static readonly Lazy<string> EventHubsTenantInstance =
+            new Lazy<string>(() => ReadEnvironmentVariable(TestConstants.EventHubsTenantEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
 
-        internal static string StorageConnectionString => StorageConnectionStringInstance.Value;
+        private static readonly Lazy<string> EventHubsClientInstance =
+            new Lazy<string>(() => ReadEnvironmentVariable(TestConstants.EventHubsClientEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
+
+        private static readonly Lazy<string> EventHubsSecretInstance =
+            new Lazy<string>(() => ReadEnvironmentVariable(TestConstants.EventHubsSecretEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
+
+        private static readonly Lazy<string> AuthorityHostInstance =
+            new Lazy<string>(() => ReadOptionalEnvironmentVariable(TestConstants.AuthorityHostEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
+
+        private static readonly Lazy<string> ServiceManagementUrlInstance =
+            new Lazy<string>(() => ReadOptionalEnvironmentVariable(TestConstants.ServiceManagementUrlEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
+
+        private static readonly Lazy<string> ResourceManagerInstance =
+            new Lazy<string>(() => ReadOptionalEnvironmentVariable(TestConstants.ResourceManagerEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
+
+        private static readonly Lazy<string> StorageEndpointSuffixInstance =
+           new Lazy<string>(() => ReadOptionalEnvironmentVariable(TestConstants.StorageEndpointSuffixEnvironmentVariableName), LazyThreadSafetyMode.PublicationOnly);
+
+        private static readonly Lazy<EventHubScope.AzureResourceProperties> ActiveEventHubsNamespace =
+            new Lazy<EventHubScope.AzureResourceProperties>(CreateNamespace, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        private static readonly Lazy<EventHubScope.AzureResourceProperties> ActiveStorageAccount =
+            new Lazy<EventHubScope.AzureResourceProperties>(CreateStorageAccount, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        public static bool ShouldRemoveNamespaceAfterTestRunCompletion => (ActiveEventHubsNamespace.IsValueCreated && ActiveEventHubsNamespace.Value.ShouldRemoveAtCompletion);
+
+        public static bool ShouldRemoveStorageAfterTestRunCompletion => (ActiveStorageAccount.IsValueCreated && ActiveStorageAccount.Value.ShouldRemoveAtCompletion);
+
+        internal static string EventHubsConnectionString => ActiveEventHubsNamespace.Value.ConnectionString;
+
+        internal static string EventHubsNamespace => ActiveEventHubsNamespace.Value.Name;
+
+        internal static string StorageConnectionString => ActiveStorageAccount.Value.ConnectionString;
+
+        internal static string StorageAccountName => ActiveStorageAccount.Value.Name;
+
+        internal static string EventHubsSubscription => EventHubsSubscriptionInstance.Value;
+
+        internal static string EventHubsResourceGroup => EventHubsResourceGroupInstance.Value;
+
+        internal static string EventHubsTenant => EventHubsTenantInstance.Value;
+
+        internal static string EventHubsClient => EventHubsClientInstance.Value;
+
+        internal static string EventHubsSecret => EventHubsSecretInstance.Value;
+
+        internal static string AuthorityHost => AuthorityHostInstance.Value ?? "https://login.microsoftonline.com/";
+
+        internal static string ServiceManagementUrl => ServiceManagementUrlInstance.Value ?? "https://management.core.windows.net/";
+
+        internal static Uri ResourceManager => new Uri(ResourceManagerInstance.Value ?? "https://management.azure.com/");
+
+        internal static string StorageEndpointSuffix => StorageEndpointSuffixInstance.Value ?? "core.windows.net";
 
         internal static string GetEntityConnectionString(string entityName) =>
             new EventHubsConnectionStringBuilder(EventHubsConnectionString) { EntityPath = entityName }.ToString();
+
+        internal static async Task SendToEventhubAsync(EventHubClient ehClient, int numberOfMessages = 1)
+        {
+            TestUtility.Log($"Starting to send {numberOfMessages} messages.");
+
+            for (int i = 0; i < numberOfMessages; i++)
+            {
+                await ehClient.SendAsync(new EventData(Encoding.UTF8.GetBytes("Hello Event Hubs!")));
+            }
+
+            TestUtility.Log("Sends done.");
+        }
 
         internal static Task SendToPartitionAsync(EventHubClient ehClient, string partitionId, string messageBody, int numberOfMessages = 1)
         {
@@ -41,6 +106,14 @@ namespace Microsoft.Azure.EventHubs.Tests
                 await partitionSender.SendAsync(eventData);
             }
 
+            TestUtility.Log("Sends done.");
+        }
+
+        internal static async Task SendToPartitionAsync(EventHubClient ehClient, string partitionId, EventDataBatch batch)
+        {
+            TestUtility.Log($"Starting to send {batch.Count} messages to partition {partitionId}.");
+            var partitionSender = ehClient.CreatePartitionSender(partitionId);
+            await partitionSender.SendAsync(batch);
             TestUtility.Log("Sends done.");
         }
 
@@ -75,11 +148,11 @@ namespace Microsoft.Azure.EventHubs.Tests
             Console.WriteLine(formattedMessage);
         }
 
-        private static string BuildEventHubsConnectionString(string sourceConnectionString)
+        public static string BuildEventHubsConnectionString(string eventHubName)
         {
-            var connectionString = new EventHubsConnectionStringBuilder(sourceConnectionString);
+            var connectionString = new EventHubsConnectionStringBuilder(EventHubsConnectionString);
 
-            connectionString.EntityPath = connectionString.EntityPath ?? TestConstants.DefultEventHubName;
+            connectionString.EntityPath = connectionString.EntityPath ?? eventHubName;
             connectionString.OperationTimeout = TestConstants.DefaultOperationTimeout;
 
             return connectionString.ToString();
@@ -87,7 +160,7 @@ namespace Microsoft.Azure.EventHubs.Tests
 
         private static string ReadEnvironmentVariable(string variableName)
         {
-            var environmentVar = Environment.GetEnvironmentVariable(variableName);
+            var environmentVar = ReadOptionalEnvironmentVariable(variableName);
 
             if (string.IsNullOrWhiteSpace(environmentVar))
             {
@@ -95,6 +168,52 @@ namespace Microsoft.Azure.EventHubs.Tests
             }
 
             return environmentVar;
+        }
+
+        private static string ReadOptionalEnvironmentVariable(string variableName) => Environment.GetEnvironmentVariable(variableName);
+
+        private static EventHubScope.AzureResourceProperties CreateNamespace()
+        {
+            var environmentConnectionString = ReadOptionalEnvironmentVariable(TestConstants.EventHubsNamespaceConnectionStringEnvironmentVariable);
+
+            if (!string.IsNullOrEmpty(environmentConnectionString))
+            {
+                var parsed = new EventHubsConnectionStringBuilder(environmentConnectionString);
+
+                return new EventHubScope.AzureResourceProperties
+                (
+                    parsed.Endpoint.Host.Substring(0, parsed.Endpoint.Host.IndexOf('.')),
+                    environmentConnectionString.Replace($";EntityPath={ parsed.EntityPath }", string.Empty),
+                    shouldRemoveAtCompletion: false
+                );
+            }
+
+            return Task
+                .Run(async () => await EventHubScope.CreateNamespaceAsync().ConfigureAwait(false))
+                .ConfigureAwait(false)
+                .GetAwaiter()
+                .GetResult();
+        }
+
+        private static EventHubScope.AzureResourceProperties CreateStorageAccount()
+        {
+            var environmentConnectionString = ReadOptionalEnvironmentVariable(TestConstants.StorageConnectionStringEnvironmentVariable);
+
+            if (!string.IsNullOrEmpty(environmentConnectionString))
+            {
+                return new EventHubScope.AzureResourceProperties
+                (
+                    TestConstants.StorageConnectionStringEnvironmentVariable,
+                    environmentConnectionString,
+                    shouldRemoveAtCompletion: false
+                );
+            }
+
+            return Task
+                .Run(async () => await EventHubScope.CreateStorageAsync().ConfigureAwait(false))
+                .ConfigureAwait(false)
+                .GetAwaiter()
+                .GetResult();
         }
     }
 }

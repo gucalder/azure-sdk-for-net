@@ -22,207 +22,53 @@ namespace Microsoft.Azure.Management.Billing
     public static partial class TransactionsOperationsExtensions
     {
             /// <summary>
-            /// Lists the transactions by billing account name for given start and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
+            /// Lists the transactions for an invoice. Transactions include purchases,
+            /// refunds and Azure usage charges.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
             /// </param>
-            /// <param name='startDate'>
-            /// Start date
+            /// <param name='invoiceName'>
+            /// The ID that uniquely identifies an invoice.
             /// </param>
-            /// <param name='endDate'>
-            /// End date
-            /// </param>
-            /// <param name='filter'>
-            /// May be used to filter by transaction kind. The filter supports 'eq', 'lt',
-            /// 'gt', 'le', 'ge', and 'and'. It does not currently support 'ne', 'or', or
-            /// 'not'. Tag filter is a key value pair string where key and value is
-            /// separated by a colon (:).
-            /// </param>
-            public static IPage<TransactionsSummary> ListByBillingAccountName(this ITransactionsOperations operations, string billingAccountName, string startDate, string endDate, string filter = default(string))
+            public static IPage<Transaction> ListByInvoice(this ITransactionsOperations operations, string billingAccountName, string invoiceName)
             {
-                return operations.ListByBillingAccountNameAsync(billingAccountName, startDate, endDate, filter).GetAwaiter().GetResult();
+                return operations.ListByInvoiceAsync(billingAccountName, invoiceName).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Lists the transactions by billing account name for given start and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
+            /// Lists the transactions for an invoice. Transactions include purchases,
+            /// refunds and Azure usage charges.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='billingAccountName'>
-            /// billing Account Id.
+            /// The ID that uniquely identifies a billing account.
             /// </param>
-            /// <param name='startDate'>
-            /// Start date
-            /// </param>
-            /// <param name='endDate'>
-            /// End date
-            /// </param>
-            /// <param name='filter'>
-            /// May be used to filter by transaction kind. The filter supports 'eq', 'lt',
-            /// 'gt', 'le', 'ge', and 'and'. It does not currently support 'ne', 'or', or
-            /// 'not'. Tag filter is a key value pair string where key and value is
-            /// separated by a colon (:).
+            /// <param name='invoiceName'>
+            /// The ID that uniquely identifies an invoice.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IPage<TransactionsSummary>> ListByBillingAccountNameAsync(this ITransactionsOperations operations, string billingAccountName, string startDate, string endDate, string filter = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IPage<Transaction>> ListByInvoiceAsync(this ITransactionsOperations operations, string billingAccountName, string invoiceName, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ListByBillingAccountNameWithHttpMessagesAsync(billingAccountName, startDate, endDate, filter, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ListByInvoiceWithHttpMessagesAsync(billingAccountName, invoiceName, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
             }
 
             /// <summary>
-            /// Lists the transactions by billing profile name for given start date and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='billingProfileName'>
-            /// Billing Profile Id.
-            /// </param>
-            /// <param name='startDate'>
-            /// Start date
-            /// </param>
-            /// <param name='endDate'>
-            /// End date
-            /// </param>
-            /// <param name='filter'>
-            /// May be used to filter by transaction kind. The filter supports 'eq', 'lt',
-            /// 'gt', 'le', 'ge', and 'and'. It does not currently support 'ne', 'or', or
-            /// 'not'. Tag filter is a key value pair string where key and value is
-            /// separated by a colon (:).
-            /// </param>
-            public static TransactionsListResult ListByBillingProfileName(this ITransactionsOperations operations, string billingAccountName, string billingProfileName, string startDate, string endDate, string filter = default(string))
-            {
-                return operations.ListByBillingProfileNameAsync(billingAccountName, billingProfileName, startDate, endDate, filter).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Lists the transactions by billing profile name for given start date and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='billingProfileName'>
-            /// Billing Profile Id.
-            /// </param>
-            /// <param name='startDate'>
-            /// Start date
-            /// </param>
-            /// <param name='endDate'>
-            /// End date
-            /// </param>
-            /// <param name='filter'>
-            /// May be used to filter by transaction kind. The filter supports 'eq', 'lt',
-            /// 'gt', 'le', 'ge', and 'and'. It does not currently support 'ne', 'or', or
-            /// 'not'. Tag filter is a key value pair string where key and value is
-            /// separated by a colon (:).
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<TransactionsListResult> ListByBillingProfileNameAsync(this ITransactionsOperations operations, string billingAccountName, string billingProfileName, string startDate, string endDate, string filter = default(string), CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.ListByBillingProfileNameWithHttpMessagesAsync(billingAccountName, billingProfileName, startDate, endDate, filter, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// Lists the transactions by invoice section name for given start date and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
-            /// </param>
-            /// <param name='startDate'>
-            /// Start date
-            /// </param>
-            /// <param name='endDate'>
-            /// End date
-            /// </param>
-            /// <param name='filter'>
-            /// May be used to filter by transaction kind. The filter supports 'eq', 'lt',
-            /// 'gt', 'le', 'ge', and 'and'. It does not currently support 'ne', 'or', or
-            /// 'not'. Tag filter is a key value pair string where key and value is
-            /// separated by a colon (:).
-            /// </param>
-            public static TransactionsListResult ListByInvoiceSectionName(this ITransactionsOperations operations, string billingAccountName, string invoiceSectionName, string startDate, string endDate, string filter = default(string))
-            {
-                return operations.ListByInvoiceSectionNameAsync(billingAccountName, invoiceSectionName, startDate, endDate, filter).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Lists the transactions by invoice section name for given start date and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='billingAccountName'>
-            /// billing Account Id.
-            /// </param>
-            /// <param name='invoiceSectionName'>
-            /// InvoiceSection Id.
-            /// </param>
-            /// <param name='startDate'>
-            /// Start date
-            /// </param>
-            /// <param name='endDate'>
-            /// End date
-            /// </param>
-            /// <param name='filter'>
-            /// May be used to filter by transaction kind. The filter supports 'eq', 'lt',
-            /// 'gt', 'le', 'ge', and 'and'. It does not currently support 'ne', 'or', or
-            /// 'not'. Tag filter is a key value pair string where key and value is
-            /// separated by a colon (:).
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<TransactionsListResult> ListByInvoiceSectionNameAsync(this ITransactionsOperations operations, string billingAccountName, string invoiceSectionName, string startDate, string endDate, string filter = default(string), CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.ListByInvoiceSectionNameWithHttpMessagesAsync(billingAccountName, invoiceSectionName, startDate, endDate, filter, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// Lists the transactions by billing account name for given start and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
+            /// Lists the transactions for an invoice. Transactions include purchases,
+            /// refunds and Azure usage charges.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -230,15 +76,15 @@ namespace Microsoft.Azure.Management.Billing
             /// <param name='nextPageLink'>
             /// The NextLink from the previous successful call to List operation.
             /// </param>
-            public static IPage<TransactionsSummary> ListByBillingAccountNameNext(this ITransactionsOperations operations, string nextPageLink)
+            public static IPage<Transaction> ListByInvoiceNext(this ITransactionsOperations operations, string nextPageLink)
             {
-                return operations.ListByBillingAccountNameNextAsync(nextPageLink).GetAwaiter().GetResult();
+                return operations.ListByInvoiceNextAsync(nextPageLink).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Lists the transactions by billing account name for given start and end
-            /// date.
-            /// <see href="https://docs.microsoft.com/en-us/rest/api/consumption/" />
+            /// Lists the transactions for an invoice. Transactions include purchases,
+            /// refunds and Azure usage charges.
+            /// <see href="https://docs.microsoft.com/en-us/rest/api/billing/" />
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -249,9 +95,9 @@ namespace Microsoft.Azure.Management.Billing
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IPage<TransactionsSummary>> ListByBillingAccountNameNextAsync(this ITransactionsOperations operations, string nextPageLink, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IPage<Transaction>> ListByInvoiceNextAsync(this ITransactionsOperations operations, string nextPageLink, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ListByBillingAccountNameNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ListByInvoiceNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

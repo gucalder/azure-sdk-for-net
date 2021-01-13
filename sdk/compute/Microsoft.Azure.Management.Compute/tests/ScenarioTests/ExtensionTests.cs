@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
@@ -23,10 +23,11 @@ namespace Compute.Tests
                 Publisher = "Microsoft.Compute",
                 VirtualMachineExtensionType = "VMAccessAgent",
                 TypeHandlerVersion = "2.0",
-                AutoUpgradeMinorVersion = true,
+                AutoUpgradeMinorVersion = false,
                 ForceUpdateTag = "RerunExtension",
                 Settings = "{}",
-                ProtectedSettings = "{}"
+                ProtectedSettings = "{}",
+                EnableAutomaticUpgrade = false,
             };
             typeof(Resource).GetRuntimeProperty("Name").SetValue(vmExtension, "vmext01");
             typeof(Resource).GetRuntimeProperty("Type").SetValue(vmExtension, "Microsoft.Compute/virtualMachines/extensions");
@@ -53,10 +54,9 @@ namespace Compute.Tests
         [Fact]
         public void TestVMExtensionOperations()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 EnsureClientsInitialized(context);
-                //VMNetworkInterfaceTests.FixRecords();
 
                 ImageReference imageRef = GetPlatformVMImage(useWindowsImage: true);
                 // Create resource group
@@ -85,9 +85,10 @@ namespace Compute.Tests
 
                     // Perform a GetExtensions on the VM
                     var getVMExtsResponse = m_CrpClient.VirtualMachineExtensions.List(rgName, vm.Name);
-                    Assert.Equal(1, getVMExtsResponse.Value.Count);
-                    Assert.Equal("vmext01", getVMExtsResponse.Value[0].Name);
-                    ValidateVMExtension(vmExtension, getVMExtsResponse.Value[0]);
+                    Assert.True(getVMExtsResponse.Value.Count > 0);
+                    var vme = getVMExtsResponse.Value.Where(c => c.Name == "vmext01");
+                    Assert.Single(vme);
+                    ValidateVMExtension(vmExtension, vme.First());
 
                     // Validate Get InstanceView for the extension
                     var getVMExtInstanceViewResponse = m_CrpClient.VirtualMachineExtensions.Get(rgName, vm.Name, vmExtension.Name, "instanceView");
@@ -103,11 +104,11 @@ namespace Compute.Tests
                     // Validate the extension in the VM info
                     var getVMResponse = m_CrpClient.VirtualMachines.Get(rgName, vm.Name);
                     // TODO AutoRest: Recording Passed, but these assertions failed in Playback mode
-                    ValidateVMExtension(vmExtension, getVMResponse.Resources.FirstOrDefault());
+                    ValidateVMExtension(vmExtension, getVMResponse.Resources.FirstOrDefault(c => c.Name == vmExtension.Name));
 
                     // Validate the extension instance view in the VM instance-view
                     var getVMWithInstanceViewResponse = m_CrpClient.VirtualMachines.Get(rgName, vm.Name, InstanceViewTypes.InstanceView);
-                    ValidateVMExtensionInstanceView(getVMWithInstanceViewResponse.InstanceView.Extensions.FirstOrDefault());
+                    ValidateVMExtensionInstanceView(getVMWithInstanceViewResponse.InstanceView.Extensions.FirstOrDefault(c => c.Name == vmExtension.Name));
 
                     // Validate the extension delete API
                     m_CrpClient.VirtualMachineExtensions.Delete(rgName, vm.Name, vmExtension.Name);
@@ -131,6 +132,7 @@ namespace Compute.Tests
             Assert.True(vmExtExpected.Settings.ToString() == vmExtReturned.Settings.ToString());
             Assert.True(vmExtExpected.ForceUpdateTag == vmExtReturned.ForceUpdateTag);
             Assert.True(vmExtExpected.Tags.SequenceEqual(vmExtReturned.Tags));
+            Assert.True(vmExtExpected.EnableAutomaticUpgrade == vmExtReturned.EnableAutomaticUpgrade);
         }
 
         private void ValidateVMExtensionInstanceView(VirtualMachineExtensionInstanceView vmExtInstanceView)
@@ -143,3 +145,4 @@ namespace Compute.Tests
         }
     }
 }
+

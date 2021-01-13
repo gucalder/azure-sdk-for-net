@@ -46,6 +46,10 @@ namespace Microsoft.Azure.Management.Storage.Models
         /// region of a resource cannot be changed once it is created, but if
         /// an identical geo region is specified on update, the request will
         /// succeed.</param>
+        /// <param name="extendedLocation">Optional. Set the extended location
+        /// of the resource. If not set, the storage account will be created in
+        /// Azure main region. Otherwise it will be created in the specified
+        /// extended location</param>
         /// <param name="tags">Gets or sets a list of key value pairs that
         /// describe the resource. These tags can be used for viewing and
         /// grouping this resource (across resource groups). A maximum of 15
@@ -58,9 +62,8 @@ namespace Microsoft.Azure.Management.Storage.Models
         /// supported per storage account at this time. To clear the existing
         /// custom domain, use an empty string for the custom domain name
         /// property.</param>
-        /// <param name="encryption">Provides the encryption settings on the
-        /// account. If left unspecified the account encryption settings will
-        /// remain the same. The default setting is unencrypted.</param>
+        /// <param name="encryption">Not applicable. Azure Storage encryption
+        /// is enabled for all storage accounts and cannot be disabled.</param>
         /// <param name="networkRuleSet">Network rule set</param>
         /// <param name="accessTier">Required for storage accounts where kind =
         /// BlobStorage. The access tier used for billing. Possible values
@@ -72,11 +75,24 @@ namespace Microsoft.Azure.Management.Storage.Models
         /// API version 2019-04-01.</param>
         /// <param name="isHnsEnabled">Account HierarchicalNamespace enabled if
         /// sets to true.</param>
-        public StorageAccountCreateParameters(Sku sku, string kind, string location, IDictionary<string, string> tags = default(IDictionary<string, string>), Identity identity = default(Identity), CustomDomain customDomain = default(CustomDomain), Encryption encryption = default(Encryption), NetworkRuleSet networkRuleSet = default(NetworkRuleSet), AccessTier? accessTier = default(AccessTier?), AzureFilesIdentityBasedAuthentication azureFilesIdentityBasedAuthentication = default(AzureFilesIdentityBasedAuthentication), bool? enableHttpsTrafficOnly = default(bool?), bool? isHnsEnabled = default(bool?))
+        /// <param name="largeFileSharesState">Allow large file shares if sets
+        /// to Enabled. It cannot be disabled once it is enabled. Possible
+        /// values include: 'Disabled', 'Enabled'</param>
+        /// <param name="routingPreference">Maintains information about the
+        /// network routing choice opted by the user for data transfer</param>
+        /// <param name="allowBlobPublicAccess">Allow or disallow public access
+        /// to all blobs or containers in the storage account. The default
+        /// interpretation is true for this property.</param>
+        /// <param name="minimumTlsVersion">Set the minimum TLS version to be
+        /// permitted on requests to storage. The default interpretation is TLS
+        /// 1.0 for this property. Possible values include: 'TLS1_0', 'TLS1_1',
+        /// 'TLS1_2'</param>
+        public StorageAccountCreateParameters(Sku sku, string kind, string location, ExtendedLocation extendedLocation = default(ExtendedLocation), IDictionary<string, string> tags = default(IDictionary<string, string>), Identity identity = default(Identity), CustomDomain customDomain = default(CustomDomain), Encryption encryption = default(Encryption), NetworkRuleSet networkRuleSet = default(NetworkRuleSet), AccessTier? accessTier = default(AccessTier?), AzureFilesIdentityBasedAuthentication azureFilesIdentityBasedAuthentication = default(AzureFilesIdentityBasedAuthentication), bool? enableHttpsTrafficOnly = default(bool?), bool? isHnsEnabled = default(bool?), string largeFileSharesState = default(string), RoutingPreference routingPreference = default(RoutingPreference), bool? allowBlobPublicAccess = default(bool?), string minimumTlsVersion = default(string))
         {
             Sku = sku;
             Kind = kind;
             Location = location;
+            ExtendedLocation = extendedLocation;
             Tags = tags;
             Identity = identity;
             CustomDomain = customDomain;
@@ -86,6 +102,10 @@ namespace Microsoft.Azure.Management.Storage.Models
             AzureFilesIdentityBasedAuthentication = azureFilesIdentityBasedAuthentication;
             EnableHttpsTrafficOnly = enableHttpsTrafficOnly;
             IsHnsEnabled = isHnsEnabled;
+            LargeFileSharesState = largeFileSharesState;
+            RoutingPreference = routingPreference;
+            AllowBlobPublicAccess = allowBlobPublicAccess;
+            MinimumTlsVersion = minimumTlsVersion;
             CustomInit();
         }
 
@@ -119,6 +139,15 @@ namespace Microsoft.Azure.Management.Storage.Models
         public string Location { get; set; }
 
         /// <summary>
+        /// Gets or sets optional. Set the extended location of the resource.
+        /// If not set, the storage account will be created in Azure main
+        /// region. Otherwise it will be created in the specified extended
+        /// location
+        /// </summary>
+        [JsonProperty(PropertyName = "extendedLocation")]
+        public ExtendedLocation ExtendedLocation { get; set; }
+
+        /// <summary>
         /// Gets or sets a list of key value pairs that describe the resource.
         /// These tags can be used for viewing and grouping this resource
         /// (across resource groups). A maximum of 15 tags can be provided for
@@ -145,9 +174,8 @@ namespace Microsoft.Azure.Management.Storage.Models
         public CustomDomain CustomDomain { get; set; }
 
         /// <summary>
-        /// Gets or sets provides the encryption settings on the account. If
-        /// left unspecified the account encryption settings will remain the
-        /// same. The default setting is unencrypted.
+        /// Gets or sets not applicable. Azure Storage encryption is enabled
+        /// for all storage accounts and cannot be disabled.
         /// </summary>
         [JsonProperty(PropertyName = "properties.encryption")]
         public Encryption Encryption { get; set; }
@@ -185,6 +213,37 @@ namespace Microsoft.Azure.Management.Storage.Models
         /// </summary>
         [JsonProperty(PropertyName = "properties.isHnsEnabled")]
         public bool? IsHnsEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets allow large file shares if sets to Enabled. It cannot
+        /// be disabled once it is enabled. Possible values include:
+        /// 'Disabled', 'Enabled'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.largeFileSharesState")]
+        public string LargeFileSharesState { get; set; }
+
+        /// <summary>
+        /// Gets or sets maintains information about the network routing choice
+        /// opted by the user for data transfer
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.routingPreference")]
+        public RoutingPreference RoutingPreference { get; set; }
+
+        /// <summary>
+        /// Gets or sets allow or disallow public access to all blobs or
+        /// containers in the storage account. The default interpretation is
+        /// true for this property.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.allowBlobPublicAccess")]
+        public bool? AllowBlobPublicAccess { get; set; }
+
+        /// <summary>
+        /// Gets or sets set the minimum TLS version to be permitted on
+        /// requests to storage. The default interpretation is TLS 1.0 for this
+        /// property. Possible values include: 'TLS1_0', 'TLS1_1', 'TLS1_2'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.minimumTlsVersion")]
+        public string MinimumTlsVersion { get; set; }
 
         /// <summary>
         /// Validate the object.

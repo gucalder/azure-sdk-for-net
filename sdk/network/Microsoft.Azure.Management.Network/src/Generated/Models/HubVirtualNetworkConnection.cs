@@ -37,27 +37,31 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="id">Resource ID.</param>
         /// <param name="remoteVirtualNetwork">Reference to the remote virtual
         /// network.</param>
-        /// <param name="allowHubToRemoteVnetTransit">VirtualHub to RemoteVnet
-        /// transit to enabled or not.</param>
-        /// <param name="allowRemoteVnetToUseHubVnetGateways">Allow RemoteVnet
-        /// to use Virtual Hub's gateways.</param>
+        /// <param name="allowHubToRemoteVnetTransit">Deprecated: VirtualHub to
+        /// RemoteVnet transit to enabled or not.</param>
+        /// <param name="allowRemoteVnetToUseHubVnetGateways">Deprecated: Allow
+        /// RemoteVnet to use Virtual Hub's gateways.</param>
         /// <param name="enableInternetSecurity">Enable internet
         /// security.</param>
-        /// <param name="provisioningState">The provisioning state of the
-        /// resource. Possible values include: 'Succeeded', 'Updating',
-        /// 'Deleting', 'Failed'</param>
+        /// <param name="routingConfiguration">The Routing Configuration
+        /// indicating the associated and propagated route tables on this
+        /// connection.</param>
+        /// <param name="provisioningState">The provisioning state of the hub
+        /// virtual network connection resource. Possible values include:
+        /// 'Succeeded', 'Updating', 'Deleting', 'Failed'</param>
         /// <param name="name">The name of the resource that is unique within a
         /// resource group. This name can be used to access the
         /// resource.</param>
-        /// <param name="etag">Gets a unique read-only string that changes
-        /// whenever the resource is updated.</param>
-        public HubVirtualNetworkConnection(string id = default(string), SubResource remoteVirtualNetwork = default(SubResource), bool? allowHubToRemoteVnetTransit = default(bool?), bool? allowRemoteVnetToUseHubVnetGateways = default(bool?), bool? enableInternetSecurity = default(bool?), string provisioningState = default(string), string name = default(string), string etag = default(string))
+        /// <param name="etag">A unique read-only string that changes whenever
+        /// the resource is updated.</param>
+        public HubVirtualNetworkConnection(string id = default(string), SubResource remoteVirtualNetwork = default(SubResource), bool? allowHubToRemoteVnetTransit = default(bool?), bool? allowRemoteVnetToUseHubVnetGateways = default(bool?), bool? enableInternetSecurity = default(bool?), RoutingConfiguration routingConfiguration = default(RoutingConfiguration), string provisioningState = default(string), string name = default(string), string etag = default(string))
             : base(id)
         {
             RemoteVirtualNetwork = remoteVirtualNetwork;
             AllowHubToRemoteVnetTransit = allowHubToRemoteVnetTransit;
             AllowRemoteVnetToUseHubVnetGateways = allowRemoteVnetToUseHubVnetGateways;
             EnableInternetSecurity = enableInternetSecurity;
+            RoutingConfiguration = routingConfiguration;
             ProvisioningState = provisioningState;
             Name = name;
             Etag = etag;
@@ -76,13 +80,15 @@ namespace Microsoft.Azure.Management.Network.Models
         public SubResource RemoteVirtualNetwork { get; set; }
 
         /// <summary>
-        /// Gets or sets virtualHub to RemoteVnet transit to enabled or not.
+        /// Gets or sets deprecated: VirtualHub to RemoteVnet transit to
+        /// enabled or not.
         /// </summary>
         [JsonProperty(PropertyName = "properties.allowHubToRemoteVnetTransit")]
         public bool? AllowHubToRemoteVnetTransit { get; set; }
 
         /// <summary>
-        /// Gets or sets allow RemoteVnet to use Virtual Hub's gateways.
+        /// Gets or sets deprecated: Allow RemoteVnet to use Virtual Hub's
+        /// gateways.
         /// </summary>
         [JsonProperty(PropertyName = "properties.allowRemoteVnetToUseHubVnetGateways")]
         public bool? AllowRemoteVnetToUseHubVnetGateways { get; set; }
@@ -94,11 +100,19 @@ namespace Microsoft.Azure.Management.Network.Models
         public bool? EnableInternetSecurity { get; set; }
 
         /// <summary>
-        /// Gets or sets the provisioning state of the resource. Possible
-        /// values include: 'Succeeded', 'Updating', 'Deleting', 'Failed'
+        /// Gets or sets the Routing Configuration indicating the associated
+        /// and propagated route tables on this connection.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.routingConfiguration")]
+        public RoutingConfiguration RoutingConfiguration { get; set; }
+
+        /// <summary>
+        /// Gets the provisioning state of the hub virtual network connection
+        /// resource. Possible values include: 'Succeeded', 'Updating',
+        /// 'Deleting', 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
         /// Gets or sets the name of the resource that is unique within a

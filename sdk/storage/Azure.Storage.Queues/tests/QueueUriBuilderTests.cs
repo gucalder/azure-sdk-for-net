@@ -1,10 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See License.txt in the project root for
-// license information.
+// Licensed under the MIT License.
 
 using System;
+using System.Net;
+using Azure.Core.TestFramework;
 using Azure.Storage.Queues.Tests;
 using Azure.Storage.Sas;
+using Azure.Storage.Test;
 using NUnit.Framework;
 
 namespace Azure.Storage.Queues.Test
@@ -25,7 +27,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -36,7 +38,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("comp=list", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("comp=list", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -50,7 +52,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -61,7 +63,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -75,7 +77,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -86,7 +88,7 @@ namespace Azure.Storage.Queues.Test
             Assert.AreEqual("queue", queueUriBuilder.QueueName);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -100,7 +102,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -111,7 +113,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsTrue(queueUriBuilder.Messages);
             Assert.AreEqual("messageId", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -125,7 +127,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -136,7 +138,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -150,7 +152,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -161,19 +163,19 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
 
-            Assert.AreEqual(new DateTimeOffset(2015, 4, 30, 2, 23, 26, TimeSpan.Zero), queueUriBuilder.Sas.ExpiryTime);
+            Assert.AreEqual(new DateTimeOffset(2015, 4, 30, 2, 23, 26, TimeSpan.Zero), queueUriBuilder.Sas.ExpiresOn);
             Assert.AreEqual("", queueUriBuilder.Sas.Identifier);
-            Assert.AreEqual(IPRange.Parse("168.1.5.60-168.1.5.70"), queueUriBuilder.Sas.IPRange);
+            Assert.AreEqual(SasIPRange.Parse("168.1.5.60-168.1.5.70"), queueUriBuilder.Sas.IPRange);
             Assert.AreEqual("rw", queueUriBuilder.Sas.Permissions);
             Assert.AreEqual(SasProtocol.Https, queueUriBuilder.Sas.Protocol);
             Assert.AreEqual("b", queueUriBuilder.Sas.Resource);
-            Assert.AreEqual("", queueUriBuilder.Sas.ResourceTypes);
-            Assert.AreEqual("", queueUriBuilder.Sas.Services);
+            Assert.IsNull(queueUriBuilder.Sas.ResourceTypes);
+            Assert.IsNull(queueUriBuilder.Sas.Services);
             Assert.AreEqual("Z/RHIX5Xcg0Mq2rqI3OlWTjEg2tYkboXr1P9ZUXDtkk=", queueUriBuilder.Sas.Signature);
-            Assert.AreEqual(new DateTimeOffset(2015, 4, 29, 22, 18, 26, TimeSpan.Zero), queueUriBuilder.Sas.StartTime);
+            Assert.AreEqual(new DateTimeOffset(2015, 4, 29, 22, 18, 26, TimeSpan.Zero), queueUriBuilder.Sas.StartsOn);
             Assert.AreEqual("2015-04-05", queueUriBuilder.Sas.Version);
 
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -187,7 +189,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -198,7 +200,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("comp=list", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("comp=list", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -212,7 +214,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -223,7 +225,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -237,7 +239,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -248,7 +250,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsTrue(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -262,7 +264,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -273,7 +275,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsTrue(queueUriBuilder.Messages);
             Assert.AreEqual("messageId", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -287,7 +289,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -298,7 +300,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -312,7 +314,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -323,7 +325,7 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
             Assert.IsNull(queueUriBuilder.Sas);
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
         }
@@ -337,7 +339,7 @@ namespace Azure.Storage.Queues.Test
 
             // Act
             var queueUriBuilder = new QueueUriBuilder(originalUri.Uri);
-            var newUri = queueUriBuilder.ToUri();
+            Uri newUri = queueUriBuilder.ToUri();
 
             // Assert
             Assert.AreEqual("https", queueUriBuilder.Scheme);
@@ -348,21 +350,88 @@ namespace Azure.Storage.Queues.Test
             Assert.IsFalse(queueUriBuilder.Messages);
             Assert.AreEqual("", queueUriBuilder.MessageId);
 
-            Assert.AreEqual(new DateTimeOffset(2015, 4, 30, 2, 23, 26, TimeSpan.Zero), queueUriBuilder.Sas.ExpiryTime);
+            Assert.AreEqual(new DateTimeOffset(2015, 4, 30, 2, 23, 26, TimeSpan.Zero), queueUriBuilder.Sas.ExpiresOn);
             Assert.AreEqual("", queueUriBuilder.Sas.Identifier);
-            Assert.AreEqual(IPRange.Parse("168.1.5.60-168.1.5.70"), queueUriBuilder.Sas.IPRange);
+            Assert.AreEqual(SasIPRange.Parse("168.1.5.60-168.1.5.70"), queueUriBuilder.Sas.IPRange);
             Assert.AreEqual("rw", queueUriBuilder.Sas.Permissions);
             Assert.AreEqual(SasProtocol.Https, queueUriBuilder.Sas.Protocol);
             Assert.AreEqual("b", queueUriBuilder.Sas.Resource);
-            Assert.AreEqual("", queueUriBuilder.Sas.ResourceTypes);
-            Assert.AreEqual("", queueUriBuilder.Sas.Services);
+            Assert.IsNull(queueUriBuilder.Sas.ResourceTypes);
+            Assert.IsNull(queueUriBuilder.Sas.Services);
             Assert.AreEqual("Z/RHIX5Xcg0Mq2rqI3OlWTjEg2tYkboXr1P9ZUXDtkk=", queueUriBuilder.Sas.Signature);
-            Assert.AreEqual(new DateTimeOffset(2015, 4, 29, 22, 18, 26, TimeSpan.Zero), queueUriBuilder.Sas.StartTime);
+            Assert.AreEqual(new DateTimeOffset(2015, 4, 29, 22, 18, 26, TimeSpan.Zero), queueUriBuilder.Sas.StartsOn);
             Assert.AreEqual("2015-04-05", queueUriBuilder.Sas.Version);
 
-            Assert.AreEqual("", queueUriBuilder.UnparsedParams);
+            Assert.AreEqual("", queueUriBuilder.Query);
 
             Assert.AreEqual(originalUri, newUri);
+        }
+
+        [Test]
+        public void QueueUriBuilder_RegularUrl_CNAME()
+        {
+            var queueUriBUilder = new QueueUriBuilder(new Uri("http://www.contoso.com"));
+            Assert.AreEqual(string.Empty, queueUriBUilder.AccountName);
+        }
+
+        [Test]
+        public void QueueUriBuilder_MalformedSubdomain()
+        {
+            // core and queue swapped
+            var queueUriBuilder1 = new QueueUriBuilder(new Uri("https://account.core.queue.windows.net/queue"));
+
+            // account and queue swapped
+            var queueUriBuilder2 = new QueueUriBuilder(new Uri("https://queue.account.core.windows.net/queue"));
+
+            // wrong service
+            var queueUriBuilder3 = new QueueUriBuilder(new Uri("https://account.blob.core.windows.net/queue"));
+
+            // empty service
+            var queueUriBuilder4 = new QueueUriBuilder(new Uri("https://account./queue"));
+
+            Assert.AreEqual(string.Empty, queueUriBuilder1.AccountName);
+            Assert.AreEqual(string.Empty, queueUriBuilder2.AccountName);
+            Assert.AreEqual(string.Empty, queueUriBuilder3.AccountName);
+            Assert.AreEqual(string.Empty, queueUriBuilder4.AccountName);
+        }
+
+        [Test]
+        [TestCase("2020-10-27", "2020-10-28")]
+        [TestCase("2020-10-27T12:10Z", "2020-10-28T13:20Z")]
+        [TestCase("2020-10-27T12:10:11Z", "2020-10-28T13:20:14Z")]
+        [TestCase("2020-10-27T12:10:11.1234567Z", "2020-10-28T13:20:14.7654321Z")]
+        public void QueueBuilder_SasStartExpiryTimeFormats(string startTime, string expiryTime)
+        {
+            // Arrange
+            Uri initialUri = new Uri($"https://account.queue.core.windows.net/queue?sv=2020-04-08&st={WebUtility.UrlEncode(startTime)}&se={WebUtility.UrlEncode(expiryTime)}&sr=b&sp=racwd&sig=jQetX8odiJoZ7Yo0X8vWgh%2FMqRv9WE3GU%2Fr%2BLNMK3GU%3D");
+            QueueUriBuilder queueUriBuilder = new QueueUriBuilder(initialUri);
+
+            // Act
+            Uri resultUri = queueUriBuilder.ToUri();
+
+            // Assert
+            Assert.AreEqual(initialUri, resultUri);
+            Assert.IsTrue(resultUri.PathAndQuery.Contains($"st={WebUtility.UrlEncode(startTime)}"));
+            Assert.IsTrue(resultUri.PathAndQuery.Contains($"se={WebUtility.UrlEncode(expiryTime)}"));
+        }
+
+        [Test]
+        public void QueueUriBuilder_SasInvalidStartExpiryTimeFormat()
+        {
+            // Arrange
+            string startTime = "2020-10-27T12Z";
+            string expiryTime = "2020-10-28T13Z";
+            Uri initialUri = new Uri($"https://account.queue.core.windows.net/queue?sv=2020-04-08&st={WebUtility.UrlEncode(startTime)}&se={WebUtility.UrlEncode(expiryTime)}&sr=b&sp=racwd&sig=jQetX8odiJoZ7Yo0X8vWgh%2FMqRv9WE3GU%2Fr%2BLNMK3GU%3D");
+
+            // Act
+            try
+            {
+                new QueueUriBuilder(initialUri);
+            }
+            catch (FormatException e)
+            {
+                Assert.IsTrue(e.Message.Contains("was not recognized as a valid DateTime."));
+            }
         }
     }
 }

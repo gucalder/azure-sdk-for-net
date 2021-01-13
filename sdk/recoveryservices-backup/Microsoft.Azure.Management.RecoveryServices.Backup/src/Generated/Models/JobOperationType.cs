@@ -24,5 +24,8 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
         public const string Restore = "Restore";
         public const string DisableBackup = "DisableBackup";
         public const string DeleteBackupData = "DeleteBackupData";
+        public const string CrossRegionRestore = "CrossRegionRestore";
+        public const string Undelete = "Undelete";
+        public const string UpdateCustomerManagedKey = "UpdateCustomerManagedKey";
     }
 }

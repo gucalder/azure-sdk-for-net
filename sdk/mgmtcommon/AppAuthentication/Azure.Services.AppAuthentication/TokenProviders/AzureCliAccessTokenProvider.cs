@@ -30,7 +30,7 @@ namespace Microsoft.Azure.Services.AppAuthentication
 
         // The default install paths are used to find Azure CLI. This is for security, so that any path in the calling program's Path environment is not used to execute Azure CLI.
         private readonly string _azureCliDefaultPathWindows =
-            $"{EnvironmentHelper.GetEnvironmentVariable("ProgramFiles(x86)")}\\Microsoft SDKs\\Azure\\CLI2\\wbin; {EnvironmentHelper.GetEnvironmentVariable("ProgramFiles")}\\Microsoft SDKs\\Azure\\CLI2\\wbin"
+            $"{EnvironmentHelper.GetEnvironmentVariable("ProgramFiles(x86)")}\\Microsoft SDKs\\Azure\\CLI2\\wbin;{EnvironmentHelper.GetEnvironmentVariable("ProgramFiles")}\\Microsoft SDKs\\Azure\\CLI2\\wbin"
         ;
 
         // Default path for non-Windows. 
@@ -42,21 +42,28 @@ namespace Microsoft.Azure.Services.AppAuthentication
             PrincipalUsed = new Principal { Type = "User" };
         }
 
+#if net452 || net461
+        // detect when running with Mono on Unix
+        // https://www.mono-project.com/docs/faq/technical/#how-to-detect-the-execution-platform
+        private bool IsUnixPlatform()
+        {
+            int p = (int)Environment.OSVersion.Platform;
+            return p == 4 || p == 6 || p == 128;
+        }
+#endif
+
         private ProcessStartInfo GetProcessStartInfo(string resource)
         {
+
             ProcessStartInfo startInfo;
+            string processPath;
+            string currentPath = EnvironmentHelper.GetEnvironmentVariable("PATH");
 
-#if FullNetFx
-                 startInfo = new ProcessStartInfo
-                    {
-                        FileName = Path.Combine(Environment.SystemDirectory, Cmd),
-                        Arguments = $"/c {GetTokenCommand} {ResourceArgumentName} {resource}"
-                    };
-
-            // Default install location for Az CLI is included. If developer has installed to non-default location, the path can be specified using AzureCliPath variable.    
-            startInfo.EnvironmentVariables["PATH"] = $"{EnvironmentHelper.GetEnvironmentVariable(AzureCliPath)};{_azureCliDefaultPathWindows}";
+#if net452 || net461
+            if (!IsUnixPlatform())
 #else
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
             {
                 startInfo = new ProcessStartInfo
                 {
@@ -64,24 +71,31 @@ namespace Microsoft.Azure.Services.AppAuthentication
                     Arguments = $"/c {GetTokenCommand} {ResourceArgumentName} {resource}"
                 };
 
-                startInfo.Environment["PATH"] = $"{EnvironmentHelper.GetEnvironmentVariable(AzureCliPath)};{_azureCliDefaultPathWindows}";
+                processPath = $"{EnvironmentHelper.GetEnvironmentVariable(AzureCliPath)};{_azureCliDefaultPathWindows};{currentPath}";
             }
             else
             {
                 startInfo = new ProcessStartInfo
                 {
                     FileName = Bash,
-                    Arguments = $"{GetTokenCommand} {ResourceArgumentName} {resource}"
+                    Arguments = $"-c \"{GetTokenCommand} {ResourceArgumentName} {resource}\""
                 };
 
-                startInfo.Environment["PATH"] = $"{EnvironmentHelper.GetEnvironmentVariable(AzureCliPath)}:{AzureCliDefaultPath}";
+                processPath = $"{EnvironmentHelper.GetEnvironmentVariable(AzureCliPath)}:{AzureCliDefaultPath}:{currentPath}";
             }
+
+            // Default install location for Az CLI is included. If developer has installed to non-default location, the path can be specified using AzureCliPath variable.
+#if FullNetFx
+            startInfo.EnvironmentVariables["PATH"] = processPath;
+#else
+            startInfo.Environment["PATH"] = processPath;
 #endif
             return startInfo;
         }
 
+
         public override async Task<AppAuthenticationResult> GetAuthResultAsync(string resource, string authority,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -89,7 +103,7 @@ namespace Microsoft.Azure.Services.AppAuthentication
                 ValidationHelper.ValidateResource(resource);
 
                 // Execute Azure CLI to get token
-                string response = await _processManager.ExecuteAsync(new Process { StartInfo = GetProcessStartInfo(resource)}, cancellationToken).ConfigureAwait(false);
+                string response = await _processManager.ExecuteAsync(new Process { StartInfo = GetProcessStartInfo(resource) }, cancellationToken).ConfigureAwait(false);
 
                 // Parse the response
                 TokenResponse tokenResponse = TokenResponse.Parse(response);

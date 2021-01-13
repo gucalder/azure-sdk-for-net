@@ -47,24 +47,27 @@ namespace Microsoft.Azure.Management.Network.Models
         /// will use gateways of remote virtual network for transit. Only one
         /// peering can have this flag set to true. This flag cannot be set if
         /// virtual network already has a gateway.</param>
-        /// <param name="remoteVirtualNetwork">The reference of the remote
+        /// <param name="remoteVirtualNetwork">The reference to the remote
         /// virtual network. The remote virtual network can be in the same or
         /// different region (preview). See here to register for the preview
         /// and learn more
         /// (https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-create-peering).</param>
-        /// <param name="remoteAddressSpace">The reference of the remote
+        /// <param name="remoteAddressSpace">The reference to the remote
         /// virtual network address space.</param>
+        /// <param name="remoteBgpCommunities">The reference to the remote
+        /// virtual network's Bgp Communities.</param>
         /// <param name="peeringState">The status of the virtual network
         /// peering. Possible values include: 'Initiated', 'Connected',
         /// 'Disconnected'</param>
         /// <param name="provisioningState">The provisioning state of the
-        /// resource.</param>
+        /// virtual network peering resource. Possible values include:
+        /// 'Succeeded', 'Updating', 'Deleting', 'Failed'</param>
         /// <param name="name">The name of the resource that is unique within a
         /// resource group. This name can be used to access the
         /// resource.</param>
         /// <param name="etag">A unique read-only string that changes whenever
         /// the resource is updated.</param>
-        public VirtualNetworkPeering(string id = default(string), bool? allowVirtualNetworkAccess = default(bool?), bool? allowForwardedTraffic = default(bool?), bool? allowGatewayTransit = default(bool?), bool? useRemoteGateways = default(bool?), SubResource remoteVirtualNetwork = default(SubResource), AddressSpace remoteAddressSpace = default(AddressSpace), string peeringState = default(string), string provisioningState = default(string), string name = default(string), string etag = default(string))
+        public VirtualNetworkPeering(string id = default(string), bool? allowVirtualNetworkAccess = default(bool?), bool? allowForwardedTraffic = default(bool?), bool? allowGatewayTransit = default(bool?), bool? useRemoteGateways = default(bool?), SubResource remoteVirtualNetwork = default(SubResource), AddressSpace remoteAddressSpace = default(AddressSpace), VirtualNetworkBgpCommunities remoteBgpCommunities = default(VirtualNetworkBgpCommunities), string peeringState = default(string), string provisioningState = default(string), string name = default(string), string etag = default(string))
             : base(id)
         {
             AllowVirtualNetworkAccess = allowVirtualNetworkAccess;
@@ -73,6 +76,7 @@ namespace Microsoft.Azure.Management.Network.Models
             UseRemoteGateways = useRemoteGateways;
             RemoteVirtualNetwork = remoteVirtualNetwork;
             RemoteAddressSpace = remoteAddressSpace;
+            RemoteBgpCommunities = remoteBgpCommunities;
             PeeringState = peeringState;
             ProvisioningState = provisioningState;
             Name = name;
@@ -119,7 +123,7 @@ namespace Microsoft.Azure.Management.Network.Models
         public bool? UseRemoteGateways { get; set; }
 
         /// <summary>
-        /// Gets or sets the reference of the remote virtual network. The
+        /// Gets or sets the reference to the remote virtual network. The
         /// remote virtual network can be in the same or different region
         /// (preview). See here to register for the preview and learn more
         /// (https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-create-peering).
@@ -128,11 +132,18 @@ namespace Microsoft.Azure.Management.Network.Models
         public SubResource RemoteVirtualNetwork { get; set; }
 
         /// <summary>
-        /// Gets or sets the reference of the remote virtual network address
+        /// Gets or sets the reference to the remote virtual network address
         /// space.
         /// </summary>
         [JsonProperty(PropertyName = "properties.remoteAddressSpace")]
         public AddressSpace RemoteAddressSpace { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reference to the remote virtual network's Bgp
+        /// Communities.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.remoteBgpCommunities")]
+        public VirtualNetworkBgpCommunities RemoteBgpCommunities { get; set; }
 
         /// <summary>
         /// Gets or sets the status of the virtual network peering. Possible
@@ -142,10 +153,12 @@ namespace Microsoft.Azure.Management.Network.Models
         public string PeeringState { get; set; }
 
         /// <summary>
-        /// Gets or sets the provisioning state of the resource.
+        /// Gets the provisioning state of the virtual network peering
+        /// resource. Possible values include: 'Succeeded', 'Updating',
+        /// 'Deleting', 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
         /// Gets or sets the name of the resource that is unique within a
@@ -155,11 +168,24 @@ namespace Microsoft.Azure.Management.Network.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets a unique read-only string that changes whenever the
-        /// resource is updated.
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
 
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            if (RemoteBgpCommunities != null)
+            {
+                RemoteBgpCommunities.Validate();
+            }
+        }
     }
 }

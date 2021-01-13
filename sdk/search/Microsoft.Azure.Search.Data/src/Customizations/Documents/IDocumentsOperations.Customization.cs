@@ -17,7 +17,7 @@ namespace Microsoft.Azure.Search
     public interface IDocumentsOperations
     {
         /// <summary>
-        /// Queries the number of documents in the Azure Search index.
+        /// Queries the number of documents in the search index.
         /// </summary>
         /// <param name='searchRequestOptions'>
         /// Additional parameters for the operation
@@ -34,7 +34,7 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Queries the number of documents in the Azure Search index.
+        /// Queries the number of documents in the search index.
         /// </summary>
         /// <param name='searchRequestOptions'>
         /// Additional parameters for the operation
@@ -54,8 +54,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
         
         /// <summary>
-        /// Retrieves the next page of search results from the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Search-Documents"/>
+        /// Retrieves the next page of search results from the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/search-documents">Search Documents</see>
         /// </summary>
         /// <param name="continuationToken">
         /// Encapsulates the state required to fetch the next page of search results from the index.
@@ -81,16 +81,16 @@ namespace Microsoft.Azure.Search
         /// for more information.
         /// </para>
         /// <para>
-        /// If Azure Search can't include all results in a single response, the response returned will include a
+        /// If Azure Cognitive Search can't include all results in a single response, the response returned will include a
         /// continuation token that can be passed to ContinueSearch to retrieve more results.
-        /// See <c cref="DocumentSearchResult&lt;T&gt;.ContinuationToken">DocumentSearchResult.ContinuationToken</c>
+        /// See <see cref="DocumentSearchResult&lt;T&gt;.ContinuationToken" />
         /// for more information.
         /// </para>
         /// <para>
         /// Note that this method is not meant to help you implement paging of search results. You can implement
-        /// paging using the <c cref="SearchParameters.Top">Top</c> and <c cref="SearchParameters.Skip">Skip</c>
+        /// paging using the <see cref="SearchParameters.Top" /> and <see cref="SearchParameters.Skip" />
         /// parameters to the
-        /// <c cref="IDocumentsOperations.SearchWithHttpMessagesAsync&lt;T&gt;(string, SearchParameters, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)">Search</c>
+        /// <see cref="IDocumentsOperations.SearchWithHttpMessagesAsync&lt;T&gt;(string, SearchParameters, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)" />
         /// method.
         /// </para>
         /// </remarks>
@@ -101,8 +101,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Retrieves the next page of search results from the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Search-Documents"/>
+        /// Retrieves the next page of search results from the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/search-documents">Search Documents</see>
         /// </summary>
         /// <typeparam name="T">
         /// The CLR type that maps to the index schema. Instances of this type can be retrieved as documents
@@ -126,21 +126,21 @@ namespace Microsoft.Azure.Search
         /// <remarks>
         /// <para>
         /// The generic overloads of the ContinueSearch, ContinueSearchAsync, and ContinueSearchWithHttpMessagesAsync
-        /// methods support mapping of Azure Search field types to .NET types via the type parameter T. See 
+        /// methods support mapping of search field types to .NET types via the type parameter T. See 
         /// <see cref="IDocumentsOperations.GetWithHttpMessagesAsync&lt;T&gt;(string, System.Collections.Generic.IEnumerable&lt;string&gt;, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)"/>
         /// for more details on the type mapping.
         /// </para>
         /// <para>
-        /// If Azure Search can't include all results in a single response, the response returned will include a
+        /// If Azure Cognitive Search can't include all results in a single response, the response returned will include a
         /// continuation token that can be passed to ContinueSearch to retrieve more results.
-        /// See <c cref="DocumentSearchResult&lt;T&gt;.ContinuationToken">DocumentSearchResult.ContinuationToken</c>
+        /// See <see cref="DocumentSearchResult&lt;T&gt;.ContinuationToken" />
         /// for more information.
         /// </para>
         /// <para>
         /// Note that this method is not meant to help you implement paging of search results. You can implement
-        /// paging using the <c cref="SearchParameters.Top">Top</c> and <c cref="SearchParameters.Skip">Skip</c>
+        /// paging using the <see cref="SearchParameters.Top" /> and <see cref="SearchParameters.Skip" />
         /// parameters to the
-        /// <c cref="IDocumentsOperations.SearchWithHttpMessagesAsync&lt;T&gt;(string, SearchParameters, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)">Search</c>
+        /// <see cref="IDocumentsOperations.SearchWithHttpMessagesAsync&lt;T&gt;(string, SearchParameters, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)" />
         /// method.
         /// </para>
         /// </remarks>
@@ -151,12 +151,12 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Retrieves a document from the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Lookup-Document"/>
+        /// Retrieves a document from the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/lookup-document">Lookup Document</see>
         /// </summary>
         /// <param name="key">
         /// The key of the document to retrieve; See
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Naming-rules"/> for the rules for constructing valid
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/naming-rules">Naming rules</see> for the rules for constructing valid
         /// document keys.
         /// </param>
         /// <param name="selectedFields">
@@ -220,7 +220,7 @@ namespace Microsoft.Azure.Search
         /// </item>
         /// <item>
         /// <description>
-        /// Complex fields will be recursively deserialized into instances of type <c cref="Document">Document</c>. Similarly, complex
+        /// Complex fields will be recursively deserialized into instances of type <see cref="Document" />. Similarly, complex
         /// collection fields will be deserialized into arrays of such instances.
         /// </description>
         /// </item>
@@ -234,8 +234,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Retrieves a document from the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Lookup-Document"/>
+        /// Retrieves a document from the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/lookup-document">Lookup Document</see>
         /// </summary>
         /// <typeparam name="T">
         /// The CLR type that maps to the index schema. Instances of this type can be retrieved as documents
@@ -243,7 +243,7 @@ namespace Microsoft.Azure.Search
         /// </typeparam>
         /// <param name="key">
         /// The key of the document to retrieve; See
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Naming-rules"/> for the rules for constructing valid
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/naming-rules">Naming rules</see> for the rules for constructing valid
         /// document keys.
         /// </param>
         /// <param name="selectedFields">
@@ -264,12 +264,12 @@ namespace Microsoft.Azure.Search
         /// </returns>
         /// <remarks>
         /// The generic overloads of the Get, GetAsync, and GetWithHttpMessagesAsync methods support mapping of Azure
-        /// Search field types to .NET types via the type parameter T. Note that all Azure Search field types except
+        /// Search field types to .NET types via the type parameter T. Note that all search field types except
         /// collections are nullable, so we recommend using nullable types for the properties of T.
         /// The type mapping is as follows:
         /// <list type="table">
         /// <listheader>
-        /// <term>Azure Search field type</term>
+        /// <term>Search field type</term>
         /// <description>.NET type</description>
         /// </listheader>
         /// <item>
@@ -317,13 +317,13 @@ namespace Microsoft.Azure.Search
         /// </item>
         /// <item>
         /// <term>Edm.GeographyPoint</term>
-        /// <description><c cref="Microsoft.Spatial.GeographyPoint">Microsoft.Spatial.GeographyPoint</c></description>
+        /// <description><see cref="Microsoft.Spatial.GeographyPoint" /></description>
         /// </item>
         /// <item>
         /// <term>Edm.ComplexType</term>
         /// <description>
         /// Any type that can be deserialized from the JSON objects in the complex field. This can be a value type or a reference type,
-        /// but we recommend using a reference type since complex fields are nullable in Azure Search.
+        /// but we recommend using a reference type since complex fields are nullable in Azure Cognitive Search.
         /// </description>
         /// </item>
         /// <item>
@@ -375,8 +375,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Sends a batch of upload, merge, and/or delete actions to the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/addupdate-or-delete-documents"/>
+        /// Sends a batch of upload, merge, and/or delete actions to the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/addupdate-or-delete-documents">Add, Update or Delete Documents</see>
         /// </summary>
         /// <param name="batch">
         /// The batch of index actions.
@@ -394,7 +394,7 @@ namespace Microsoft.Azure.Search
         /// Thrown when some of the indexing actions failed, but other actions succeeded and modified the state of
         /// the index. This can happen when the Search Service is under heavy indexing load. It is important to
         /// explicitly catch this exception and check its
-        /// <c cref="IndexBatchException.IndexingResults">IndexResult</c> property. This property reports the status
+        /// <see cref="IndexBatchException.IndexingResults" /> property. This property reports the status
         /// of each indexing action in the batch, making it possible to determine the state of the index after a
         /// partial failure.
         /// </exception>
@@ -414,8 +414,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Sends a batch of upload, merge, and/or delete actions to the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/addupdate-or-delete-documents"/>
+        /// Sends a batch of upload, merge, and/or delete actions to the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/addupdate-or-delete-documents">Add, Update or Delete Documents</see>
         /// </summary>
         /// <typeparam name="T">
         /// The CLR type that maps to the index schema. Instances of this type can be stored as documents in the index.
@@ -436,7 +436,7 @@ namespace Microsoft.Azure.Search
         /// Thrown when some of the indexing actions failed, but other actions succeeded and modified the state of
         /// the index. This can happen when the Search Service is under heavy indexing load. It is important to
         /// explicitly catch this exception and check its
-        /// <c cref="IndexBatchException.IndexingResults">IndexResult</c> property. This property reports the status
+        /// <see cref="IndexBatchException.IndexingResults" /> property. This property reports the status
         /// of each indexing action in the batch, making it possible to determine the state of the index after a
         /// partial failure.
         /// </exception>
@@ -445,7 +445,7 @@ namespace Microsoft.Azure.Search
         /// </returns>
         /// <remarks>
         /// The generic overloads of the Index, IndexAsync, and IndexWithHttpMessagesAsync methods support mapping of
-        /// Azure Search field types to .NET types via the type parameter T. See 
+        /// search field types to .NET types via the type parameter T. See 
         /// <see cref="IDocumentsOperations.GetWithHttpMessagesAsync&lt;T&gt;(string, System.Collections.Generic.IEnumerable&lt;string&gt;, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)"/>
         /// for more details on the type mapping.
         /// </remarks>
@@ -456,12 +456,12 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Searches for documents in the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Search-Documents"/>
+        /// Searches for documents in the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/search-documents">Search Documents</see>
         /// </summary>
         /// <param name="searchText">
         /// A full-text search query expression; Use null or "*" to match all documents. See
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Simple-query-syntax-in-Azure-Search"/> for more information about search
+        /// <see href="https://docs.microsoft.com/azure/search/query-simple-syntax">Simple query syntax in Azure Cognitive Search</see> for more information about search
         /// query syntax.
         /// </param>
         /// <param name="searchParameters">
@@ -487,9 +487,9 @@ namespace Microsoft.Azure.Search
         /// for more information.
         /// </para>
         /// <para>
-        /// If Azure Search can't include all results in a single response, the response returned will include a
+        /// If Azure Cognitive Search can't include all results in a single response, the response returned will include a
         /// continuation token that can be passed to ContinueSearch to retrieve more results.
-        /// See <c cref="DocumentSearchResult&lt;T&gt;.ContinuationToken">DocumentSearchResult.ContinuationToken</c>
+        /// See <see cref="DocumentSearchResult&lt;T&gt;.ContinuationToken" />
         /// for more information.
         /// </para>
         /// </remarks>
@@ -501,8 +501,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Searches for documents in the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Search-Documents"/>
+        /// Searches for documents in the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/search-documents">Search Documents</see>
         /// </summary>
         /// <typeparam name="T">
         /// The CLR type that maps to the index schema. Instances of this type can be retrieved as documents
@@ -510,7 +510,7 @@ namespace Microsoft.Azure.Search
         /// </typeparam>
         /// <param name="searchText">
         /// A full-text search query expression; Use null or "*" to match all documents. See
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Simple-query-syntax-in-Azure-Search"/> for more information about search
+        /// <see href="https://docs.microsoft.com/azure/search/query-simple-syntax">Simple query syntax in Azure Cognitive Search</see> for more information about search
         /// query syntax.
         /// </param>
         /// <param name="searchParameters">
@@ -531,14 +531,14 @@ namespace Microsoft.Azure.Search
         /// <remarks>
         /// <para>
         /// The generic overloads of the Search, SearchAsync, and SearchWithHttpMessagesAsync methods support mapping
-        /// of Azure Search field types to .NET types via the type parameter T. See 
+        /// of search field types to .NET types via the type parameter T. See 
         /// <see cref="IDocumentsOperations.GetWithHttpMessagesAsync&lt;T&gt;(string, System.Collections.Generic.IEnumerable&lt;string&gt;, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)"/>
         /// for more details on the type mapping.
         /// </para>
         /// <para>
-        /// If Azure Search can't include all results in a single response, the response returned will include a
+        /// If Azure Cognitive Search can't include all results in a single response, the response returned will include a
         /// continuation token that can be passed to ContinueSearch to retrieve more results.
-        /// See <c cref="DocumentSearchResult&lt;T&gt;.ContinuationToken">DocumentSearchResult.ContinuationToken</c>
+        /// See <see cref="DocumentSearchResult&lt;T&gt;.ContinuationToken" />
         /// for more information.
         /// </para>
         /// </remarks>
@@ -550,8 +550,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Suggests query terms based on input text and matching documents in the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Suggestions"/>
+        /// Suggests query terms based on input text and matching documents in the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/suggestions">Suggestions</see>
         /// </summary>
         /// <param name="searchText">
         /// The search text on which to base suggestions.
@@ -589,8 +589,8 @@ namespace Microsoft.Azure.Search
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Suggests query terms based on input text and matching documents in the Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Suggestions"/>
+        /// Suggests query terms based on input text and matching documents in the search index.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/suggestions">Suggestions</see>
         /// </summary>
         /// <typeparam name="T">
         /// The CLR type that maps to the index schema. Instances of this type can be retrieved as documents
@@ -619,7 +619,7 @@ namespace Microsoft.Azure.Search
         /// </returns>
         /// <remarks>
         /// The generic overloads of the Suggest, SuggestAsync, and SuggestWithHttpMessagesAsync methods support
-        /// mapping of Azure Search field types to .NET types via the type parameter T. See 
+        /// mapping of search field types to .NET types via the type parameter T. See 
         /// <see cref="IDocumentsOperations.GetWithHttpMessagesAsync&lt;T&gt;(string, System.Collections.Generic.IEnumerable&lt;string&gt;, SearchRequestOptions, System.Collections.Generic.Dictionary&lt;string, System.Collections.Generic.List&lt;string&gt;&gt;, CancellationToken)"/>
         /// for more details on the type mapping.
         /// </remarks>

@@ -37,7 +37,8 @@ namespace Microsoft.Azure.Management.Media.Models
         /// encoding videos. Possible values include: 'H264SingleBitrateSD',
         /// 'H264SingleBitrate720p', 'H264SingleBitrate1080p',
         /// 'AdaptiveStreaming', 'AACGoodQualityAudio',
-        /// 'ContentAwareEncodingExperimental', 'H264MultipleBitrate1080p',
+        /// 'ContentAwareEncodingExperimental', 'ContentAwareEncoding',
+        /// 'CopyAllBitrateNonInterleaved', 'H264MultipleBitrate1080p',
         /// 'H264MultipleBitrate720p', 'H264MultipleBitrateSD'</param>
         public BuiltInStandardEncoderPreset(EncoderNamedPreset presetName)
         {
@@ -55,7 +56,8 @@ namespace Microsoft.Azure.Management.Media.Models
         /// Possible values include: 'H264SingleBitrateSD',
         /// 'H264SingleBitrate720p', 'H264SingleBitrate1080p',
         /// 'AdaptiveStreaming', 'AACGoodQualityAudio',
-        /// 'ContentAwareEncodingExperimental', 'H264MultipleBitrate1080p',
+        /// 'ContentAwareEncodingExperimental', 'ContentAwareEncoding',
+        /// 'CopyAllBitrateNonInterleaved', 'H264MultipleBitrate1080p',
         /// 'H264MultipleBitrate720p', 'H264MultipleBitrateSD'
         /// </summary>
         [JsonProperty(PropertyName = "presetName")]

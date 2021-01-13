@@ -8,6 +8,7 @@ namespace Microsoft.Azure.ServiceBus.UnitTests.API
     using System.IO;
     using System.Linq;
     using ApprovalTests;
+    using PublicApiGenerator;
     using Xunit;
 
     public class ApiApprovals
@@ -19,12 +20,12 @@ namespace Microsoft.Azure.ServiceBus.UnitTests.API
         ///   If the expected assembly output from generation changes, that file will need to be updated with the new expectation in order for this test
         ///   to pass.
         /// </remarks>
-        ///
+#if !NET5_0 // We don't ship a NET5 specific target of the library and PublicApiGenerator have a problem with API generation when running netcoreapp5.0
         [Fact]
         public void ApproveAzureServiceBus()
         {
             var assembly = typeof(Message).Assembly;
-            var publicApi = Filter(PublicApiGenerator.ApiGenerator.GeneratePublicApi(assembly, whitelistedNamespacePrefixes: new[] { "Microsoft.Azure.ServiceBus." }));
+            var publicApi = Filter(assembly.GeneratePublicApi(new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Microsoft.Azure.ServiceBus." } }));
 
             try
             {
@@ -36,11 +37,12 @@ namespace Microsoft.Azure.ServiceBus.UnitTests.API
                 CleanApprovalsTempFiles(ApprovalUtilities.Utilities.PathUtilities.GetDirectoryForCaller());
             }
         }
+#endif
 
         string Filter(string text)
         {
             return string.Join(Environment.NewLine, text.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
-                .Where(l => !l.StartsWith("[assembly: System.Runtime.Versioning.TargetFrameworkAttribute"))
+                .Where(l => !l.StartsWith("[assembly: System.Runtime.Versioning.TargetFramework"))
             );
         }
 

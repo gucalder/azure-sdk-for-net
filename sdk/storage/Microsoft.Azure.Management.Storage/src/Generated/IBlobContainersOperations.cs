@@ -36,9 +36,6 @@ namespace Microsoft.Azure.Management.Storage
         /// group. Storage account names must be between 3 and 24 characters in
         /// length and use numbers and lower-case letters only.
         /// </param>
-        /// <param name='skipToken'>
-        /// Optional. Continuation token for the list operation.
-        /// </param>
         /// <param name='maxpagesize'>
         /// Optional. Specified maximum number of containers that can be
         /// included in the list.
@@ -46,6 +43,10 @@ namespace Microsoft.Azure.Management.Storage
         /// <param name='filter'>
         /// Optional. When specified, only container names starting with the
         /// filter will be listed.
+        /// </param>
+        /// <param name='include'>
+        /// Optional, used to include the properties for soft deleted blob
+        /// containers. Possible values include: 'deleted'
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -62,7 +63,7 @@ namespace Microsoft.Azure.Management.Storage
         /// <exception cref="Microsoft.Rest.ValidationException">
         /// Thrown when a required parameter is null
         /// </exception>
-        Task<AzureOperationResponse<IPage<ListContainerItem>>> ListWithHttpMessagesAsync(string resourceGroupName, string accountName, string skipToken = default(string), string maxpagesize = default(string), string filter = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<AzureOperationResponse<IPage<ListContainerItem>>> ListWithHttpMessagesAsync(string resourceGroupName, string accountName, string maxpagesize = default(string), string filter = default(string), string include = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
         /// Creates a new container under the specified account as described by
         /// request body. The container resource includes metadata and
@@ -85,13 +86,8 @@ namespace Microsoft.Azure.Management.Storage
         /// Every dash (-) character must be immediately preceded and followed
         /// by a letter or number.
         /// </param>
-        /// <param name='publicAccess'>
-        /// Specifies whether data in the container may be accessed publicly
-        /// and the level of access. Possible values include: 'Container',
-        /// 'Blob', 'None'
-        /// </param>
-        /// <param name='metadata'>
-        /// A name-value pair to associate with the container as metadata.
+        /// <param name='blobContainer'>
+        /// Properties of the blob container to create.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -108,7 +104,7 @@ namespace Microsoft.Azure.Management.Storage
         /// <exception cref="Microsoft.Rest.ValidationException">
         /// Thrown when a required parameter is null
         /// </exception>
-        Task<AzureOperationResponse<BlobContainer>> CreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, PublicAccess? publicAccess = default(PublicAccess?), IDictionary<string, string> metadata = default(IDictionary<string, string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<AzureOperationResponse<BlobContainer>> CreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, BlobContainer blobContainer, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
         /// Updates container properties as specified in request body.
         /// Properties not mentioned in the request will be unchanged. Update
@@ -130,13 +126,8 @@ namespace Microsoft.Azure.Management.Storage
         /// Every dash (-) character must be immediately preceded and followed
         /// by a letter or number.
         /// </param>
-        /// <param name='publicAccess'>
-        /// Specifies whether data in the container may be accessed publicly
-        /// and the level of access. Possible values include: 'Container',
-        /// 'Blob', 'None'
-        /// </param>
-        /// <param name='metadata'>
-        /// A name-value pair to associate with the container as metadata.
+        /// <param name='blobContainer'>
+        /// Properties to update for the blob container.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -153,7 +144,7 @@ namespace Microsoft.Azure.Management.Storage
         /// <exception cref="Microsoft.Rest.ValidationException">
         /// Thrown when a required parameter is null
         /// </exception>
-        Task<AzureOperationResponse<BlobContainer>> UpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, PublicAccess? publicAccess = default(PublicAccess?), IDictionary<string, string> metadata = default(IDictionary<string, string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<AzureOperationResponse<BlobContainer>> UpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, BlobContainer blobContainer, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
         /// Gets properties of a specified container.
         /// </summary>
@@ -323,15 +314,23 @@ namespace Microsoft.Azure.Management.Storage
         /// Every dash (-) character must be immediately preceded and followed
         /// by a letter or number.
         /// </param>
-        /// <param name='immutabilityPeriodSinceCreationInDays'>
-        /// The immutability period for the blobs in the container since the
-        /// policy creation, in days.
-        /// </param>
         /// <param name='ifMatch'>
         /// The entity state (ETag) version of the immutability policy to
         /// update. A value of "*" can be used to apply the operation only if
         /// the immutability policy already exists. If omitted, this operation
         /// will always be applied.
+        /// </param>
+        /// <param name='immutabilityPeriodSinceCreationInDays'>
+        /// The immutability period for the blobs in the container since the
+        /// policy creation, in days.
+        /// </param>
+        /// <param name='allowProtectedAppendWrites'>
+        /// This property can only be changed for unlocked time-based retention
+        /// policies. When enabled, new blocks can be written to an append blob
+        /// while maintaining immutability protection and compliance. Only new
+        /// blocks can be added and any existing blocks cannot be modified or
+        /// deleted. This property cannot be changed with
+        /// ExtendImmutabilityPolicy API
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -348,7 +347,7 @@ namespace Microsoft.Azure.Management.Storage
         /// <exception cref="Microsoft.Rest.ValidationException">
         /// Thrown when a required parameter is null
         /// </exception>
-        Task<AzureOperationResponse<ImmutabilityPolicy,BlobContainersCreateOrUpdateImmutabilityPolicyHeaders>> CreateOrUpdateImmutabilityPolicyWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, int immutabilityPeriodSinceCreationInDays, string ifMatch = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<AzureOperationResponse<ImmutabilityPolicy,BlobContainersCreateOrUpdateImmutabilityPolicyHeaders>> CreateOrUpdateImmutabilityPolicyWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, string ifMatch = default(string), int? immutabilityPeriodSinceCreationInDays = default(int?), bool? allowProtectedAppendWrites = default(bool?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
         /// Gets the existing immutability policy along with the corresponding
         /// ETag in response headers and body.
@@ -395,8 +394,8 @@ namespace Microsoft.Azure.Management.Storage
         /// Aborts an unlocked immutability policy. The response of delete has
         /// immutabilityPeriodSinceCreationInDays set to 0. ETag in If-Match is
         /// required for this operation. Deleting a locked immutability policy
-        /// is not allowed, only way is to delete the container after deleting
-        /// all blobs inside the container.
+        /// is not allowed, the only way is to delete the container after
+        /// deleting all expired blobs inside the policy locked container.
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group within the user's subscription. The
@@ -510,6 +509,14 @@ namespace Microsoft.Azure.Management.Storage
         /// The immutability period for the blobs in the container since the
         /// policy creation, in days.
         /// </param>
+        /// <param name='allowProtectedAppendWrites'>
+        /// This property can only be changed for unlocked time-based retention
+        /// policies. When enabled, new blocks can be written to an append blob
+        /// while maintaining immutability protection and compliance. Only new
+        /// blocks can be added and any existing blocks cannot be modified or
+        /// deleted. This property cannot be changed with
+        /// ExtendImmutabilityPolicy API
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
@@ -525,7 +532,7 @@ namespace Microsoft.Azure.Management.Storage
         /// <exception cref="Microsoft.Rest.ValidationException">
         /// Thrown when a required parameter is null
         /// </exception>
-        Task<AzureOperationResponse<ImmutabilityPolicy,BlobContainersExtendImmutabilityPolicyHeaders>> ExtendImmutabilityPolicyWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, string ifMatch, int immutabilityPeriodSinceCreationInDays, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<AzureOperationResponse<ImmutabilityPolicy,BlobContainersExtendImmutabilityPolicyHeaders>> ExtendImmutabilityPolicyWithHttpMessagesAsync(string resourceGroupName, string accountName, string containerName, string ifMatch, int? immutabilityPeriodSinceCreationInDays = default(int?), bool? allowProtectedAppendWrites = default(bool?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
         /// The Lease Container operation establishes and manages a lock on a
         /// container for delete operations. The lock duration can be 15 to 60

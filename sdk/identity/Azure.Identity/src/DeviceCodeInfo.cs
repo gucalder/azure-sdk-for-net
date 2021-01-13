@@ -4,7 +4,6 @@
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Azure.Identity
 {
@@ -14,15 +13,19 @@ namespace Azure.Identity
     public struct DeviceCodeInfo
     {
         internal DeviceCodeInfo(DeviceCodeResult deviceCode)
+            : this(deviceCode.UserCode, deviceCode.DeviceCode, new Uri(deviceCode.VerificationUrl), deviceCode.ExpiresOn, deviceCode.Message, deviceCode.ClientId, deviceCode.Scopes)
         {
-            UserCode = deviceCode.UserCode;
-            DeviceCode = deviceCode.DeviceCode;
-            VerificationUrl = deviceCode.VerificationUrl;
-            ExpiresOn = deviceCode.ExpiresOn;
-            Interval = deviceCode.Interval;
-            Message = deviceCode.Message;
-            ClientId = deviceCode.ClientId;
-            Scopes = deviceCode.Scopes;
+        }
+
+        internal DeviceCodeInfo(string userCode, string deviceCode, Uri verificationUri, DateTimeOffset expiresOn, string message, string clientId, IReadOnlyCollection<string> scopes)
+        {
+            UserCode = userCode;
+            DeviceCode = deviceCode;
+            VerificationUri = verificationUri;
+            ExpiresOn = expiresOn;
+            Message = message;
+            ClientId = clientId;
+            Scopes = scopes;
         }
 
         /// <summary>
@@ -35,24 +38,15 @@ namespace Azure.Identity
         /// </summary>
         public string DeviceCode { get; private set; }
 
-#pragma warning disable CA1056 // Uri properties should not be strings
-        
         /// <summary>
         /// Verification URL where the user must navigate to authenticate using the device code and credentials.
         /// </summary>
-        public string VerificationUrl { get; private set; }
-
-#pragma warning restore CA1056 // Uri properties should not be strings
+        public Uri VerificationUri { get; private set; }
 
         /// <summary>
         /// Time when the device code will expire.
         /// </summary>
         public DateTimeOffset ExpiresOn { get; private set; }
-
-        /// <summary>
-        /// Polling interval time to check for completion of authentication flow.
-        /// </summary>
-        public long Interval { get; private set; }
 
         /// <summary>
         /// User friendly text response that can be used for display purpose.

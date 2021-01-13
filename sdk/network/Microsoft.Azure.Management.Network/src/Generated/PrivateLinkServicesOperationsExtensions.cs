@@ -213,6 +213,60 @@ namespace Microsoft.Azure.Management.Network
             }
 
             /// <summary>
+            /// Get the specific private end point connection by specific private link
+            /// service in the resource group.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='serviceName'>
+            /// The name of the private link service.
+            /// </param>
+            /// <param name='peConnectionName'>
+            /// The name of the private end point connection.
+            /// </param>
+            /// <param name='expand'>
+            /// Expands referenced resources.
+            /// </param>
+            public static PrivateEndpointConnection GetPrivateEndpointConnection(this IPrivateLinkServicesOperations operations, string resourceGroupName, string serviceName, string peConnectionName, string expand = default(string))
+            {
+                return operations.GetPrivateEndpointConnectionAsync(resourceGroupName, serviceName, peConnectionName, expand).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Get the specific private end point connection by specific private link
+            /// service in the resource group.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='serviceName'>
+            /// The name of the private link service.
+            /// </param>
+            /// <param name='peConnectionName'>
+            /// The name of the private end point connection.
+            /// </param>
+            /// <param name='expand'>
+            /// Expands referenced resources.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<PrivateEndpointConnection> GetPrivateEndpointConnectionAsync(this IPrivateLinkServicesOperations operations, string resourceGroupName, string serviceName, string peConnectionName, string expand = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetPrivateEndpointConnectionWithHttpMessagesAsync(resourceGroupName, serviceName, peConnectionName, expand, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
             /// Approve or reject private end point connection for a private link service
             /// in a subscription.
             /// </summary>
@@ -312,7 +366,47 @@ namespace Microsoft.Azure.Management.Network
             }
 
             /// <summary>
-            /// Checks the subscription is visible to private link service
+            /// Gets all private end point connections for a specific private link service.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='serviceName'>
+            /// The name of the private link service.
+            /// </param>
+            public static IPage<PrivateEndpointConnection> ListPrivateEndpointConnections(this IPrivateLinkServicesOperations operations, string resourceGroupName, string serviceName)
+            {
+                return operations.ListPrivateEndpointConnectionsAsync(resourceGroupName, serviceName).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Gets all private end point connections for a specific private link service.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='serviceName'>
+            /// The name of the private link service.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IPage<PrivateEndpointConnection>> ListPrivateEndpointConnectionsAsync(this IPrivateLinkServicesOperations operations, string resourceGroupName, string serviceName, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ListPrivateEndpointConnectionsWithHttpMessagesAsync(resourceGroupName, serviceName, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Checks whether the subscription is visible to private link service.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -329,7 +423,7 @@ namespace Microsoft.Azure.Management.Network
             }
 
             /// <summary>
-            /// Checks the subscription is visible to private link service
+            /// Checks whether the subscription is visible to private link service.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -352,7 +446,8 @@ namespace Microsoft.Azure.Management.Network
             }
 
             /// <summary>
-            /// Checks the subscription is visible to private link service
+            /// Checks whether the subscription is visible to private link service in the
+            /// specified resource group.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -372,7 +467,8 @@ namespace Microsoft.Azure.Management.Network
             }
 
             /// <summary>
-            /// Checks the subscription is visible to private link service
+            /// Checks whether the subscription is visible to private link service in the
+            /// specified resource group.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -604,6 +700,94 @@ namespace Microsoft.Azure.Management.Network
             }
 
             /// <summary>
+            /// Checks whether the subscription is visible to private link service.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The location of the domain name.
+            /// </param>
+            /// <param name='parameters'>
+            /// The request body of CheckPrivateLinkService API call.
+            /// </param>
+            public static PrivateLinkServiceVisibility BeginCheckPrivateLinkServiceVisibility(this IPrivateLinkServicesOperations operations, string location, CheckPrivateLinkServiceVisibilityRequest parameters)
+            {
+                return operations.BeginCheckPrivateLinkServiceVisibilityAsync(location, parameters).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Checks whether the subscription is visible to private link service.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The location of the domain name.
+            /// </param>
+            /// <param name='parameters'>
+            /// The request body of CheckPrivateLinkService API call.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<PrivateLinkServiceVisibility> BeginCheckPrivateLinkServiceVisibilityAsync(this IPrivateLinkServicesOperations operations, string location, CheckPrivateLinkServiceVisibilityRequest parameters, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.BeginCheckPrivateLinkServiceVisibilityWithHttpMessagesAsync(location, parameters, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Checks whether the subscription is visible to private link service in the
+            /// specified resource group.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The location of the domain name.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='parameters'>
+            /// The request body of CheckPrivateLinkService API call.
+            /// </param>
+            public static PrivateLinkServiceVisibility BeginCheckPrivateLinkServiceVisibilityByResourceGroup(this IPrivateLinkServicesOperations operations, string location, string resourceGroupName, CheckPrivateLinkServiceVisibilityRequest parameters)
+            {
+                return operations.BeginCheckPrivateLinkServiceVisibilityByResourceGroupAsync(location, resourceGroupName, parameters).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Checks whether the subscription is visible to private link service in the
+            /// specified resource group.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The location of the domain name.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='parameters'>
+            /// The request body of CheckPrivateLinkService API call.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<PrivateLinkServiceVisibility> BeginCheckPrivateLinkServiceVisibilityByResourceGroupAsync(this IPrivateLinkServicesOperations operations, string location, string resourceGroupName, CheckPrivateLinkServiceVisibilityRequest parameters, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.BeginCheckPrivateLinkServiceVisibilityByResourceGroupWithHttpMessagesAsync(location, resourceGroupName, parameters, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
             /// Gets all private link services in a resource group.
             /// </summary>
             /// <param name='operations'>
@@ -666,6 +850,40 @@ namespace Microsoft.Azure.Management.Network
             public static async Task<IPage<PrivateLinkService>> ListBySubscriptionNextAsync(this IPrivateLinkServicesOperations operations, string nextPageLink, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ListBySubscriptionNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Gets all private end point connections for a specific private link service.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='nextPageLink'>
+            /// The NextLink from the previous successful call to List operation.
+            /// </param>
+            public static IPage<PrivateEndpointConnection> ListPrivateEndpointConnectionsNext(this IPrivateLinkServicesOperations operations, string nextPageLink)
+            {
+                return operations.ListPrivateEndpointConnectionsNextAsync(nextPageLink).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Gets all private end point connections for a specific private link service.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='nextPageLink'>
+            /// The NextLink from the previous successful call to List operation.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IPage<PrivateEndpointConnection>> ListPrivateEndpointConnectionsNextAsync(this IPrivateLinkServicesOperations operations, string nextPageLink, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ListPrivateEndpointConnectionsNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

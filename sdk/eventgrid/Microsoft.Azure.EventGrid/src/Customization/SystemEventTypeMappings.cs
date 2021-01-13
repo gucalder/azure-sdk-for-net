@@ -42,6 +42,13 @@ namespace Microsoft.Azure.EventGrid
             // Event Hub events
             { EventTypes.EventHubCaptureFileCreatedEvent, typeof(EventHubCaptureFileCreatedEventData) },
 
+            // MachineLearningServices events
+            { EventTypes.MachineLearningServicesDatasetDriftDetectedEvent, typeof(MachineLearningServicesDatasetDriftDetectedEventData) },
+            { EventTypes.MachineLearningServicesModelDeployedEvent, typeof(MachineLearningServicesModelDeployedEventData) },
+            { EventTypes.MachineLearningServicesModelRegisteredEvent, typeof(MachineLearningServicesModelRegisteredEventData) },
+            { EventTypes.MachineLearningServicesRunCompletedEvent, typeof(MachineLearningServicesRunCompletedEventData) },
+            { EventTypes.MachineLearningServicesRunStatusChangedEvent, typeof(MachineLearningServicesRunStatusChangedEventData) },
+
             // Maps events
             { EventTypes.MapsGeofenceEnteredEvent, typeof(MapsGeofenceEnteredEventData) },
             { EventTypes.MapsGeofenceExitedEvent, typeof(MapsGeofenceExitedEventData) },
@@ -91,6 +98,25 @@ namespace Microsoft.Azure.EventGrid
             // Storage events
             { EventTypes.StorageBlobCreatedEvent, typeof(StorageBlobCreatedEventData) },
             { EventTypes.StorageBlobDeletedEvent, typeof(StorageBlobDeletedEventData) },
+            { EventTypes.StorageBlobRenamedEvent, typeof(StorageBlobRenamedEventData) },
+            { EventTypes.StorageDirectoryCreatedEvent, typeof(StorageDirectoryCreatedEventData) },
+            { EventTypes.StorageDirectoryDeletedEvent, typeof(StorageDirectoryDeletedEventData) },
+            { EventTypes.StorageDirectoryRenamedEvent, typeof(StorageDirectoryRenamedEventData) },
+
+            // App Service
+            { EventTypes.WebAppUpdated, typeof(WebAppUpdatedEventData) },
+            { EventTypes.WebBackupOperationStarted, typeof(WebBackupOperationStartedEventData) },
+            { EventTypes.WebBackupOperationCompleted, typeof(WebBackupOperationCompletedEventData) },
+            { EventTypes.WebBackupOperationFailed, typeof(WebBackupOperationFailedEventData) },
+            { EventTypes.WebRestoreOperationStarted, typeof(WebRestoreOperationStartedEventData) },
+            { EventTypes.WebRestoreOperationCompleted, typeof(WebRestoreOperationCompletedEventData) },
+            { EventTypes.WebRestoreOperationFailed, typeof(WebRestoreOperationFailedEventData) },
+            { EventTypes.WebSlotSwapStarted, typeof(WebSlotSwapStartedEventData) },
+            { EventTypes.WebSlotSwapCompleted, typeof(WebSlotSwapCompletedEventData) },
+            { EventTypes.WebSlotSwapFailed, typeof(WebSlotSwapFailedEventData) },
+            { EventTypes.WebSlotSwapWithPreviewStarted, typeof(WebSlotSwapWithPreviewStartedEventData) },
+            { EventTypes.WebSlotSwapWithPreviewCancelled, typeof(WebSlotSwapWithPreviewCancelledEventData) },
+            { EventTypes.WebAppServicePlanUpdated, typeof(WebAppServicePlanUpdatedEventData) }
         };
     }
 }

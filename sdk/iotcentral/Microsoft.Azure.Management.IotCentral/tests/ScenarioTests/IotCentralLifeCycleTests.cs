@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for
 // license information.
 
@@ -14,13 +14,15 @@ namespace IotCentral.Tests.ScenarioTests
     using Microsoft.Rest.ClientRuntime.Azure.TestFramework;
     using Newtonsoft.Json.Linq;
     using Xunit;
+    using Microsoft.Rest;
+    using Microsoft.Rest.Azure;
 
     public class IotCentralLifeCycleTests : IotCentralTestBase
     {
         [Fact]
         public void TestIotCentralCreateLifeCycle()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 Initialize(context);
 
@@ -34,7 +36,7 @@ namespace IotCentral.Tests.ScenarioTests
                 this.CheckAppNameAndSubdomainTaken(app.Name, app.Subdomain);
 
                 Assert.NotNull(app);
-                Assert.Equal(AppSku.S1, app.Sku.Name);
+                Assert.Equal(AppSku.ST1, app.Sku.Name);
                 Assert.Equal(IotCentralTestUtilities.DefaultResourceName, app.Name);
                 Assert.Equal(IotCentralTestUtilities.DefaultSubdomain, app.Subdomain);
 
@@ -80,7 +82,7 @@ namespace IotCentral.Tests.ScenarioTests
         [Fact]
         public void TestIotCentralUpdateLifeCycle()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 this.Initialize(context);
 
@@ -89,6 +91,9 @@ namespace IotCentral.Tests.ScenarioTests
 
                 // Create App
                 var app = CreateIotCentral(resourceGroup, IotCentralTestUtilities.DefaultLocation, IotCentralTestUtilities.DefaultUpdateResourceName, IotCentralTestUtilities.DefaultUpdateSubdomain);
+
+                // Validate the default sku
+                Assert.Equal(app.Sku.Name, AppSku.ST1);
 
                 // Validate resourceName and subdomain are taken
                 this.CheckAppNameAndSubdomainTaken(app.Name, app.Subdomain);
@@ -107,7 +112,8 @@ namespace IotCentral.Tests.ScenarioTests
                 {
                     Tags = tags,
                     DisplayName = newDisplayName,
-                    Subdomain = newSubDomain
+                    Subdomain = newSubDomain,
+                    Sku = new AppSkuInfo(AppSku.ST2),
                 };
 
                 app = UpdateIotCentral(resourceGroup, appPatch, IotCentralTestUtilities.DefaultUpdateResourceName);
@@ -120,7 +126,82 @@ namespace IotCentral.Tests.ScenarioTests
                 Assert.Equal(newDisplayName, app.DisplayName);
                 Assert.True(app.Tags.Count().Equals(2));
                 Assert.Equal("value2", app.Tags["key2"]);
+                Assert.Equal(app.Sku.Name, AppSku.ST2);
             }
+        }
+
+        [Fact]
+        public void TestAppWhenNullAppSkuInfo()
+        {
+            var exceptionThrown = false;
+            try
+            {
+                App app = new App()
+                {
+                    Location = IotCentralTestUtilities.DefaultLocation,
+                    Sku = new AppSkuInfo(),
+                    Subdomain = IotCentralTestUtilities.DefaultUpdateSubdomain,
+                    DisplayName = IotCentralTestUtilities.DefaultUpdateResourceName
+                };
+                app.Validate();
+            }
+            catch (Exception ex)
+            {
+                exceptionThrown = true;
+                Assert.Equal(typeof(ValidationException), ex.GetType());
+            }
+            Assert.True(exceptionThrown);
+        }
+
+        [Fact]
+        public void TestAppSkuInfoWhenNullInput()
+        {
+            var exceptionThrown = false;
+            try
+            {
+                AppSkuInfo appSku = new AppSkuInfo();
+                appSku.Validate();
+            }
+            catch (Exception ex)
+            {
+                exceptionThrown = true;
+                Assert.Equal(typeof(ValidationException), ex.GetType());
+            }
+            Assert.True(exceptionThrown);
+        }
+
+        [Fact]
+        public void TestOperationInputsWhenNullInput()
+        {
+            var exceptionThrown = false;
+            try
+            {
+                OperationInputs operationInput = new OperationInputs();
+                operationInput.Validate();
+            }
+            catch (Exception ex)
+            {
+                exceptionThrown = true;
+                Assert.Equal(typeof(ValidationException), ex.GetType());
+            }
+            Assert.True(exceptionThrown);
+        }
+
+        [Fact]
+        public void TestResourceWhenNullLocation()
+        {
+            var exceptionThrown = false;
+            try
+            {
+                Resource resource = new Resource();
+                resource.Validate();
+            }
+            catch (Exception ex)
+            {
+                exceptionThrown = true;
+                Assert.Equal(typeof(ValidationException), ex.GetType());
+            }
+            Assert.True(exceptionThrown);
         }
 
         private void CheckAppNameAndSubdomainTaken(string resourceName, string subdomain)
@@ -137,3 +218,4 @@ namespace IotCentral.Tests.ScenarioTests
         }
     }
 }
+

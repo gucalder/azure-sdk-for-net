@@ -42,15 +42,14 @@ namespace Microsoft.Azure.Management.Billing
         ServiceClientCredentials Credentials { get; }
 
         /// <summary>
-        /// Version of the API to be used with the client request. The current
-        /// version is 2018-11-01-preview.
+        /// The ID that uniquely identifies an Azure subscription.
         /// </summary>
-        string ApiVersion { get; }
+        string SubscriptionId { get; set; }
 
         /// <summary>
         /// Azure Subscription ID.
         /// </summary>
-        string SubscriptionId { get; set; }
+        string SubscriptionId1 { get; set; }
 
         /// <summary>
         /// The preferred language for the response.
@@ -77,9 +76,9 @@ namespace Microsoft.Azure.Management.Billing
         IBillingAccountsOperations BillingAccounts { get; }
 
         /// <summary>
-        /// Gets the IPaymentMethodsOperations.
+        /// Gets the IAddressOperations.
         /// </summary>
-        IPaymentMethodsOperations PaymentMethods { get; }
+        IAddressOperations Address { get; }
 
         /// <summary>
         /// Gets the IAvailableBalancesOperations.
@@ -87,9 +86,19 @@ namespace Microsoft.Azure.Management.Billing
         IAvailableBalancesOperations AvailableBalances { get; }
 
         /// <summary>
+        /// Gets the IInstructionsOperations.
+        /// </summary>
+        IInstructionsOperations Instructions { get; }
+
+        /// <summary>
         /// Gets the IBillingProfilesOperations.
         /// </summary>
         IBillingProfilesOperations BillingProfiles { get; }
+
+        /// <summary>
+        /// Gets the ICustomersOperations.
+        /// </summary>
+        ICustomersOperations Customers { get; }
 
         /// <summary>
         /// Gets the IInvoiceSectionsOperations.
@@ -97,24 +106,9 @@ namespace Microsoft.Azure.Management.Billing
         IInvoiceSectionsOperations InvoiceSections { get; }
 
         /// <summary>
-        /// Gets the IDepartmentsOperations.
+        /// Gets the IBillingPermissionsOperations.
         /// </summary>
-        IDepartmentsOperations Departments { get; }
-
-        /// <summary>
-        /// Gets the IEnrollmentAccountsOperations.
-        /// </summary>
-        IEnrollmentAccountsOperations EnrollmentAccounts { get; }
-
-        /// <summary>
-        /// Gets the IInvoicesOperations.
-        /// </summary>
-        IInvoicesOperations Invoices { get; }
-
-        /// <summary>
-        /// Gets the IPriceSheetOperations.
-        /// </summary>
-        IPriceSheetOperations PriceSheet { get; }
+        IBillingPermissionsOperations BillingPermissions { get; }
 
         /// <summary>
         /// Gets the IBillingSubscriptionsOperations.
@@ -125,6 +119,11 @@ namespace Microsoft.Azure.Management.Billing
         /// Gets the IProductsOperations.
         /// </summary>
         IProductsOperations Products { get; }
+
+        /// <summary>
+        /// Gets the IInvoicesOperations.
+        /// </summary>
+        IInvoicesOperations Invoices { get; }
 
         /// <summary>
         /// Gets the ITransactionsOperations.
@@ -142,24 +141,9 @@ namespace Microsoft.Azure.Management.Billing
         IBillingPropertyOperations BillingProperty { get; }
 
         /// <summary>
-        /// Gets the ITransfersOperations.
-        /// </summary>
-        ITransfersOperations Transfers { get; }
-
-        /// <summary>
-        /// Gets the IRecipientTransfersOperations.
-        /// </summary>
-        IRecipientTransfersOperations RecipientTransfers { get; }
-
-        /// <summary>
         /// Gets the IOperations.
         /// </summary>
         IOperations Operations { get; }
-
-        /// <summary>
-        /// Gets the IBillingPermissionsOperations.
-        /// </summary>
-        IBillingPermissionsOperations BillingPermissions { get; }
 
         /// <summary>
         /// Gets the IBillingRoleDefinitionsOperations.
@@ -175,6 +159,16 @@ namespace Microsoft.Azure.Management.Billing
         /// Gets the IAgreementsOperations.
         /// </summary>
         IAgreementsOperations Agreements { get; }
+
+        /// <summary>
+        /// Gets the IEnrollmentAccountsOperations.
+        /// </summary>
+        IEnrollmentAccountsOperations EnrollmentAccounts { get; }
+
+        /// <summary>
+        /// Gets the IBillingPeriodsOperations.
+        /// </summary>
+        IBillingPeriodsOperations BillingPeriods { get; }
 
     }
 }

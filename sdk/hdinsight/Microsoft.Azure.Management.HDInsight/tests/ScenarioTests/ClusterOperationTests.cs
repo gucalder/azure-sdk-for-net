@@ -5,6 +5,7 @@ using Microsoft.Azure.Management.HDInsight;
 using Microsoft.Azure.Management.HDInsight.Models;
 using Microsoft.Azure.Management.KeyVault.Models;
 using Microsoft.Azure.Management.Storage.Models;
+using Microsoft.Rest;
 using Microsoft.Rest.ClientRuntime.Azure.TestFramework;
 using System;
 using System.Collections.Generic;
@@ -215,6 +216,60 @@ namespace Management.HDInsight.Tests
         }
 
         [Fact]
+        public void TestCreateKafkaClusterWithRestProxyProperties()
+        {
+            TestInitialize();
+
+            string clusterName = TestUtilities.GenerateName("hdisdk-kafka-restproxy");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            createParams.Properties.ClusterVersion = "4.0";
+            createParams.Properties.ClusterDefinition.Kind = "kafka";
+            createParams.Properties.ClusterDefinition.ComponentVersion = new Dictionary<string, string>{ { "Kafka", "2.1"} };
+            createParams.Location = "South Central US";
+
+            var workerNode = createParams.Properties.ComputeProfile.Roles.First(role => role.Name == "workernode");
+            workerNode.DataDisksGroups = new List<DataDisksGroups>
+            {
+                new DataDisksGroups
+                {
+                     DisksPerNode = 8
+                }
+            };
+
+            //KafkaManagementNode must be defined for Kafka Rest Proxy to be provisioned
+            createParams.Properties.ComputeProfile.Roles.Add(new Role
+            {
+                Name = "kafkamanagementnode",
+                TargetInstanceCount = 2,
+                HardwareProfile = new HardwareProfile
+                {
+                    VmSize = "Standard_D4_v2"
+                },
+                OsProfile = new OsProfile
+                {
+                    LinuxOperatingSystemProfile = new LinuxOperatingSystemProfile
+                    {
+                        Username = CommonData.SshUsername,
+                        Password = CommonData.SshPassword
+                    }
+                }
+            });
+            //only kafaka cluster with hdi 4.0 and above with kafaka version 2.1 and above can be deployed with rest proxy.
+            createParams.Properties.KafkaRestProperties = new KafkaRestProperties
+            {
+                ClientGroupInfo = new ClientGroupInfo
+                {
+                    GroupId = "7bef90fa-0aa3-4bb4-b4d2-2ae7c14cfe41",
+                    GroupName = "KafakaRestProperties"
+                }
+            };
+
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+            ValidateCluster(clusterName, createParams, cluster);
+            Assert.NotNull(cluster.Properties.KafkaRestProperties);
+        }
+
+        [Fact]
         public void TestCreateWithADLSv1() {
 
             TestInitialize();
@@ -333,6 +388,68 @@ namespace Management.HDInsight.Tests
 
             var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
             ValidateCluster(clusterName, createParams, cluster);
+        }
+
+        [Fact]
+        public void TestCreateClusterWithAutoScaleLoadBasedType()
+        {
+            TestInitialize();
+            string clusterName = TestUtilities.GenerateName("hdisdk-loadbased");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            var workerNode = createParams.Properties.ComputeProfile.Roles.First(role => role.Name.Equals("workernode"));
+
+            //Add auto scale configuration Load-based type
+            workerNode.AutoscaleConfiguration = new Autoscale
+            {
+                Capacity = new AutoscaleCapacity
+                {
+                    MinInstanceCount = 4,
+                    MaxInstanceCount = 5
+                }
+            };
+
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+            ValidateAutoScaleConfig(workerNode.AutoscaleConfiguration,
+                cluster.Properties.ComputeProfile.Roles.First(role => role.Name.Equals("workernode")).AutoscaleConfiguration);
+        }
+
+        [Fact]
+        public void TestCreateClusterWithAutoScaleScheduleBasedType()
+        {
+            TestInitialize();
+            string clusterName = TestUtilities.GenerateName("hdisdk-schedulebased");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            var workerNode = createParams.Properties.ComputeProfile.Roles.First(role => role.Name.Equals("workernode"));
+
+            //Add auto scale configuration.
+            workerNode.AutoscaleConfiguration = new Autoscale
+            {
+                Recurrence = new AutoscaleRecurrence
+                {
+                    //"China Standard Time", "Central Standard Time","Central American Standard Time"
+                    TimeZone = "China Standard Time",
+                    Schedule = new List<AutoscaleSchedule>
+                    {
+                        new AutoscaleSchedule
+                        {
+                            Days = new List<DaysOfWeek?>
+                            {
+                                DaysOfWeek.Thursday
+                            },
+                            TimeAndCapacity = new AutoscaleTimeAndCapacity
+                            {
+                                Time = "16:00",
+                                MinInstanceCount = 4,
+                                MaxInstanceCount = 4
+                            }
+                        }
+                    }
+                }
+            };
+
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+            ValidateAutoScaleConfig(workerNode.AutoscaleConfiguration,
+                cluster.Properties.ComputeProfile.Roles.First(role => role.Name.Equals("workernode")).AutoscaleConfiguration);
         }
 
         [Fact]
@@ -523,6 +640,131 @@ namespace Management.HDInsight.Tests
             HDInsightClient.Clusters.UpdateGatewaySettings(CommonData.ResourceGroupName, clusterName, updateParams);
             gatewaySettings = HDInsightClient.Clusters.GetGatewaySettings(CommonData.ResourceGroupName, clusterName);
             ValidateGatewaySettings(expectedUserName, newExpectedPassword, gatewaySettings);
+        }
+
+        [Fact]
+        public void TestCreateClusterWithTLS12()
+        {
+            TestInitialize();
+
+            string clusterName = TestUtilities.GenerateName("hdisdk-tls12");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            createParams.Properties.MinSupportedTlsVersion = "1.2";
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+            Assert.Equal("1.2", cluster.Properties.MinSupportedTlsVersion);
+            ValidateCluster(clusterName, createParams, cluster);
+        }
+
+        [Fact]
+        public void TestCreateClusterWithOutboundAndPrivateLink()
+        {
+            TestInitialize();
+
+            string clusterName = TestUtilities.GenerateName("hdisdk-outboundpl");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            createParams.Location = "South Central US";
+
+            var networkProperties = new NetworkProperties(ResourceProviderConnection.Outbound, PrivateLink.Enabled);
+            createParams.Properties.NetworkProperties = networkProperties;
+
+            string vnetId = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/fakevnet";
+            string subnetId = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/default";
+
+            foreach (var role in createParams.Properties.ComputeProfile.Roles)
+            {
+               role.VirtualNetworkProfile = new VirtualNetworkProfile(vnetId, subnetId);
+            }
+
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+
+            var result = HDInsightClient.Clusters.Get(CommonData.ResourceGroupName, clusterName);
+            ValidateCluster(clusterName, createParams, result);
+        }
+
+        [Fact]
+        public void TestCreateClusterWithEncryptionInTransit()
+        {
+            TestInitialize();
+
+            string clusterName = TestUtilities.GenerateName("hdisdk-encryption");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            createParams.Location = "South Central US";
+            createParams.Properties.EncryptionInTransitProperties = new EncryptionInTransitProperties
+            {
+                IsEncryptionInTransitEnabled = true
+            };
+
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+
+            var result = HDInsightClient.Clusters.Get(CommonData.ResourceGroupName, clusterName);
+            ValidateCluster(clusterName, createParams, result);
+        }
+
+        [Fact]
+        public void TestUpdateAutoScaleConfiguration()
+        {
+            TestInitialize();
+
+            //create a cluster without autoscale config
+            string clusterName = TestUtilities.GenerateName("hdisdk-updateautoscale");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            createParams.Location = "South Central US";
+
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+            ValidateCluster(clusterName, createParams, cluster);
+
+            var clusterWithoutAutoscale = HDInsightClient.Clusters.Get(CommonData.ResourceGroupName, clusterName);
+            Assert.Null(cluster.Properties.ComputeProfile.Roles.First(role => role.Name.Equals("workernode")).AutoscaleConfiguration);
+
+            // enable autoscale
+            AutoscaleConfigurationUpdateParameter loadBasedAutoScaleConfig = new AutoscaleConfigurationUpdateParameter
+            {
+                Autoscale = new Autoscale
+                {
+                    Capacity = new AutoscaleCapacity
+                    {
+                        MinInstanceCount = 3,
+                        MaxInstanceCount = 4
+                    }
+                }
+            };
+            HDInsightClient.Clusters.UpdateAutoScaleConfiguration(CommonData.ResourceGroupName, clusterName, loadBasedAutoScaleConfig);
+            var clusterEnabledAutoScale = HDInsightClient.Clusters.Get(CommonData.ResourceGroupName, clusterName);
+
+            ValidateAutoScaleConfig(loadBasedAutoScaleConfig.Autoscale, clusterEnabledAutoScale.Properties.ComputeProfile.Roles.First(role => role.Name.Equals("workernode")).AutoscaleConfiguration);
+
+            // disable autoscale
+            loadBasedAutoScaleConfig.Autoscale = null;
+            HDInsightClient.Clusters.UpdateAutoScaleConfiguration(CommonData.ResourceGroupName, clusterName, loadBasedAutoScaleConfig);
+            var clusterDisabledAutoScale = HDInsightClient.Clusters.Get(CommonData.ResourceGroupName, clusterName);
+
+            Assert.Null(clusterDisabledAutoScale.Properties.ComputeProfile.Roles.First(role => role.Name.Equals("workernode")).AutoscaleConfiguration);
+        }
+
+        [Fact]
+        public void TestCreateClusterWithEncryptionAtHost()
+        {
+            TestInitialize();
+
+            // create HDInsight cluster with encrytpion at host
+            string clusterName = TestUtilities.GenerateName("hdisdk-encryptionathost");
+            var createParams = CommonData.PrepareClusterCreateParamsForWasb();
+            createParams.Location = "South Central US";
+            createParams.Properties.ClusterDefinition.Kind = "Spark";
+
+            createParams.Properties.ComputeProfile.Roles.ToList().ForEach(role => role.HardwareProfile.VmSize = "Standard_DS14_v2");
+
+            createParams.Properties.DiskEncryptionProperties = new DiskEncryptionProperties
+            {
+                EncryptionAtHost = true
+            };
+
+            var cluster = HDInsightClient.Clusters.Create(CommonData.ResourceGroupName, clusterName, createParams);
+            ValidateCluster(clusterName, createParams, cluster);
+
+            // check encryption at host properties
+            var diskEncryptionProperties = cluster.Properties.DiskEncryptionProperties;
+            Assert.True(diskEncryptionProperties.EncryptionAtHost);
         }
     }
 }

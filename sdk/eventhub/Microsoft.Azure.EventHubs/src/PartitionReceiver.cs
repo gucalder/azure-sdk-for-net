@@ -41,7 +41,7 @@ namespace Microsoft.Azure.EventHubs
         /// <param name="eventPosition"></param>
         /// <param name="epoch"></param>
         /// <param name="receiverOptions"></param>
-        protected internal PartitionReceiver(
+        protected PartitionReceiver(
             EventHubClient eventHubClient,
             string consumerGroupName,
             string partitionId,
@@ -65,6 +65,7 @@ namespace Microsoft.Azure.EventHubs
                 ? receiverOptions.Identifier
                 : null;
             this.RetryPolicy = eventHubClient.RetryPolicy.Clone();
+            eventHubClient.AddChildEntity(this);
 
             EventHubsEventSource.Log.ClientCreated(this.ClientId, this.FormatTraceDetails());
         }
@@ -164,6 +165,8 @@ namespace Microsoft.Azure.EventHubs
         /// <returns>A Task that will yield a batch of <see cref="EventData"/> from the partition on which this receiver is created. Returns 'null' if no EventData is present.</returns>
         public async Task<IEnumerable<EventData>> ReceiveAsync(int maxMessageCount, TimeSpan waitTime)
         {
+            this.ThrowIfClosed();
+
             EventHubsEventSource.Log.EventReceiveStart(this.ClientId);
             Activity activity = EventHubsDiagnosticSource.StartReceiveActivity(this.ClientId, this.EventHubClient.ConnectionStringBuilder, this.PartitionId, this.ConsumerGroupName, this.EventPosition);
 
@@ -213,6 +216,8 @@ namespace Microsoft.Azure.EventHubs
         /// <param name="invokeWhenNoEvents">Flag to indicate whether the handler should be invoked when the receive call times out.</param>
         public void SetReceiveHandler(IPartitionReceiveHandler receiveHandler, bool invokeWhenNoEvents = false)
         {
+            this.ThrowIfClosed();
+
             EventHubsEventSource.Log.SetReceiveHandlerStart(this.ClientId, receiveHandler != null ? receiveHandler.GetType().ToString() : "null");
             this.OnSetReceiveHandler(receiveHandler, invokeWhenNoEvents);
             EventHubsEventSource.Log.SetReceiveHandlerStop(this.ClientId);
@@ -224,6 +229,8 @@ namespace Microsoft.Azure.EventHubs
         /// <returns>An asynchronous operation</returns>
         public sealed override Task CloseAsync()
         {
+            this.IsClosed = true;
+
             EventHubsEventSource.Log.ClientCloseStart(this.ClientId);
             try
             {

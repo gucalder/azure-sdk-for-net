@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
@@ -49,7 +49,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMScaleSetVMOperations()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 TestVMScaleSetVMOperationsInternal(context);
             }
@@ -77,7 +77,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMScaleSetVMOperations_ManagedDisks()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 TestVMScaleSetVMOperationsInternal(context, true);
             }
@@ -98,6 +98,10 @@ namespace Compute.Tests
                     createWithManagedDisks: hasManagedDisks);
 
                 var getResponse = m_CrpClient.VirtualMachineScaleSetVMs.Get(rgName, vmScaleSet.Name, instanceId);
+
+                var imageReference = getResponse.StorageProfile.ImageReference;
+                Assert.NotNull(imageReference?.ExactVersion);
+                Assert.Equal(imageReference.Version, imageReference.ExactVersion);
 
                 VirtualMachineScaleSetVM vmScaleSetVMModel = GenerateVMScaleSetVMModel(vmScaleSet, instanceId, hasManagedDisks);
                 ValidateVMScaleSetVM(vmScaleSetVMModel, vmScaleSet.Sku.Name, getResponse, hasManagedDisks);
@@ -120,7 +124,7 @@ namespace Compute.Tests
                 Assert.True(listResponse.Count() == inputVMScaleSet.Sku.Capacity);
 
                 m_CrpClient.VirtualMachineScaleSetVMs.Start(rgName, vmScaleSet.Name, instanceId);
-                m_CrpClient.VirtualMachineScaleSetVMs.Reimage(rgName, vmScaleSet.Name, instanceId, tempDisk: true);
+                m_CrpClient.VirtualMachineScaleSetVMs.Reimage(rgName, vmScaleSet.Name, instanceId, tempDisk: null);
 
                 if (hasManagedDisks)
                 {
@@ -158,7 +162,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMScaleSetVMOperations_RunCommand()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 InitializeCommon(context);
                 instanceId = "0";
@@ -205,7 +209,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMScaleSetVMOperations_Put()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 string originalTestLocation = Environment.GetEnvironmentVariable("AZURE_VM_TEST_LOCATION");
                 bool passed = false;
@@ -255,7 +259,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMScaleSetVMOperations_Redeploy()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 string originalTestLocation = Environment.GetEnvironmentVariable("AZURE_VM_TEST_LOCATION");
 
@@ -296,7 +300,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMScaleSetVMOperations_PerformMaintenance()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 string originalTestLocation = Environment.GetEnvironmentVariable("AZURE_VM_TEST_LOCATION");
 
@@ -324,6 +328,53 @@ namespace Compute.Tests
                         $"Operation 'performMaintenance' is not allowed on VM '{vmScaleSet.Name}_0' " +
                         "since the Subscription of this VM is not eligible.";
                     Assert.Equal(expectedMessage, cex.Message);
+                }
+                finally
+                {
+                    Environment.SetEnvironmentVariable("AZURE_VM_TEST_LOCATION", originalTestLocation);
+                    // Cleanup the created resources. But don't wait since it takes too long, and it's not the purpose
+                    // of the test to cover deletion. CSM does persistent retrying over all RG resources.
+                    m_ResourcesClient.ResourceGroups.DeleteIfExists(rgName);
+                }
+
+                Assert.True(passed);
+            }
+        }
+
+        /// <summary>
+        /// Covers following operations:
+        /// Create RG
+        /// Create VM Scale Set with managed boot diagnostics enabled
+        /// RetrieveBootDiagnosticsData for a VM instance
+        /// Delete RG
+        /// </summary>
+        [Fact]
+        public void TestVMScaleSetVMOperations_ManagedBootDiagnostics()
+        {
+            using (MockContext context = MockContext.Start(this.GetType()))
+            {
+                string originalTestLocation = Environment.GetEnvironmentVariable("AZURE_VM_TEST_LOCATION");
+
+                instanceId = "0";
+                bool passed = false;
+
+                try
+                {
+                    Environment.SetEnvironmentVariable("AZURE_VM_TEST_LOCATION", "eastus2euap");
+                    InitializeCommon(context);
+
+                    var storageAccountOutput = CreateStorageAccount(rgName, storageAccountName);
+                    VirtualMachineScaleSet vmScaleSet = CreateVMScaleSet_NoAsyncTracking(rgName, vmssName,
+                        storageAccountOutput, imageRef, out inputVMScaleSet, createWithManagedDisks: true,
+                        faultDomainCount: 1, bootDiagnosticsProfile: GetManagedDiagnosticsProfile());
+                    var getInstanceViewResponse = m_CrpClient.VirtualMachineScaleSetVMs.GetInstanceView(rgName, vmScaleSet.Name, instanceId);
+                    ValidateBootDiagnosticsInstanceView(getInstanceViewResponse.BootDiagnostics, hasError: false,
+                        enabledWithManagedBootDiagnostics: true);
+                    RetrieveBootDiagnosticsDataResult bootDiagnosticsData =
+                        m_CrpClient.VirtualMachineScaleSetVMs.RetrieveBootDiagnosticsData(rgName, vmScaleSet.Name, instanceId);
+                    ValidateBootDiagnosticsData(bootDiagnosticsData);
+
+                    passed = true;
                 }
                 finally
                 {

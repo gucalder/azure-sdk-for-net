@@ -20,7 +20,6 @@ namespace Microsoft.Azure.Management.Reservations
     using System.Threading.Tasks;
 
     /// <summary>
-    /// This API describe Azure Reservation
     /// </summary>
     public partial interface IAzureReservationAPIClient : System.IDisposable
     {
@@ -45,11 +44,6 @@ namespace Microsoft.Azure.Management.Reservations
         ServiceClientCredentials Credentials { get; }
 
         /// <summary>
-        /// Supported version for this document is 2019-04-01
-        /// </summary>
-        string ApiVersion { get; }
-
-        /// <summary>
         /// The preferred language for the response.
         /// </summary>
         string AcceptLanguage { get; set; }
@@ -69,14 +63,29 @@ namespace Microsoft.Azure.Management.Reservations
 
 
         /// <summary>
-        /// Gets the IReservationOrderOperations.
+        /// Gets the IQuotaOperations.
         /// </summary>
-        IReservationOrderOperations ReservationOrder { get; }
+        IQuotaOperations Quota { get; }
+
+        /// <summary>
+        /// Gets the IQuotaRequestStatusOperations.
+        /// </summary>
+        IQuotaRequestStatusOperations QuotaRequestStatus { get; }
+
+        /// <summary>
+        /// Gets the IAutoQuotaIncreaseOperations.
+        /// </summary>
+        IAutoQuotaIncreaseOperations AutoQuotaIncrease { get; }
 
         /// <summary>
         /// Gets the IReservationOperations.
         /// </summary>
         IReservationOperations Reservation { get; }
+
+        /// <summary>
+        /// Gets the IReservationOrderOperations.
+        /// </summary>
+        IReservationOrderOperations ReservationOrder { get; }
 
         /// <summary>
         /// Gets the IOperationOperations.
@@ -109,8 +118,8 @@ namespace Microsoft.Azure.Management.Reservations
         /// Get list of applicable `Reservation`s.
         /// </summary>
         /// <remarks>
-        /// Get applicable `Reservation`s that are applied to this
-        /// subscription.
+        /// Get applicable `Reservation`s that are applied to this subscription
+        /// or a resource group under this subscription.
         /// </remarks>
         /// <param name='subscriptionId'>
         /// Id of the subscription

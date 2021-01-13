@@ -186,7 +186,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// </summary>
         private void Initialize()
         {
-            BaseUri = "{Endpoint}/vision/v2.0";
+            BaseUri = "{Endpoint}/vision/v3.1";
             SerializationSettings = new JsonSerializerSettings
             {
                 Formatting = Newtonsoft.Json.Formatting.Indented,
@@ -240,12 +240,12 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// coordinates, gender and age. ImageType - detects if image is clipart or a
         /// line drawing. Color - determines the accent color, dominant color, and
         /// whether an image is black&amp;white. Adult - detects if the image is
-        /// pornographic in nature (depicts nudity or a sex act).  Sexually suggestive
-        /// content is also detected. Objects - detects various objects within an
-        /// image, including the approximate location. The Objects argument is only
-        /// available in English. Brands - detects various brands within an image,
-        /// including the approximate location. The Brands argument is only available
-        /// in English.
+        /// pornographic in nature (depicts nudity or a sex act), or is gory (depicts
+        /// extreme violence or blood). Sexually suggestive content (aka racy content)
+        /// is also detected. Objects - detects various objects within an image,
+        /// including the approximate location. The Objects argument is only available
+        /// in English. Brands - detects various brands within an image, including the
+        /// approximate location. The Brands argument is only available in English.
         /// </param>
         /// <param name='details'>
         /// A string indicating which domain-specific details to return. Multiple
@@ -259,6 +259,9 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// languages:en - English, Default. es - Spanish, ja - Japanese, pt -
         /// Portuguese, zh - Simplified Chinese. Possible values include: 'en', 'es',
         /// 'ja', 'pt', 'zh'
+        /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -281,7 +284,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageWithHttpMessagesAsync(string url, IList<VisualFeatureTypes> visualFeatures = default(IList<VisualFeatureTypes>), IList<Details> details = default(IList<Details>), string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageWithHttpMessagesAsync(string url, IList<VisualFeatureTypes?> visualFeatures = default(IList<VisualFeatureTypes?>), IList<Details?> details = default(IList<Details?>), string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Endpoint == null)
             {
@@ -306,6 +309,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
                 tracingParameters.Add("visualFeatures", visualFeatures);
                 tracingParameters.Add("details", details);
                 tracingParameters.Add("language", language);
+                tracingParameters.Add("descriptionExclude", descriptionExclude);
                 tracingParameters.Add("imageUrl", imageUrl);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "AnalyzeImage", tracingParameters);
@@ -326,6 +330,10 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
             if (language != null)
             {
                 _queryParameters.Add(string.Format("language={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(language, SerializationSettings).Trim('"'))));
+            }
+            if (descriptionExclude != null)
+            {
+                _queryParameters.Add(string.Format("descriptionExclude={0}", System.Uri.EscapeDataString(string.Join(",", descriptionExclude))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -442,7 +450,8 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// language with complete sentences. The description is based on a collection
         /// of content tags, which are also returned by the operation. More than one
         /// description can be generated for each image. Descriptions are ordered by
-        /// their confidence score. All descriptions are in English.
+        /// their confidence score. Descriptions may include results from celebrity and
+        /// landmark domain models, if applicable.
         /// Two input methods are supported -- (1) Uploading an image or (2) specifying
         /// an image URL.
         /// A successful response will be returned in JSON. If the request failed, the
@@ -461,6 +470,9 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// languages:en - English, Default. es - Spanish, ja - Japanese, pt -
         /// Portuguese, zh - Simplified Chinese. Possible values include: 'en', 'es',
         /// 'ja', 'pt', 'zh'
+        /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -483,7 +495,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<ImageDescription>> DescribeImageWithHttpMessagesAsync(string url, int? maxCandidates = 1, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ImageDescription>> DescribeImageWithHttpMessagesAsync(string url, int? maxCandidates = 1, string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Endpoint == null)
             {
@@ -507,6 +519,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("maxCandidates", maxCandidates);
                 tracingParameters.Add("language", language);
+                tracingParameters.Add("descriptionExclude", descriptionExclude);
                 tracingParameters.Add("imageUrl", imageUrl);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "DescribeImage", tracingParameters);
@@ -523,6 +536,10 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
             if (language != null)
             {
                 _queryParameters.Add(string.Format("language={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(language, SerializationSettings).Trim('"'))));
+            }
+            if (descriptionExclude != null)
+            {
+                _queryParameters.Add(string.Format("descriptionExclude={0}", System.Uri.EscapeDataString(string.Join(",", descriptionExclude))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -1349,9 +1366,8 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// based on objects, living beings, scenery or actions found in images. Unlike
         /// categories, tags are not organized according to a hierarchical
         /// classification system, but correspond to image content. Tags may contain
-        /// hints to avoid ambiguity or provide context, for example the tag "cello"
-        /// may be accompanied by the hint "musical instrument". All tags are in
-        /// English.
+        /// hints to avoid ambiguity or provide context, for example the tag
+        /// "ascomycete" may be accompanied by the hint "fungus".
         /// Two input methods are supported -- (1) Uploading an image or (2) specifying
         /// an image URL.
         /// A successful response will be returned in JSON. If the request failed, the
@@ -1901,646 +1917,6 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         }
 
         /// <summary>
-        /// Recognize Text operation. When you use the Recognize Text interface, the
-        /// response contains a field called 'Operation-Location'. The
-        /// 'Operation-Location' field contains the URL that you must use for your Get
-        /// Recognize Text Operation Result operation.
-        /// </summary>
-        /// <param name='mode'>
-        /// Type of text to recognize. Possible values include: 'Handwritten',
-        /// 'Printed'
-        /// </param>
-        /// <param name='url'>
-        /// Publicly reachable URL of an image.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ComputerVisionErrorException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationHeaderResponse<RecognizeTextHeaders>> RecognizeTextWithHttpMessagesAsync(string url, TextRecognitionMode mode, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Endpoint");
-            }
-            if (url == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "url");
-            }
-            ImageUrl imageUrl = new ImageUrl();
-            if (url != null)
-            {
-                imageUrl.Url = url;
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("mode", mode);
-                tracingParameters.Add("imageUrl", imageUrl);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "RecognizeText", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "recognizeText";
-            _url = _url.Replace("{Endpoint}", Endpoint);
-            List<string> _queryParameters = new List<string>();
-            _queryParameters.Add(string.Format("mode={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(mode, SerializationSettings).Trim('"'))));
-            if (_queryParameters.Count > 0)
-            {
-                _url += "?" + string.Join("&", _queryParameters);
-            }
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(imageUrl != null)
-            {
-                _requestContent = SafeJsonConvert.SerializeObject(imageUrl, SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 202)
-            {
-                var ex = new ComputerVisionErrorException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ComputerVisionError _errorBody =  SafeJsonConvert.DeserializeObject<ComputerVisionError>(_responseContent, DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationHeaderResponse<RecognizeTextHeaders>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            try
-            {
-                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<RecognizeTextHeaders>(JsonSerializer.Create(DeserializationSettings));
-            }
-            catch (JsonException ex)
-            {
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw new SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// This interface is used for getting text operation result. The URL to this
-        /// interface should be retrieved from 'Operation-Location' field returned from
-        /// Recognize Text interface.
-        /// </summary>
-        /// <param name='operationId'>
-        /// Id of the text operation returned in the response of the 'Recognize Text'
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ComputerVisionErrorException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse<TextOperationResult>> GetTextOperationResultWithHttpMessagesAsync(string operationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Endpoint");
-            }
-            if (operationId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "operationId");
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("operationId", operationId);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetTextOperationResult", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "textOperations/{operationId}";
-            _url = _url.Replace("{Endpoint}", Endpoint);
-            _url = _url.Replace("{operationId}", System.Uri.EscapeDataString(operationId));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("GET");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 200)
-            {
-                var ex = new ComputerVisionErrorException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ComputerVisionError _errorBody =  SafeJsonConvert.DeserializeObject<ComputerVisionError>(_responseContent, DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse<TextOperationResult>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            // Deserialize Response
-            if ((int)_statusCode == 200)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    _result.Body = SafeJsonConvert.DeserializeObject<TextOperationResult>(_responseContent, DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// Use this interface to get the result of a Read operation, employing the
-        /// state-of-the-art Optical Character Recognition (OCR) algorithms optimized
-        /// for text-heavy documents. When you use the Read File interface, the
-        /// response contains a field called 'Operation-Location'. The
-        /// 'Operation-Location' field contains the URL that you must use for your
-        /// 'GetReadOperationResult' operation to access OCR results.​
-        /// </summary>
-        /// <param name='url'>
-        /// Publicly reachable URL of an image.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ComputerVisionErrorException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationHeaderResponse<BatchReadFileHeaders>> BatchReadFileWithHttpMessagesAsync(string url, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Endpoint");
-            }
-            if (url == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "url");
-            }
-            ImageUrl imageUrl = new ImageUrl();
-            if (url != null)
-            {
-                imageUrl.Url = url;
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("imageUrl", imageUrl);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "BatchReadFile", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "read/core/asyncBatchAnalyze";
-            _url = _url.Replace("{Endpoint}", Endpoint);
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(imageUrl != null)
-            {
-                _requestContent = SafeJsonConvert.SerializeObject(imageUrl, SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 202)
-            {
-                var ex = new ComputerVisionErrorException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ComputerVisionError _errorBody =  SafeJsonConvert.DeserializeObject<ComputerVisionError>(_responseContent, DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationHeaderResponse<BatchReadFileHeaders>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            try
-            {
-                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<BatchReadFileHeaders>(JsonSerializer.Create(DeserializationSettings));
-            }
-            catch (JsonException ex)
-            {
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw new SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// This interface is used for getting OCR results of Read operation. The URL
-        /// to this interface should be retrieved from 'Operation-Location' field
-        /// returned from Batch Read File interface.
-        /// </summary>
-        /// <param name='operationId'>
-        /// Id of read operation returned in the response of the 'Batch Read File'
-        /// interface.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ComputerVisionErrorException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse<ReadOperationResult>> GetReadOperationResultWithHttpMessagesAsync(string operationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Endpoint");
-            }
-            if (operationId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "operationId");
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("operationId", operationId);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetReadOperationResult", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "read/operations/{operationId}";
-            _url = _url.Replace("{Endpoint}", Endpoint);
-            _url = _url.Replace("{operationId}", System.Uri.EscapeDataString(operationId));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("GET");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 200)
-            {
-                var ex = new ComputerVisionErrorException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ComputerVisionError _errorBody =  SafeJsonConvert.DeserializeObject<ComputerVisionError>(_responseContent, DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse<ReadOperationResult>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            // Deserialize Response
-            if ((int)_statusCode == 200)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ReadOperationResult>(_responseContent, DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
         /// This operation extracts a rich set of visual features based on the image
         /// content.
         /// Two input methods are supported -- (1) Uploading an image or (2) specifying
@@ -2564,12 +1940,12 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// coordinates, gender and age. ImageType - detects if image is clipart or a
         /// line drawing. Color - determines the accent color, dominant color, and
         /// whether an image is black&amp;white. Adult - detects if the image is
-        /// pornographic in nature (depicts nudity or a sex act).  Sexually suggestive
-        /// content is also detected. Objects - detects various objects within an
-        /// image, including the approximate location. The Objects argument is only
-        /// available in English. Brands - detects various brands within an image,
-        /// including the approximate location. The Brands argument is only available
-        /// in English.
+        /// pornographic in nature (depicts nudity or a sex act), or is gory (depicts
+        /// extreme violence or blood). Sexually suggestive content (aka racy content)
+        /// is also detected. Objects - detects various objects within an image,
+        /// including the approximate location. The Objects argument is only available
+        /// in English. Brands - detects various brands within an image, including the
+        /// approximate location. The Brands argument is only available in English.
         /// </param>
         /// <param name='details'>
         /// A string indicating which domain-specific details to return. Multiple
@@ -2583,6 +1959,9 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// languages:en - English, Default. es - Spanish, ja - Japanese, pt -
         /// Portuguese, zh - Simplified Chinese. Possible values include: 'en', 'es',
         /// 'ja', 'pt', 'zh'
+        /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -2605,7 +1984,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageInStreamWithHttpMessagesAsync(Stream image, IList<VisualFeatureTypes> visualFeatures = default(IList<VisualFeatureTypes>), IList<Details> details = default(IList<Details>), string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageInStreamWithHttpMessagesAsync(Stream image, IList<VisualFeatureTypes?> visualFeatures = default(IList<VisualFeatureTypes?>), IList<Details?> details = default(IList<Details?>), string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Endpoint == null)
             {
@@ -2625,6 +2004,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
                 tracingParameters.Add("visualFeatures", visualFeatures);
                 tracingParameters.Add("details", details);
                 tracingParameters.Add("language", language);
+                tracingParameters.Add("descriptionExclude", descriptionExclude);
                 tracingParameters.Add("image", image);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "AnalyzeImageInStream", tracingParameters);
@@ -2645,6 +2025,10 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
             if (language != null)
             {
                 _queryParameters.Add(string.Format("language={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(language, SerializationSettings).Trim('"'))));
+            }
+            if (descriptionExclude != null)
+            {
+                _queryParameters.Add(string.Format("descriptionExclude={0}", System.Uri.EscapeDataString(string.Join(",", descriptionExclude))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -2932,7 +2316,8 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// language with complete sentences. The description is based on a collection
         /// of content tags, which are also returned by the operation. More than one
         /// description can be generated for each image. Descriptions are ordered by
-        /// their confidence score. All descriptions are in English.
+        /// their confidence score. Descriptions may include results from celebrity and
+        /// landmark domain models, if applicable.
         /// Two input methods are supported -- (1) Uploading an image or (2) specifying
         /// an image URL.
         /// A successful response will be returned in JSON. If the request failed, the
@@ -2951,6 +2336,9 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// languages:en - English, Default. es - Spanish, ja - Japanese, pt -
         /// Portuguese, zh - Simplified Chinese. Possible values include: 'en', 'es',
         /// 'ja', 'pt', 'zh'
+        /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -2973,7 +2361,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<ImageDescription>> DescribeImageInStreamWithHttpMessagesAsync(Stream image, int? maxCandidates = 1, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ImageDescription>> DescribeImageInStreamWithHttpMessagesAsync(Stream image, int? maxCandidates = 1, string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Endpoint == null)
             {
@@ -2992,6 +2380,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("maxCandidates", maxCandidates);
                 tracingParameters.Add("language", language);
+                tracingParameters.Add("descriptionExclude", descriptionExclude);
                 tracingParameters.Add("image", image);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "DescribeImageInStream", tracingParameters);
@@ -3008,6 +2397,10 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
             if (language != null)
             {
                 _queryParameters.Add(string.Format("language={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(language, SerializationSettings).Trim('"'))));
+            }
+            if (descriptionExclude != null)
+            {
+                _queryParameters.Add(string.Format("descriptionExclude={0}", System.Uri.EscapeDataString(string.Join(",", descriptionExclude))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -3875,9 +3268,8 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// based on objects, living beings, scenery or actions found in images. Unlike
         /// categories, tags are not organized according to a hierarchical
         /// classification system, but correspond to image content. Tags may contain
-        /// hints to avoid ambiguity or provide context, for example the tag "cello"
-        /// may be accompanied by the hint "musical instrument". All tags are in
-        /// English.
+        /// hints to avoid ambiguity or provide context, for example the tag
+        /// "ascomycete" may be accompanied by the hint "fungus".
         /// Two input methods are supported -- (1) Uploading an image or (2) specifying
         /// an image URL.
         /// A successful response will be returned in JSON. If the request failed, the
@@ -4060,17 +3452,24 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         }
 
         /// <summary>
-        /// Recognize Text operation. When you use the Recognize Text interface, the
-        /// response contains a field called 'Operation-Location'. The
-        /// 'Operation-Location' field contains the URL that you must use for your Get
-        /// Recognize Text Operation Result operation.
+        /// Use this interface to get the result of a Read operation, employing the
+        /// state-of-the-art Optical Character Recognition (OCR) algorithms optimized
+        /// for text-heavy documents. When you use the Read interface, the response
+        /// contains a field called 'Operation-Location'. The 'Operation-Location'
+        /// field contains the URL that you must use for your 'GetReadResult' operation
+        /// to access OCR results.​
         /// </summary>
-        /// <param name='image'>
-        /// An image stream.
+        /// <param name='url'>
+        /// Publicly reachable URL of an image.
         /// </param>
-        /// <param name='mode'>
-        /// Type of text to recognize. Possible values include: 'Handwritten',
-        /// 'Printed'
+        /// <param name='language'>
+        /// The BCP-47 language code of the text in the document. Currently, only
+        /// English ('en'), Dutch (‘nl’), French (‘fr’), German (‘de’), Italian (‘it’),
+        /// Portuguese (‘pt), and Spanish ('es') are supported. Read supports auto
+        /// language identification and multi-language documents, so only provide a
+        /// language code if you would like to force the documented to be processed as
+        /// that specific language. Possible values include: 'en', 'es', 'fr', 'de',
+        /// 'it', 'nl', 'pt'
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -4090,7 +3489,337 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationHeaderResponse<RecognizeTextInStreamHeaders>> RecognizeTextInStreamWithHttpMessagesAsync(Stream image, TextRecognitionMode mode, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationHeaderResponse<ReadHeaders>> ReadWithHttpMessagesAsync(string url, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Endpoint");
+            }
+            if (url == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "url");
+            }
+            ImageUrl imageUrl = new ImageUrl();
+            if (url != null)
+            {
+                imageUrl.Url = url;
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("language", language);
+                tracingParameters.Add("imageUrl", imageUrl);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "Read", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "read/analyze";
+            _url = _url.Replace("{Endpoint}", Endpoint);
+            List<string> _queryParameters = new List<string>();
+            if (language != null)
+            {
+                _queryParameters.Add(string.Format("language={0}", System.Uri.EscapeDataString(language)));
+            }
+            if (_queryParameters.Count > 0)
+            {
+                _url += "?" + string.Join("&", _queryParameters);
+            }
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("POST");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(imageUrl != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(imageUrl, SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 202)
+            {
+                var ex = new ComputerVisionErrorException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ComputerVisionError _errorBody =  SafeJsonConvert.DeserializeObject<ComputerVisionError>(_responseContent, DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationHeaderResponse<ReadHeaders>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            try
+            {
+                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<ReadHeaders>(JsonSerializer.Create(DeserializationSettings));
+            }
+            catch (JsonException ex)
+            {
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw new SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// This interface is used for getting OCR results of Read operation. The URL
+        /// to this interface should be retrieved from 'Operation-Location' field
+        /// returned from Read interface.
+        /// </summary>
+        /// <param name='operationId'>
+        /// Id of read operation returned in the response of the 'Read' interface.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ComputerVisionErrorException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<ReadOperationResult>> GetReadResultWithHttpMessagesAsync(System.Guid operationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Endpoint");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("operationId", operationId);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "GetReadResult", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "read/analyzeResults/{operationId}";
+            _url = _url.Replace("{Endpoint}", Endpoint);
+            _url = _url.Replace("{operationId}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(operationId, SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("GET");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            // Set Credentials
+            if (Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new ComputerVisionErrorException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ComputerVisionError _errorBody =  SafeJsonConvert.DeserializeObject<ComputerVisionError>(_responseContent, DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<ReadOperationResult>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ReadOperationResult>(_responseContent, DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Use this interface to get the result of a Read operation, employing the
+        /// state-of-the-art Optical Character Recognition (OCR) algorithms optimized
+        /// for text-heavy documents. When you use the Read interface, the response
+        /// contains a field called 'Operation-Location'. The 'Operation-Location'
+        /// field contains the URL that you must use for your 'GetReadResult' operation
+        /// to access OCR results.​
+        /// </summary>
+        /// <param name='image'>
+        /// An image stream.
+        /// </param>
+        /// <param name='language'>
+        /// The BCP-47 language code of the text in the document. Currently, only
+        /// English ('en'), Dutch (‘nl’), French (‘fr’), German (‘de’), Italian (‘it’),
+        /// Portuguese (‘pt), and Spanish ('es') are supported. Read supports auto
+        /// language identification and multi-language documents, so only provide a
+        /// language code if you would like to force the documented to be processed as
+        /// that specific language. Possible values include: 'en', 'es', 'fr', 'de',
+        /// 'it', 'nl', 'pt'
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ComputerVisionErrorException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationHeaderResponse<ReadInStreamHeaders>> ReadInStreamWithHttpMessagesAsync(Stream image, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Endpoint == null)
             {
@@ -4107,17 +3836,20 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("language", language);
                 tracingParameters.Add("image", image);
-                tracingParameters.Add("mode", mode);
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "RecognizeTextInStream", tracingParameters);
+                ServiceClientTracing.Enter(_invocationId, this, "ReadInStream", tracingParameters);
             }
             // Construct URL
             var _baseUrl = BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "recognizeText";
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "read/analyze";
             _url = _url.Replace("{Endpoint}", Endpoint);
             List<string> _queryParameters = new List<string>();
-            _queryParameters.Add(string.Format("mode={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(mode, SerializationSettings).Trim('"'))));
+            if (language != null)
+            {
+                _queryParameters.Add(string.Format("language={0}", System.Uri.EscapeDataString(language)));
+            }
             if (_queryParameters.Count > 0)
             {
                 _url += "?" + string.Join("&", _queryParameters);
@@ -4203,170 +3935,12 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationHeaderResponse<RecognizeTextInStreamHeaders>();
+            var _result = new HttpOperationHeaderResponse<ReadInStreamHeaders>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             try
             {
-                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<RecognizeTextInStreamHeaders>(JsonSerializer.Create(DeserializationSettings));
-            }
-            catch (JsonException ex)
-            {
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw new SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// Use this interface to get the result of a Read Document operation,
-        /// employing the state-of-the-art Optical Character Recognition (OCR)
-        /// algorithms optimized for text-heavy documents. When you use the Read
-        /// Document interface, the response contains a field called
-        /// 'Operation-Location'. The 'Operation-Location' field contains the URL that
-        /// you must use for your 'Get Read Result operation' to access OCR results.​
-        /// </summary>
-        /// <param name='image'>
-        /// An image stream.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ComputerVisionErrorException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationHeaderResponse<BatchReadFileInStreamHeaders>> BatchReadFileInStreamWithHttpMessagesAsync(Stream image, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Endpoint");
-            }
-            if (image == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "image");
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("image", image);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "BatchReadFileInStream", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "read/core/asyncBatchAnalyze";
-            _url = _url.Replace("{Endpoint}", Endpoint);
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(image == null)
-            {
-              throw new System.ArgumentNullException("image");
-            }
-            if (image != null && image != Stream.Null)
-            {
-                _httpRequest.Content = new StreamContent(image);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/octet-stream");
-            }
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 202)
-            {
-                var ex = new ComputerVisionErrorException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ComputerVisionError _errorBody =  SafeJsonConvert.DeserializeObject<ComputerVisionError>(_responseContent, DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationHeaderResponse<BatchReadFileInStreamHeaders>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            try
-            {
-                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<BatchReadFileInStreamHeaders>(JsonSerializer.Create(DeserializationSettings));
+                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<ReadInStreamHeaders>(JsonSerializer.Create(DeserializationSettings));
             }
             catch (JsonException ex)
             {

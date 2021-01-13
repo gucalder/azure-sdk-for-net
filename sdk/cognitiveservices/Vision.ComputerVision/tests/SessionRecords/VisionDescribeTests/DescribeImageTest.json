@@ -1,0 +1,57 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "/vision/v3.1/describe?maxCandidates=2",
+      "EncodedRequestUri": "L3Zpc2lvbi92My4xL2Rlc2NyaWJlP21heENhbmRpZGF0ZXM9Mg==",
+      "RequestMethod": "POST",
+      "RequestBody": "{\r\n  \"url\": \"https://raw.githubusercontent.com/Azure/azure-sdk-for-net/master/sdk/cognitiveservices/Vision.ComputerVision/tests/TestImages/dog.jpg\"\r\n}",
+      "RequestHeaders": {
+        "Ocp-Apim-Subscription-Key": [
+          ""
+        ],
+        "User-Agent": [
+          "FxVersion/4.6.29220.03",
+          "OSName/Windows",
+          "OSVersion/Microsoft.Windows.10.0.18363.",
+          "Microsoft.Azure.CognitiveServices.Vision.ComputerVision.ComputerVisionClient/6.0.0.0"
+        ],
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ],
+        "Content-Length": [
+          "150"
+        ]
+      },
+      "ResponseHeaders": {
+        "csp-billing-usage": [
+          "CognitiveServices.ComputerVision.Describe=1,CognitiveServices.ComputerVision.Transaction=1"
+        ],
+        "x-envoy-upstream-service-time": [
+          "856"
+        ],
+        "apim-request-id": [
+          "4ade9fb4-9385-43dc-bf3e-5f7593a7ad3e"
+        ],
+        "Strict-Transport-Security": [
+          "max-age=31536000; includeSubDomains; preload"
+        ],
+        "X-Content-Type-Options": [
+          "nosniff"
+        ],
+        "Date": [
+          "Wed, 30 Sep 2020 21:51:14 GMT"
+        ],
+        "Content-Length": [
+          "281"
+        ],
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "ResponseBody": "{\r\n  \"description\": {\r\n    \"tags\": [\r\n      \"dog\",\r\n      \"tree\",\r\n      \"outdoor\",\r\n      \"sitting\",\r\n      \"ground\",\r\n      \"animal\",\r\n      \"mammal\",\r\n      \"close\"\r\n    ],\r\n    \"captions\": [\r\n      {\r\n        \"text\": \"a dog with its mouth open\",\r\n        \"confidence\": 0.52405291795730591\r\n      }\r\n    ]\r\n  },\r\n  \"requestId\": \"4ade9fb4-9385-43dc-bf3e-5f7593a7ad3e\",\r\n  \"metadata\": {\r\n    \"height\": 599,\r\n    \"width\": 455,\r\n    \"format\": \"Jpeg\"\r\n  }\r\n}",
+      "StatusCode": 200
+    }
+  ],
+  "Names": {},
+  "Variables": {}
+}

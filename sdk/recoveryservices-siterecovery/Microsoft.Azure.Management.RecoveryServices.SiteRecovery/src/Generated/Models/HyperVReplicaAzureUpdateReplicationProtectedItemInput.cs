@@ -11,6 +11,8 @@
 namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
 {
     using Newtonsoft.Json;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -38,11 +40,20 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         /// resource group Id for resource manager deployment.</param>
         /// <param name="useManagedDisks">A value indicating whether managed
         /// disks should be used during failover.</param>
-        public HyperVReplicaAzureUpdateReplicationProtectedItemInput(string recoveryAzureV1ResourceGroupId = default(string), string recoveryAzureV2ResourceGroupId = default(string), string useManagedDisks = default(string))
+        /// <param name="diskIdToDiskEncryptionMap">The dictionary of disk
+        /// resource Id to disk encryption set ARM Id.</param>
+        /// <param name="targetProximityPlacementGroupId">The target proximity
+        /// placement group Id.</param>
+        /// <param name="targetAvailabilityZone">The target availability
+        /// zone.</param>
+        public HyperVReplicaAzureUpdateReplicationProtectedItemInput(string recoveryAzureV1ResourceGroupId = default(string), string recoveryAzureV2ResourceGroupId = default(string), string useManagedDisks = default(string), IDictionary<string, string> diskIdToDiskEncryptionMap = default(IDictionary<string, string>), string targetProximityPlacementGroupId = default(string), string targetAvailabilityZone = default(string))
         {
             RecoveryAzureV1ResourceGroupId = recoveryAzureV1ResourceGroupId;
             RecoveryAzureV2ResourceGroupId = recoveryAzureV2ResourceGroupId;
             UseManagedDisks = useManagedDisks;
+            DiskIdToDiskEncryptionMap = diskIdToDiskEncryptionMap;
+            TargetProximityPlacementGroupId = targetProximityPlacementGroupId;
+            TargetAvailabilityZone = targetAvailabilityZone;
             CustomInit();
         }
 
@@ -71,6 +82,25 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         /// </summary>
         [JsonProperty(PropertyName = "useManagedDisks")]
         public string UseManagedDisks { get; set; }
+
+        /// <summary>
+        /// Gets or sets the dictionary of disk resource Id to disk encryption
+        /// set ARM Id.
+        /// </summary>
+        [JsonProperty(PropertyName = "diskIdToDiskEncryptionMap")]
+        public IDictionary<string, string> DiskIdToDiskEncryptionMap { get; set; }
+
+        /// <summary>
+        /// Gets or sets the target proximity placement group Id.
+        /// </summary>
+        [JsonProperty(PropertyName = "targetProximityPlacementGroupId")]
+        public string TargetProximityPlacementGroupId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the target availability zone.
+        /// </summary>
+        [JsonProperty(PropertyName = "targetAvailabilityZone")]
+        public string TargetAvailabilityZone { get; set; }
 
     }
 }

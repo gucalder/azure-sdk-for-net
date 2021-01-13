@@ -10,8 +10,8 @@ namespace Microsoft.Azure.Search.Models
     using Serialization;
 
     /// <summary>
-    /// Defines the names of all character filters supported by Azure Search.
-    /// <see href="https://docs.microsoft.com/rest/api/searchservice/Custom-analyzers-in-Azure-Search"/>
+    /// Defines the names of all character filters supported by Azure Cognitive Search.
+    /// For more information, see <see href="https://docs.microsoft.com/azure/search/index-add-custom-analyzers">Add custom analyzers to string fields in an Azure Cognitive Search index</see>.
     /// </summary>
     [JsonConverter(typeof(ExtensibleEnumConverter<CharFilterName>))]
     public struct CharFilterName : IEquatable<CharFilterName>

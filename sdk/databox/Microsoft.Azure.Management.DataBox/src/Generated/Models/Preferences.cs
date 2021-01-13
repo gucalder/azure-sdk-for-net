@@ -31,9 +31,17 @@ namespace Microsoft.Azure.Management.DataBox.Models
         /// <summary>
         /// Initializes a new instance of the Preferences class.
         /// </summary>
-        public Preferences(IList<string> preferredDataCenterRegion = default(IList<string>))
+        /// <param name="preferredDataCenterRegion">Preferred data center
+        /// region.</param>
+        /// <param name="transportPreferences">Preferences related to the
+        /// shipment logistics of the sku.</param>
+        /// <param name="encryptionPreferences">Preferences related to the
+        /// Encryption.</param>
+        public Preferences(IList<string> preferredDataCenterRegion = default(IList<string>), TransportPreferences transportPreferences = default(TransportPreferences), EncryptionPreferences encryptionPreferences = default(EncryptionPreferences))
         {
             PreferredDataCenterRegion = preferredDataCenterRegion;
+            TransportPreferences = transportPreferences;
+            EncryptionPreferences = encryptionPreferences;
             CustomInit();
         }
 
@@ -43,9 +51,36 @@ namespace Microsoft.Azure.Management.DataBox.Models
         partial void CustomInit();
 
         /// <summary>
+        /// Gets or sets preferred data center region.
         /// </summary>
         [JsonProperty(PropertyName = "preferredDataCenterRegion")]
         public IList<string> PreferredDataCenterRegion { get; set; }
 
+        /// <summary>
+        /// Gets or sets preferences related to the shipment logistics of the
+        /// sku.
+        /// </summary>
+        [JsonProperty(PropertyName = "transportPreferences")]
+        public TransportPreferences TransportPreferences { get; set; }
+
+        /// <summary>
+        /// Gets or sets preferences related to the Encryption.
+        /// </summary>
+        [JsonProperty(PropertyName = "encryptionPreferences")]
+        public EncryptionPreferences EncryptionPreferences { get; set; }
+
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="Rest.ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            if (TransportPreferences != null)
+            {
+                TransportPreferences.Validate();
+            }
+        }
     }
 }

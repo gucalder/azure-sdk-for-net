@@ -51,8 +51,8 @@ namespace Microsoft.Azure.Search
         public SearchServiceClient Client { get; private set; }
 
         /// <summary>
-        /// Creates a new Azure Search index.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Create-Index" />
+        /// Creates a new search index.
+        /// For more information, see <see href="https://docs.microsoft.com/rest/api/searchservice/create-index">Create Index</see>.
         /// </summary>
         /// <param name='index'>
         /// The definition of the index to create.
@@ -270,8 +270,8 @@ namespace Microsoft.Azure.Search
         }
 
         /// <summary>
-        /// Lists all indexes available for an Azure Search service.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/List-Indexes" />
+        /// Lists all indexes available for a search service.
+        /// For more information, see <see href="https://docs.microsoft.com/rest/api/searchservice/list-indexes">List Indexes</see>.
         /// </summary>
         /// <param name='select'>
         /// Selects which properties of the index definitions to retrieve. Specified as
@@ -481,8 +481,8 @@ namespace Microsoft.Azure.Search
         }
 
         /// <summary>
-        /// Creates a new Azure Search index or updates an index if it already exists.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Update-Index" />
+        /// Creates a new search index or updates an index if it already exists.
+        /// For more information, see <see href="https://docs.microsoft.com/rest/api/searchservice/update-index">Update Index</see>.
         /// </summary>
         /// <param name='indexName'>
         /// The definition of the index to create or update.
@@ -780,8 +780,8 @@ namespace Microsoft.Azure.Search
         }
 
         /// <summary>
-        /// Deletes an Azure Search index and all the documents it contains.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Delete-Index" />
+        /// Deletes a search index and all the documents it contains.
+        /// For more information, see <see href="https://docs.microsoft.com/rest/api/searchservice/delete-index">Delete Index</see>.
         /// </summary>
         /// <param name='indexName'>
         /// The name of the index to delete.
@@ -1000,8 +1000,8 @@ namespace Microsoft.Azure.Search
         }
 
         /// <summary>
-        /// Retrieves an index definition from Azure Search.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Get-Index" />
+        /// Retrieves an index definition.
+        /// For more information, see <see href="https://docs.microsoft.com/rest/api/searchservice/get-index">Get Index</see>.
         /// </summary>
         /// <param name='indexName'>
         /// The name of the index to retrieve.
@@ -1212,7 +1212,7 @@ namespace Microsoft.Azure.Search
         /// <summary>
         /// Returns statistics for the given index, including a document count and
         /// storage usage.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Get-Index-Statistics" />
+        /// For more information, see <see href="https://docs.microsoft.com/rest/api/searchservice/get-index-statistics">Get Index Statistics</see>.
         /// </summary>
         /// <param name='indexName'>
         /// The name of the index for which to retrieve statistics.
@@ -1422,7 +1422,7 @@ namespace Microsoft.Azure.Search
 
         /// <summary>
         /// Shows how an analyzer breaks text into tokens.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/test-analyzer" />
+        /// For more information, see <see href="https://docs.microsoft.com/rest/api/searchservice/test-analyzer">Analyze Text</see>.
         /// </summary>
         /// <param name='indexName'>
         /// The name of the index for which to test an analyzer.

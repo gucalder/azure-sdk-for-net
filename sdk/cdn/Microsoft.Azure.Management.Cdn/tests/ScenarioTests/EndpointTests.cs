@@ -24,7 +24,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -60,7 +60,12 @@ namespace Cdn.Tests.ScenarioTests
                         new DeepCreatedOrigin
                         {
                             Name = "origin1",
-                            HostName = "host1.hello.com"
+                            HostName = "host1.hello.com",
+                            Priority = 3,
+                            Weight = 100,
+                            PrivateLinkLocation = "EastUS",
+                            PrivateLinkResourceId = "/subscriptions/da61bba1-cbd5-438c-a738-c717a6b2d59f/resourceGroups/moeidrg/providers/Microsoft.Network/privateLinkServices/pls-east-3",
+                            PrivateLinkApprovalMessage = "This is a test request",
                         }
                     }
                 };
@@ -354,7 +359,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -582,7 +587,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -661,11 +666,6 @@ namespace Cdn.Tests.ScenarioTests
                     .GetAwaiter()
                     .GetResult();
 
-                // Delete endpoint in creating state should fail
-                Assert.ThrowsAny<ErrorResponseException>(() => {
-                    cdnMgmtClient.Endpoints.Delete(resourceGroupName, profileName, endpointName);
-                });
-
                 // Wait for second endpoint to complete creation
                 CdnTestUtilities.WaitIfNotInPlaybackMode();
 
@@ -687,7 +687,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -812,7 +812,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -876,7 +876,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -1021,7 +1021,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -1110,7 +1110,7 @@ namespace Cdn.Tests.ScenarioTests
             var handler1 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
             var handler2 = new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK };
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 // Create clients
                 var cdnMgmtClient = CdnTestUtilities.GetCdnManagementClient(context, handler1);
@@ -1155,7 +1155,7 @@ namespace Cdn.Tests.ScenarioTests
 
                 // Check usage should return one with current value being zero
                 var endpointLevelUsage = cdnMgmtClient.Endpoints.ListResourceUsage(resourceGroupName, profileName, endpointName);
-                Assert.Equal(2, endpointLevelUsage.Count());
+                Assert.Equal(3, endpointLevelUsage.Count());
 
                 var defaultEndpointLevelGeoFilterUsage = endpointLevelUsage.First(u => u.ResourceType.Equals("geofilter"));
                 Assert.Equal(25, defaultEndpointLevelGeoFilterUsage.Limit);
@@ -1189,7 +1189,7 @@ namespace Cdn.Tests.ScenarioTests
 
                 // Check usage again
                 endpointLevelUsage = cdnMgmtClient.Endpoints.ListResourceUsage(resourceGroupName, profileName, endpointName);
-                Assert.Equal(2, endpointLevelUsage.Count());
+                Assert.Equal(3, endpointLevelUsage.Count());
 
                 var endpointLevelGeoFilterUsage = endpointLevelUsage.First(u => u.ResourceType.Equals("geofilter"));
                 Assert.Equal(25, endpointLevelGeoFilterUsage.Limit);

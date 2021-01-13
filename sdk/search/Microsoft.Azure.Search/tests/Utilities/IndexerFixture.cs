@@ -8,6 +8,7 @@ namespace Microsoft.Azure.Search.Tests.Utilities
     using System.Collections.Generic;
     using Microsoft.Azure.Search.Models;
     using Microsoft.Rest.ClientRuntime.Azure.TestFramework;
+    using Index = Microsoft.Azure.Search.Models.Index;
 
     public class IndexerFixture : SearchServiceFixture
     {
@@ -53,7 +54,7 @@ namespace Microsoft.Azure.Search.Tests.Utilities
 
             searchClient.Indexes.Create(index);
 
-            var dataSource = 
+            var dataSource =
                 DataSource.AzureSql(
                     name: DataSourceName,
                     sqlConnectionString: AzureSqlReadOnlyConnectionString,
@@ -72,9 +73,9 @@ namespace Microsoft.Azure.Search.Tests.Utilities
                 {
                     // Try all the field mapping functions (even if they don't make sense in the context of the test DB).
                     new FieldMapping("feature_class", FieldMappingFunction.Base64Encode()),
-                    new FieldMapping("state_alpha", "state"),
+                    new FieldMapping("state_alpha", "state", FieldMappingFunction.UrlEncode()),
                     new FieldMapping("county_name", FieldMappingFunction.ExtractTokenAtPosition(" ", 0)),
-                    new FieldMapping("elev_in_m", "elevation"),
+                    new FieldMapping("elev_in_m", "elevation", FieldMappingFunction.UrlDecode()),
                     new FieldMapping("map_name", FieldMappingFunction.Base64Decode()),
                     new FieldMapping("history", FieldMappingFunction.JsonArrayToStringCollection())
                 }

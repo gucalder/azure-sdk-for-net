@@ -82,34 +82,59 @@ namespace Microsoft.Azure.Management.Security
         IPricingsOperations Pricings { get; }
 
         /// <summary>
-        /// Gets the IAlertsOperations.
-        /// </summary>
-        IAlertsOperations Alerts { get; }
-
-        /// <summary>
         /// Gets the ISettingsOperations.
         /// </summary>
         ISettingsOperations Settings { get; }
 
         /// <summary>
-        /// Gets the IAllowedConnectionsOperations.
+        /// Gets the IAdvancedThreatProtectionOperations.
         /// </summary>
-        IAllowedConnectionsOperations AllowedConnections { get; }
+        IAdvancedThreatProtectionOperations AdvancedThreatProtection { get; }
 
         /// <summary>
-        /// Gets the IDiscoveredSecuritySolutionsOperations.
+        /// Gets the IDeviceSecurityGroupsOperations.
         /// </summary>
-        IDiscoveredSecuritySolutionsOperations DiscoveredSecuritySolutions { get; }
+        IDeviceSecurityGroupsOperations DeviceSecurityGroups { get; }
 
         /// <summary>
-        /// Gets the IExternalSecuritySolutionsOperations.
+        /// Gets the IIotSecuritySolutionOperations.
         /// </summary>
-        IExternalSecuritySolutionsOperations ExternalSecuritySolutions { get; }
+        IIotSecuritySolutionOperations IotSecuritySolution { get; }
 
         /// <summary>
-        /// Gets the IJitNetworkAccessPoliciesOperations.
+        /// Gets the IIotSecuritySolutionAnalyticsOperations.
         /// </summary>
-        IJitNetworkAccessPoliciesOperations JitNetworkAccessPolicies { get; }
+        IIotSecuritySolutionAnalyticsOperations IotSecuritySolutionAnalytics { get; }
+
+        /// <summary>
+        /// Gets the IIotSecuritySolutionsAnalyticsAggregatedAlertOperations.
+        /// </summary>
+        IIotSecuritySolutionsAnalyticsAggregatedAlertOperations IotSecuritySolutionsAnalyticsAggregatedAlert { get; }
+
+        /// <summary>
+        /// Gets the IIotSecuritySolutionsAnalyticsRecommendationOperations.
+        /// </summary>
+        IIotSecuritySolutionsAnalyticsRecommendationOperations IotSecuritySolutionsAnalyticsRecommendation { get; }
+
+        /// <summary>
+        /// Gets the IIotAlertTypesOperations.
+        /// </summary>
+        IIotAlertTypesOperations IotAlertTypes { get; }
+
+        /// <summary>
+        /// Gets the IIotAlertsOperations.
+        /// </summary>
+        IIotAlertsOperations IotAlerts { get; }
+
+        /// <summary>
+        /// Gets the IIotRecommendationTypesOperations.
+        /// </summary>
+        IIotRecommendationTypesOperations IotRecommendationTypes { get; }
+
+        /// <summary>
+        /// Gets the IIotRecommendationsOperations.
+        /// </summary>
+        IIotRecommendationsOperations IotRecommendations { get; }
 
         /// <summary>
         /// Gets the ILocationsOperations.
@@ -125,16 +150,6 @@ namespace Microsoft.Azure.Management.Security
         /// Gets the ITasksOperations.
         /// </summary>
         ITasksOperations Tasks { get; }
-
-        /// <summary>
-        /// Gets the ITopologyOperations.
-        /// </summary>
-        ITopologyOperations Topology { get; }
-
-        /// <summary>
-        /// Gets the IAdvancedThreatProtectionOperations.
-        /// </summary>
-        IAdvancedThreatProtectionOperations AdvancedThreatProtection { get; }
 
         /// <summary>
         /// Gets the IAutoProvisioningSettingsOperations.
@@ -175,6 +190,151 @@ namespace Microsoft.Azure.Management.Security
         /// Gets the IRegulatoryComplianceAssessmentsOperations.
         /// </summary>
         IRegulatoryComplianceAssessmentsOperations RegulatoryComplianceAssessments { get; }
+
+        /// <summary>
+        /// Gets the ISubAssessmentsOperations.
+        /// </summary>
+        ISubAssessmentsOperations SubAssessments { get; }
+
+        /// <summary>
+        /// Gets the IAutomationsOperations.
+        /// </summary>
+        IAutomationsOperations Automations { get; }
+
+        /// <summary>
+        /// Gets the IAlertsSuppressionRulesOperations.
+        /// </summary>
+        IAlertsSuppressionRulesOperations AlertsSuppressionRules { get; }
+
+        /// <summary>
+        /// Gets the IServerVulnerabilityAssessmentOperations.
+        /// </summary>
+        IServerVulnerabilityAssessmentOperations ServerVulnerabilityAssessment { get; }
+
+        /// <summary>
+        /// Gets the IAssessmentsMetadataOperations.
+        /// </summary>
+        IAssessmentsMetadataOperations AssessmentsMetadata { get; }
+
+        /// <summary>
+        /// Gets the IAssessmentsOperations.
+        /// </summary>
+        IAssessmentsOperations Assessments { get; }
+
+        /// <summary>
+        /// Gets the IAdaptiveApplicationControlsOperations.
+        /// </summary>
+        IAdaptiveApplicationControlsOperations AdaptiveApplicationControls { get; }
+
+        /// <summary>
+        /// Gets the IAdaptiveNetworkHardeningsOperations.
+        /// </summary>
+        IAdaptiveNetworkHardeningsOperations AdaptiveNetworkHardenings { get; }
+
+        /// <summary>
+        /// Gets the IAllowedConnectionsOperations.
+        /// </summary>
+        IAllowedConnectionsOperations AllowedConnections { get; }
+
+        /// <summary>
+        /// Gets the ITopologyOperations.
+        /// </summary>
+        ITopologyOperations Topology { get; }
+
+        /// <summary>
+        /// Gets the IAlertsOperations.
+        /// </summary>
+        IAlertsOperations Alerts { get; }
+
+        /// <summary>
+        /// Gets the IJitNetworkAccessPoliciesOperations.
+        /// </summary>
+        IJitNetworkAccessPoliciesOperations JitNetworkAccessPolicies { get; }
+
+        /// <summary>
+        /// Gets the IDiscoveredSecuritySolutionsOperations.
+        /// </summary>
+        IDiscoveredSecuritySolutionsOperations DiscoveredSecuritySolutions { get; }
+
+        /// <summary>
+        /// Gets the ISecuritySolutionsReferenceDataOperations.
+        /// </summary>
+        ISecuritySolutionsReferenceDataOperations SecuritySolutionsReferenceData { get; }
+
+        /// <summary>
+        /// Gets the IExternalSecuritySolutionsOperations.
+        /// </summary>
+        IExternalSecuritySolutionsOperations ExternalSecuritySolutions { get; }
+
+        /// <summary>
+        /// Gets the ISecureScoresOperations.
+        /// </summary>
+        ISecureScoresOperations SecureScores { get; }
+
+        /// <summary>
+        /// Gets the ISecureScoreControlsOperations.
+        /// </summary>
+        ISecureScoreControlsOperations SecureScoreControls { get; }
+
+        /// <summary>
+        /// Gets the ISecureScoreControlDefinitionsOperations.
+        /// </summary>
+        ISecureScoreControlDefinitionsOperations SecureScoreControlDefinitions { get; }
+
+        /// <summary>
+        /// Gets the ISecuritySolutionsOperations.
+        /// </summary>
+        ISecuritySolutionsOperations SecuritySolutions { get; }
+
+        /// <summary>
+        /// Gets the IConnectorsOperations.
+        /// </summary>
+        IConnectorsOperations Connectors { get; }
+
+        /// <summary>
+        /// Gets the ISqlVulnerabilityAssessmentScansOperations.
+        /// </summary>
+        ISqlVulnerabilityAssessmentScansOperations SqlVulnerabilityAssessmentScans { get; }
+
+        /// <summary>
+        /// Gets the ISqlVulnerabilityAssessmentScanResultsOperations.
+        /// </summary>
+        ISqlVulnerabilityAssessmentScanResultsOperations SqlVulnerabilityAssessmentScanResults { get; }
+
+        /// <summary>
+        /// Gets the ISqlVulnerabilityAssessmentBaselineRulesOperations.
+        /// </summary>
+        ISqlVulnerabilityAssessmentBaselineRulesOperations SqlVulnerabilityAssessmentBaselineRules { get; }
+
+        /// <summary>
+        /// Gets the IIotDefenderSettingsOperations.
+        /// </summary>
+        IIotDefenderSettingsOperations IotDefenderSettings { get; }
+
+        /// <summary>
+        /// Gets the IIotSensorsOperations.
+        /// </summary>
+        IIotSensorsOperations IotSensors { get; }
+
+        /// <summary>
+        /// Gets the IDevicesForSubscriptionOperations.
+        /// </summary>
+        IDevicesForSubscriptionOperations DevicesForSubscription { get; }
+
+        /// <summary>
+        /// Gets the IDevicesForHubOperations.
+        /// </summary>
+        IDevicesForHubOperations DevicesForHub { get; }
+
+        /// <summary>
+        /// Gets the IDeviceOperations.
+        /// </summary>
+        IDeviceOperations Device { get; }
+
+        /// <summary>
+        /// Gets the IOnPremiseIotSensorsOperations.
+        /// </summary>
+        IOnPremiseIotSensorsOperations OnPremiseIotSensors { get; }
 
     }
 }

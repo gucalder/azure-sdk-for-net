@@ -28,8 +28,9 @@ namespace Microsoft.Azure.Batch
         /// Initializes a new instance of the <see cref="ImageReference"/> class.
         /// </summary>
         /// <param name="virtualMachineImageId">
-        /// The ARM resource identifier of the virtual machine image. Computes nodes of the pool will be created using
-        /// this custom image. This is of the form /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Compute/images/{imageName}
+        /// The ARM resource identifier of the Shared Image Gallery Image. Compute Nodes of the Pool will be created using this Image Id. 
+        /// This is of the form
+        /// /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Compute/galleries/{galleryName}/images/{imageDefinitionName}/versions/{versionId}.
         /// </param>
         public ImageReference(
             string virtualMachineImageId)

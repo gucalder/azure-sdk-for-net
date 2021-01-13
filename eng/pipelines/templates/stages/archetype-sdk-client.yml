@@ -1,0 +1,69 @@
+resources:
+  repositories:
+    - repository: azure-sdk-build-tools
+      type: git
+      name: internal/azure-sdk-build-tools
+      ref: refs/tags/azure-sdk-build-tools_20200916.1
+
+parameters:
+- name: Artifacts
+  type: object
+  default: []
+- name: TestPipeline
+  type: boolean
+  default: false
+- name: ArtifactName
+  type: string
+  default: packages
+- name: SDKType
+  type: string
+  default: client
+- name: ServiceDirectory
+  type: string
+  default: not-specified
+- name: ServiceToTest
+  type: string
+  default: ''
+- name: TargetDocRepoOwner
+  type: string
+  default: Azure
+- name: TargetDocRepoName
+  type: string
+  default: azure-docs-sdk-dotnet
+- name: TestSetupSteps
+  type: stepList
+  default: []
+- name: WindowsPool
+  type: string
+  default: azsdk-pool-mms-win-2019-general
+- name: LinuxPool
+  type: string
+  default: azsdk-pool-mms-ubuntu-1804-general
+
+stages:
+  - stage: Build
+    jobs:
+    - template: ../jobs/archetype-sdk-client.yml
+      parameters:
+        SDKType: ${{ parameters.SDKType }}
+        ServiceToTest: ${{ coalesce(parameters.ServiceToTest, parameters.ServiceDirectory) }}
+        ServiceDirectory: ${{ parameters.ServiceDirectory }}
+        Artifacts: ${{ parameters.Artifacts }}
+        TestPipeline: ${{ parameters.TestPipeline }}
+        ArtifactName: packages
+        TestSetupSteps: ${{ parameters.TestSetupSteps }}
+        WindowsPool: ${{ parameters.WindowsPool }}
+        LinuxPool: ${{ parameters.LinuxPool }}
+
+  # The Prerelease and Release stages are conditioned on whether we are building a pull request and the branch.
+  - ${{if and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['System.TeamProject'], 'internal'))}}:
+    - template: archetype-net-release.yml
+      parameters:
+        SDKType: ${{ parameters.SDKType }}
+        ServiceDirectory: ${{ parameters.ServiceDirectory }}
+        DependsOn: Build
+        Artifacts: ${{ parameters.Artifacts }}
+        TestPipeline: ${{ parameters.TestPipeline }}
+        ArtifactName: packages
+        TargetDocRepoOwner: ${{ parameters.TargetDocRepoOwner }}
+        TargetDocRepoName: ${{ parameters.TargetDocRepoName }}

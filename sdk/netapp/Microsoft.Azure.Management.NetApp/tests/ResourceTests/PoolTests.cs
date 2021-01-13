@@ -1,4 +1,4 @@
-﻿using NetApp.Tests.Helpers;
+using NetApp.Tests.Helpers;
 using Microsoft.Azure.Management.NetApp;
 using Microsoft.Azure.Management.Resources;
 using Microsoft.Azure.Test.HttpRecorder;
@@ -11,16 +11,18 @@ using Xunit;
 using System;
 using Microsoft.Azure.Management.NetApp.Models;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace NetApp.Tests.ResourceTests
 {
     public class PoolTests : TestBase
     {
+        private const int delay = 5000;
         [Fact]
         public void CreateDeletePool()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
@@ -47,7 +49,7 @@ namespace NetApp.Tests.ResourceTests
         public void ListPools()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
@@ -56,7 +58,8 @@ namespace NetApp.Tests.ResourceTests
                 var dict = new Dictionary<string, string>();
                 dict.Add("Tag2", "Value2");
                 var resource = ResourceUtils.CreatePool(netAppMgmtClient, tags: dict);
-                Assert.True(resource.Tags.ToString().Contains("Tag2") && resource.Tags.ToString().Contains("Value2"));
+                Assert.True(resource.Tags.ContainsKey("Tag2"));
+                Assert.Equal("Value2", resource.Tags["Tag2"]);
 
                 ResourceUtils.CreatePool(netAppMgmtClient, ResourceUtils.poolName2, poolOnly: true);
 
@@ -77,7 +80,7 @@ namespace NetApp.Tests.ResourceTests
         public void GetPoolByName()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
@@ -98,7 +101,7 @@ namespace NetApp.Tests.ResourceTests
         public void GetPoolByNameNotFound()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
@@ -125,7 +128,7 @@ namespace NetApp.Tests.ResourceTests
         public void GetPoolByNameAccountNotFound()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
@@ -153,7 +156,7 @@ namespace NetApp.Tests.ResourceTests
         public void DeleteAccountWithPoolPresent()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
@@ -185,7 +188,7 @@ namespace NetApp.Tests.ResourceTests
         public void UpdatePool()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
@@ -199,13 +202,11 @@ namespace NetApp.Tests.ResourceTests
                 // and must also be provided otherwise Bad Request
                 var dict = new Dictionary<string, string>();
                 dict.Add("Tag3", "Value3");
-                pool.Tags = dict;
-                pool.ServiceLevel = "Standard";
+                pool.Tags = dict;                
 
-                var updatedPool = netAppMgmtClient.Pools.CreateOrUpdate(pool, ResourceUtils.resourceGroup, ResourceUtils.accountName1, ResourceUtils.poolName1);
-                Assert.Equal("Standard", updatedPool.ServiceLevel);
-                Assert.Equal(4398046511104, updatedPool.Size); // unchanged
-                Assert.True(updatedPool.Tags.ToString().Contains("Tag3") && updatedPool.Tags.ToString().Contains("Value3"));
+                var updatedPool = netAppMgmtClient.Pools.CreateOrUpdate(pool, ResourceUtils.resourceGroup, ResourceUtils.accountName1, ResourceUtils.poolName1);                
+                Assert.True(updatedPool.Tags.ContainsKey("Tag3"));
+                Assert.Equal("Value3", updatedPool.Tags["Tag3"]);
 
                 // cleanup
                 ResourceUtils.DeletePool(netAppMgmtClient);
@@ -217,11 +218,11 @@ namespace NetApp.Tests.ResourceTests
         public void PatchPool()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var netAppMgmtClient = NetAppTestUtilities.GetNetAppManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
                 
-                // create the pool
+                // create the pool  
                 var pool = ResourceUtils.CreatePool(netAppMgmtClient);
                 Assert.Equal("Premium", pool.ServiceLevel);
                 Assert.Null(pool.Tags);
@@ -234,17 +235,19 @@ namespace NetApp.Tests.ResourceTests
                 // size should remain unchanged
                 var poolPatch = new CapacityPoolPatch()
                 {
-                    Tags = dict,
-                    ServiceLevel = "Standard"
+                    Tags = dict,                    
                 };
 
-                var resource = netAppMgmtClient.Pools.Update(poolPatch, ResourceUtils.resourceGroup, ResourceUtils.accountName1, ResourceUtils.poolName1);
-                Assert.Equal("Standard", resource.ServiceLevel);
-                Assert.Equal(4398046511104, resource.Size); // unchanged
-                Assert.True(resource.Tags.ToString().Contains("Tag1") && resource.Tags.ToString().Contains("Value1"));
-                
+                var resource = netAppMgmtClient.Pools.Update(poolPatch, ResourceUtils.resourceGroup, ResourceUtils.accountName1, ResourceUtils.poolName1);                             
+                Assert.True(resource.Tags.ContainsKey("Tag1"));
+                Assert.Equal("Value1", resource.Tags["Tag1"]);
+
                 // cleanup
-                ResourceUtils.DeletePool(netAppMgmtClient);
+                ResourceUtils.DeletePool(netAppMgmtClient);                
+                if (Environment.GetEnvironmentVariable("AZURE_TEST_MODE") == "Record")
+                {
+                    Thread.Sleep(delay);
+                }
                 ResourceUtils.DeleteAccount(netAppMgmtClient);
             }
         }

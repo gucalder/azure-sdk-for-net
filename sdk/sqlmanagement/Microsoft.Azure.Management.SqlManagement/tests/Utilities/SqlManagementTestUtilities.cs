@@ -35,6 +35,8 @@ namespace Sql.Tests
 
         public const string TestPrefix = "sqlcrudtest-";
 
+        public const string TestPublicMaintenanceConfiguration = "DB_1";
+
         public static string GenerateName(
             string prefix = TestPrefix,
             [System.Runtime.CompilerServices.CallerMemberName]
@@ -76,7 +78,7 @@ namespace Sql.Tests
             }
         }
 
-        public static void ValidateServer(Server actual, string name, string login, string version, Dictionary<string, string> tags, string location)
+        public static void ValidateServer(Server actual, string name, string login, string version, Dictionary<string, string> tags, string location, string publicNetworkAccess = null, string minimalTlsVersion = null)
         {
             Assert.NotNull(actual);
             Assert.Equal(name, actual.Name);
@@ -86,6 +88,16 @@ namespace Sql.Tests
 
             // Location is being returned two different ways across different APIs.
             Assert.Equal(location.ToLower().Replace(" ", ""), actual.Location.ToLower().Replace(" ", ""));
+
+            if (publicNetworkAccess != null)
+            {
+                Assert.Equal(publicNetworkAccess, actual.PublicNetworkAccess);
+            }
+
+            if (minimalTlsVersion != null)
+            {
+                Assert.Equal(minimalTlsVersion, actual.MinimalTlsVersion);
+            }
         }
 
         public static void ValidateInstancePool(
@@ -116,11 +128,17 @@ namespace Sql.Tests
             Assert.Equal(usageName, actual.Name.Value);
         }
 
-        public static void ValidateManagedInstance(ManagedInstance actual, string name, string login, Dictionary<string, string> tags, string location, string instancePoolId = null)
+        public static void ValidateManagedInstance(ManagedInstance actual, string name, string login, Dictionary<string, string> tags, string location, string instancePoolId = null, bool shouldCheckState = false)
         {
             Assert.NotNull(actual);
             Assert.Equal(name, actual.Name);
             Assert.Equal(login, actual.AdministratorLogin);
+
+            if (shouldCheckState)
+            {
+                Assert.Equal("Succeeded", actual.ProvisioningState);
+            }
+
             SqlManagementTestUtilities.AssertCollection(tags, actual.Tags);
 
             if (instancePoolId != null)
@@ -130,6 +148,16 @@ namespace Sql.Tests
 
             // Location is being returned two different ways across different APIs.
             Assert.Equal(location.ToLower().Replace(" ", ""), actual.Location.ToLower().Replace(" ", ""));
+        }
+
+        public static void ValidateManagedInstanceOperation(ManagedInstanceOperation actual, string operationName, string operationFriendlyName, int percentComplete, string state, bool isCancellable)
+        {
+            Assert.NotNull(actual);
+            Assert.Equal(operationName, actual.Name);
+            Assert.Equal(operationFriendlyName, actual.OperationFriendlyName);
+            Assert.Equal(percentComplete, actual.PercentComplete);
+            Assert.Equal(state, actual.State);
+            Assert.Equal(isCancellable, actual.IsCancellable);
         }
 
         public static void ValidateDatabase(dynamic expected, Database actual, string name)
@@ -185,6 +213,26 @@ namespace Sql.Tests
             if (expected.Tags != null)
             {
                 AssertCollection(expected.Tags, actual.Tags);
+            }
+
+            if (expected.ReadScale != null)
+            {
+                Assert.Equal(expected.ReadScale, actual.ReadScale);
+            }
+
+            if (expected.HighAvailabilityReplicaCount != null)
+            {
+                Assert.Equal(expected.HighAvailabilityReplicaCount, actual.HighAvailabilityReplicaCount);
+            }
+
+            if (!string.IsNullOrEmpty(expected.StorageAccountType))
+            {
+                Assert.Equal(expected.StorageAccountType, actual.StorageAccountType);
+            }
+
+            if (!string.IsNullOrEmpty(expected.MaintenanceConfigurationId))
+            {
+                Assert.Equal(expected.MaintenanceConfigurationId, actual.MaintenanceConfigurationId);
             }
         }
 
@@ -329,6 +377,11 @@ namespace Sql.Tests
                 AssertCollection(expected.Tags, actual.Tags);
             }
 
+            if (!string.IsNullOrEmpty(expected.MaintenanceConfigurationId))
+            {
+                Assert.Equal(expected.MaintenanceConfigurationId, actual.MaintenanceConfigurationId);
+            }
+
             Assert.NotNull(actual.CreationDate);
             Assert.NotNull(actual.DatabaseDtuMax);
             Assert.NotNull(actual.DatabaseDtuMin);
@@ -398,6 +451,13 @@ namespace Sql.Tests
         {
             Assert.NotNull(actual.Id);
             Assert.Equal(expected.VirtualNetworkSubnetId, actual.VirtualNetworkSubnetId);
+        }
+
+        public static void ValidatePrivateEndpointConnection(PrivateEndpointConnection expected, PrivateEndpointConnection actual)
+        {
+            Assert.NotNull(actual);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.PrivateLinkServiceConnectionState.Status, actual.PrivateLinkServiceConnectionState.Status);
         }
 
         internal static Task<Database[]> CreateDatabasesAsync(
@@ -584,6 +644,11 @@ namespace Sql.Tests
                     TestUtilities.Wait(retryDelay);
                 }
             }
+        }
+
+        public static string GetTestMaintenanceConfigurationId(string subscriptionId)
+        {
+            return $"/subscriptions/{subscriptionId}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_{TestEnvironmentUtilities.DefaultLocation.Replace(" ", string.Empty)}_{TestPublicMaintenanceConfiguration}";
         }
     }
 }

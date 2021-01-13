@@ -1,19 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<!-- Please do not move/edit code below this line -->
 	<Import Project="$(RepoEngPath)/mgmt/AzSdk.reference.props" />
-	<!-- Please do not move/edit code below this line -->
+	<!-- Please do not move/edit code above this line -->
 
 	<PropertyGroup>
 		<PackageId>Microsoft.Azure.Management.Network</PackageId>
-		<Description>Provides management capabilities for Network services.</Description>
+		<Description>
+			Provides management capabilities for Network services.
+			Development of this library has shifted focus to the Azure Unified SDK. The future development will be focused on "Azure.ResourceManager.Network" (https://www.nuget.org/packages/Azure.ResourceManager.Network/). Please see the package changelog for more information.
+		</Description>
 		<AssemblyName>Microsoft.Azure.Management.Network</AssemblyName>
-		<Version>19.13.0-preview</Version>
-		<PackageTags>Microsoft Azure Network management;Network;Network management;</PackageTags>    
+		<Version>20.3.0</Version>
+		<PackageTags>Microsoft Azure Network management;Network;Network management;</PackageTags>
 		<PackageReleaseNotes>
 		<![CDATA[
-            - Added VpnSiteLink and VpnSiteLinkConnection operations
-            - Added UpdateTags operation for AzureFirewall
-            - Update operations for PrivateEndpoint and PrivateLinkService
+            - Added new api version 2020-08-01
+			- Added extended location properties for private link and other resources
+			- Fixed GetIkeSas returns restult as a string
+			- Added supporting for listing IKE Security Assosiations for Virtual Network Gateway Connections
+			- Added location parameter for LB backend address pool properties
 		]]></PackageReleaseNotes>
 	</PropertyGroup>
 	<PropertyGroup>

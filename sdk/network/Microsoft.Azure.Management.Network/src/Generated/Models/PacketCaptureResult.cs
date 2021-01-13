@@ -36,8 +36,8 @@ namespace Microsoft.Azure.Management.Network.Models
         /// </summary>
         /// <param name="target">The ID of the targeted resource, only VM is
         /// currently supported.</param>
-        /// <param name="storageLocation">Describes the storage location for a
-        /// packet capture session.</param>
+        /// <param name="storageLocation">The storage location for a packet
+        /// capture session.</param>
         /// <param name="name">Name of the packet capture session.</param>
         /// <param name="id">ID of the packet capture operation.</param>
         /// <param name="etag">A unique read-only string that changes whenever
@@ -52,7 +52,7 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="provisioningState">The provisioning state of the
         /// packet capture session. Possible values include: 'Succeeded',
         /// 'Updating', 'Deleting', 'Failed'</param>
-        public PacketCaptureResult(string target, PacketCaptureStorageLocation storageLocation, string name = default(string), string id = default(string), string etag = default(string), int? bytesToCapturePerPacket = default(int?), int? totalBytesPerSession = default(int?), int? timeLimitInSeconds = default(int?), IList<PacketCaptureFilter> filters = default(IList<PacketCaptureFilter>), string provisioningState = default(string))
+        public PacketCaptureResult(string target, PacketCaptureStorageLocation storageLocation, string name = default(string), string id = default(string), string etag = default(string), long? bytesToCapturePerPacket = default(long?), long? totalBytesPerSession = default(long?), int? timeLimitInSeconds = default(int?), IList<PacketCaptureFilter> filters = default(IList<PacketCaptureFilter>), string provisioningState = default(string))
         {
             Name = name;
             Id = id;
@@ -85,11 +85,11 @@ namespace Microsoft.Azure.Management.Network.Models
         public string Id { get; private set; }
 
         /// <summary>
-        /// Gets or sets a unique read-only string that changes whenever the
-        /// resource is updated.
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
 
         /// <summary>
         /// Gets or sets the ID of the targeted resource, only VM is currently
@@ -103,13 +103,13 @@ namespace Microsoft.Azure.Management.Network.Models
         /// bytes are truncated.
         /// </summary>
         [JsonProperty(PropertyName = "properties.bytesToCapturePerPacket")]
-        public int? BytesToCapturePerPacket { get; set; }
+        public long? BytesToCapturePerPacket { get; set; }
 
         /// <summary>
         /// Gets or sets maximum size of the capture output.
         /// </summary>
         [JsonProperty(PropertyName = "properties.totalBytesPerSession")]
-        public int? TotalBytesPerSession { get; set; }
+        public long? TotalBytesPerSession { get; set; }
 
         /// <summary>
         /// Gets or sets maximum duration of the capture session in seconds.
@@ -118,8 +118,7 @@ namespace Microsoft.Azure.Management.Network.Models
         public int? TimeLimitInSeconds { get; set; }
 
         /// <summary>
-        /// Gets or sets describes the storage location for a packet capture
-        /// session.
+        /// Gets or sets the storage location for a packet capture session.
         /// </summary>
         [JsonProperty(PropertyName = "properties.storageLocation")]
         public PacketCaptureStorageLocation StorageLocation { get; set; }
@@ -131,12 +130,11 @@ namespace Microsoft.Azure.Management.Network.Models
         public IList<PacketCaptureFilter> Filters { get; set; }
 
         /// <summary>
-        /// Gets or sets the provisioning state of the packet capture session.
-        /// Possible values include: 'Succeeded', 'Updating', 'Deleting',
-        /// 'Failed'
+        /// Gets the provisioning state of the packet capture session. Possible
+        /// values include: 'Succeeded', 'Updating', 'Deleting', 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
         /// Validate the object.
@@ -153,6 +151,30 @@ namespace Microsoft.Azure.Management.Network.Models
             if (StorageLocation == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "StorageLocation");
+            }
+            if (BytesToCapturePerPacket > 4294967295)
+            {
+                throw new ValidationException(ValidationRules.InclusiveMaximum, "BytesToCapturePerPacket", 4294967295);
+            }
+            if (BytesToCapturePerPacket < 0)
+            {
+                throw new ValidationException(ValidationRules.InclusiveMinimum, "BytesToCapturePerPacket", 0);
+            }
+            if (TotalBytesPerSession > 4294967295)
+            {
+                throw new ValidationException(ValidationRules.InclusiveMaximum, "TotalBytesPerSession", 4294967295);
+            }
+            if (TotalBytesPerSession < 0)
+            {
+                throw new ValidationException(ValidationRules.InclusiveMinimum, "TotalBytesPerSession", 0);
+            }
+            if (TimeLimitInSeconds > 18000)
+            {
+                throw new ValidationException(ValidationRules.InclusiveMaximum, "TimeLimitInSeconds", 18000);
+            }
+            if (TimeLimitInSeconds < 0)
+            {
+                throw new ValidationException(ValidationRules.InclusiveMinimum, "TimeLimitInSeconds", 0);
             }
         }
     }

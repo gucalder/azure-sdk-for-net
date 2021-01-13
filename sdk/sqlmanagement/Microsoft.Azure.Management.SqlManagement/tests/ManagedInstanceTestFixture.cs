@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Azure.Management.Network;
 using Microsoft.Azure.Management.Network.Models;
 using Microsoft.Azure.Management.ResourceManager.Models;
@@ -141,12 +142,22 @@ namespace Sql.Tests
                         Name = SqlManagementTestUtilities.GenerateName(),
                         AddressPrefix = "0.0.0.0/0",
                         NextHopType = "Internet"
+                    },
+                    new Route()
+                    {
+                        Name = SqlManagementTestUtilities.GenerateName(),
+                        AddressPrefix = "10.0.0.0/26",
+                        NextHopType = "VnetLocal"
                     }
                 }
             };
             string routeTableName = SqlManagementTestUtilities.GenerateName();
             networkClient.RouteTables.CreateOrUpdate(resourceGroup.Name, routeTableName, routeTableParams);
             RouteTable routeTable = networkClient.RouteTables.Get(resourceGroup.Name, routeTableName);
+            IList<Delegation> delegations = new List<Delegation>() { new Delegation() {
+                ServiceName = "Microsoft.Sql/managedInstances",
+                Name = "0"
+            }};
 
             // Create subnet
             List<Subnet> subnetList = new List<Subnet>();
@@ -155,7 +166,8 @@ namespace Sql.Tests
                 Name = "MISubnet",
                 AddressPrefix = "10.0.0.0/26",
                 NetworkSecurityGroup = securityGroup,
-                RouteTable = routeTable
+                RouteTable = routeTable,
+                Delegations = delegations
             };
             subnetList.Add(subnet);
 

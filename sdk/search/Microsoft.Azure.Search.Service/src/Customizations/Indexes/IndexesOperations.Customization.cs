@@ -13,8 +13,8 @@ namespace Microsoft.Azure.Search
     internal partial class IndexesOperations
     {
         /// <summary>
-        /// Creates a new Azure Search index or updates an index if it already exists.
-        /// <see href="https://docs.microsoft.com/rest/api/searchservice/Update-Index" />
+        /// Creates a new search index or updates an index if it already exists.
+        /// <see href="https://docs.microsoft.com/rest/api/searchservice/update-index">Update Index</see>
         /// </summary>
         /// <param name='index'>
         /// The definition of the index to create or update.
@@ -59,7 +59,7 @@ namespace Microsoft.Azure.Search
         }
 
         /// <summary>
-        /// Determines whether or not the given index exists in the Azure Search service.
+        /// Determines whether or not the given index exists in the search service.
         /// </summary>
         /// <param name="indexName">
         /// The name of the index.

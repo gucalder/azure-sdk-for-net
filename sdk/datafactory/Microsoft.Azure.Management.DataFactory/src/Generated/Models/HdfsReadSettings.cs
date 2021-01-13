@@ -31,7 +31,6 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// <summary>
         /// Initializes a new instance of the HdfsReadSettings class.
         /// </summary>
-        /// <param name="type">The read setting type.</param>
         /// <param name="additionalProperties">Unmatched properties from the
         /// message are deserialized this collection</param>
         /// <param name="maxConcurrentConnections">The maximum concurrent
@@ -44,8 +43,15 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// string (or Expression with resultType string).</param>
         /// <param name="wildcardFileName">HDFS wildcardFileName. Type: string
         /// (or Expression with resultType string).</param>
+        /// <param name="fileListPath">Point to a text file that lists each
+        /// file (relative path to the path configured in the dataset) that you
+        /// want to copy. Type: string (or Expression with resultType
+        /// string).</param>
         /// <param name="enablePartitionDiscovery">Indicates whether to enable
         /// partition discovery.</param>
+        /// <param name="partitionRootPath">Specify the root path where
+        /// partition discovery starts from. Type: string (or Expression with
+        /// resultType string).</param>
         /// <param name="modifiedDatetimeStart">The start of file's modified
         /// datetime. Type: string (or Expression with resultType
         /// string).</param>
@@ -54,16 +60,23 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// string).</param>
         /// <param name="distcpSettings">Specifies Distcp-related
         /// settings.</param>
-        public HdfsReadSettings(string type, IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object maxConcurrentConnections = default(object), object recursive = default(object), object wildcardFolderPath = default(object), object wildcardFileName = default(object), bool? enablePartitionDiscovery = default(bool?), object modifiedDatetimeStart = default(object), object modifiedDatetimeEnd = default(object), DistcpSettings distcpSettings = default(DistcpSettings))
-            : base(type, additionalProperties, maxConcurrentConnections)
+        /// <param name="deleteFilesAfterCompletion">Indicates whether the
+        /// source files need to be deleted after copy completion. Default is
+        /// false. Type: boolean (or Expression with resultType
+        /// boolean).</param>
+        public HdfsReadSettings(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object maxConcurrentConnections = default(object), object recursive = default(object), object wildcardFolderPath = default(object), object wildcardFileName = default(object), object fileListPath = default(object), bool? enablePartitionDiscovery = default(bool?), object partitionRootPath = default(object), object modifiedDatetimeStart = default(object), object modifiedDatetimeEnd = default(object), DistcpSettings distcpSettings = default(DistcpSettings), object deleteFilesAfterCompletion = default(object))
+            : base(additionalProperties, maxConcurrentConnections)
         {
             Recursive = recursive;
             WildcardFolderPath = wildcardFolderPath;
             WildcardFileName = wildcardFileName;
+            FileListPath = fileListPath;
             EnablePartitionDiscovery = enablePartitionDiscovery;
+            PartitionRootPath = partitionRootPath;
             ModifiedDatetimeStart = modifiedDatetimeStart;
             ModifiedDatetimeEnd = modifiedDatetimeEnd;
             DistcpSettings = distcpSettings;
+            DeleteFilesAfterCompletion = deleteFilesAfterCompletion;
             CustomInit();
         }
 
@@ -95,10 +108,25 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         public object WildcardFileName { get; set; }
 
         /// <summary>
+        /// Gets or sets point to a text file that lists each file (relative
+        /// path to the path configured in the dataset) that you want to copy.
+        /// Type: string (or Expression with resultType string).
+        /// </summary>
+        [JsonProperty(PropertyName = "fileListPath")]
+        public object FileListPath { get; set; }
+
+        /// <summary>
         /// Gets or sets indicates whether to enable partition discovery.
         /// </summary>
         [JsonProperty(PropertyName = "enablePartitionDiscovery")]
         public bool? EnablePartitionDiscovery { get; set; }
+
+        /// <summary>
+        /// Gets or sets specify the root path where partition discovery starts
+        /// from. Type: string (or Expression with resultType string).
+        /// </summary>
+        [JsonProperty(PropertyName = "partitionRootPath")]
+        public object PartitionRootPath { get; set; }
 
         /// <summary>
         /// Gets or sets the start of file's modified datetime. Type: string
@@ -121,14 +149,21 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         public DistcpSettings DistcpSettings { get; set; }
 
         /// <summary>
+        /// Gets or sets indicates whether the source files need to be deleted
+        /// after copy completion. Default is false. Type: boolean (or
+        /// Expression with resultType boolean).
+        /// </summary>
+        [JsonProperty(PropertyName = "deleteFilesAfterCompletion")]
+        public object DeleteFilesAfterCompletion { get; set; }
+
+        /// <summary>
         /// Validate the object.
         /// </summary>
         /// <exception cref="Rest.ValidationException">
         /// Thrown if validation fails
         /// </exception>
-        public override void Validate()
+        public virtual void Validate()
         {
-            base.Validate();
             if (DistcpSettings != null)
             {
                 DistcpSettings.Validate();

@@ -14,10 +14,6 @@ namespace Microsoft.Azure.Management.FrontDoor
     using Microsoft.Rest.Azure;
     using Models;
     using Newtonsoft.Json;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// FrontDoor Client
@@ -71,29 +67,39 @@ namespace Microsoft.Azure.Management.FrontDoor
 
 
         /// <summary>
+        /// Gets the INetworkExperimentProfilesOperations.
+        /// </summary>
+        INetworkExperimentProfilesOperations NetworkExperimentProfiles { get; }
+
+        /// <summary>
+        /// Gets the IPreconfiguredEndpointsOperations.
+        /// </summary>
+        IPreconfiguredEndpointsOperations PreconfiguredEndpoints { get; }
+
+        /// <summary>
+        /// Gets the IExperimentsOperations.
+        /// </summary>
+        IExperimentsOperations Experiments { get; }
+
+        /// <summary>
+        /// Gets the IReportsOperations.
+        /// </summary>
+        IReportsOperations Reports { get; }
+
+        /// <summary>
+        /// Gets the IFrontDoorNameAvailabilityOperations.
+        /// </summary>
+        IFrontDoorNameAvailabilityOperations FrontDoorNameAvailability { get; }
+
+        /// <summary>
+        /// Gets the IFrontDoorNameAvailabilityWithSubscriptionOperations.
+        /// </summary>
+        IFrontDoorNameAvailabilityWithSubscriptionOperations FrontDoorNameAvailabilityWithSubscription { get; }
+
+        /// <summary>
         /// Gets the IFrontDoorsOperations.
         /// </summary>
         IFrontDoorsOperations FrontDoors { get; }
-
-        /// <summary>
-        /// Gets the IRoutingRulesOperations.
-        /// </summary>
-        IRoutingRulesOperations RoutingRules { get; }
-
-        /// <summary>
-        /// Gets the IHealthProbeSettingsOperations.
-        /// </summary>
-        IHealthProbeSettingsOperations HealthProbeSettings { get; }
-
-        /// <summary>
-        /// Gets the ILoadBalancingSettingsOperations.
-        /// </summary>
-        ILoadBalancingSettingsOperations LoadBalancingSettings { get; }
-
-        /// <summary>
-        /// Gets the IBackendPoolsOperations.
-        /// </summary>
-        IBackendPoolsOperations BackendPools { get; }
 
         /// <summary>
         /// Gets the IFrontendEndpointsOperations.
@@ -106,6 +112,11 @@ namespace Microsoft.Azure.Management.FrontDoor
         IEndpointsOperations Endpoints { get; }
 
         /// <summary>
+        /// Gets the IRulesEnginesOperations.
+        /// </summary>
+        IRulesEnginesOperations RulesEngines { get; }
+
+        /// <summary>
         /// Gets the IPoliciesOperations.
         /// </summary>
         IPoliciesOperations Policies { get; }
@@ -114,34 +125,6 @@ namespace Microsoft.Azure.Management.FrontDoor
         /// Gets the IManagedRuleSetsOperations.
         /// </summary>
         IManagedRuleSetsOperations ManagedRuleSets { get; }
-
-        /// <summary>
-        /// Check the availability of a Front Door resource name.
-        /// </summary>
-        /// <param name='checkFrontDoorNameAvailabilityInput'>
-        /// Input to check.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<AzureOperationResponse<CheckNameAvailabilityOutput>> CheckFrontDoorNameAvailabilityWithHttpMessagesAsync(CheckNameAvailabilityInput checkFrontDoorNameAvailabilityInput, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Check the availability of a Front Door subdomain.
-        /// </summary>
-        /// <param name='checkFrontDoorNameAvailabilityInput'>
-        /// Input to check.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<AzureOperationResponse<CheckNameAvailabilityOutput>> CheckFrontDoorNameAvailabilityWithSubscriptionWithHttpMessagesAsync(CheckNameAvailabilityInput checkFrontDoorNameAvailabilityInput, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

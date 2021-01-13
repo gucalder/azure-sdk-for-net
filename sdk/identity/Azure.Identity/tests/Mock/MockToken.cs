@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Azure.Identity.Tests.Mock
 {
-    class MockToken
+    internal class MockToken
     {
-        private StringBuilder _tokenBuilder;
+        private readonly StringBuilder _tokenBuilder;
         private string _token;
 
         public MockToken()
@@ -30,7 +30,6 @@ namespace Azure.Identity.Tests.Mock
                 _tokenBuilder.Append($"{name}={value};");
             }
 
-
             return this;
         }
 
@@ -38,7 +37,6 @@ namespace Azure.Identity.Tests.Mock
         {
             return Token.Contains($"{name}={value};");
         }
-
 
         public override string ToString()
         {

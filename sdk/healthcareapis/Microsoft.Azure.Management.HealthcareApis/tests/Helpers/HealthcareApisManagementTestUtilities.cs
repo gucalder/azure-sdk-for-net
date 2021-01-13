@@ -22,7 +22,7 @@ namespace HealthcareApis.Tests.Helpers
 
         // These are used to create default accounts
         public static string DefaultLocation = IsTestTenant ? null : "westus";
-        public const string DefaultKind = "Fhir";
+        public static Kind DefaultKind = Kind.Fhir;
         public static Dictionary<string, string> DefaultTags = new Dictionary<string, string>
             {
                 {"key1","value1"},
@@ -41,6 +41,7 @@ namespace HealthcareApis.Tests.Helpers
         public static string audience = "https://azurehealthcareapis.com";
         public static bool smartOnFhirEnabled = false;
         public static int offerThroughput = 400;
+        public static string keyVaultKeyUri = "https://my-vault.vault.azure.net/keys/my-key";
 
         private static HttpClientHandler GetHandler()
         {
@@ -66,7 +67,13 @@ namespace HealthcareApis.Tests.Helpers
 
         public static ServicesDescription GetServiceDescription()
         {
-            var serviceDescription = new ServicesDescription(DefaultLocation);
+            var serviceDescription = new ServicesDescription(DefaultKind, DefaultLocation);
+            return serviceDescription;
+        }
+
+        public static ServicesDescription GetServiceDescription(Kind kind)
+        {
+            var serviceDescription = new ServicesDescription(kind, DefaultLocation);
             return serviceDescription;
         }
 
@@ -79,7 +86,7 @@ namespace HealthcareApis.Tests.Helpers
         public static ServicesDescription GetServiceDescriptionWithProperties()
         {
             var serviceProperties = GetServiceProperties();
-            var serviceDescription = new ServicesDescription(DefaultLocation, default(string), default(string), default(string), DefaultTags, default(string), serviceProperties);
+            var serviceDescription = new ServicesDescription(DefaultKind, DefaultLocation, default(string), default(string), default(string), DefaultTags, default(string), default(ServicesResourceIdentity), serviceProperties);
             return serviceDescription;
         }
 
@@ -90,10 +97,10 @@ namespace HealthcareApis.Tests.Helpers
 
             string provisioningState = "Succeeded";
 
-            ServiceCosmosDbConfigurationInfo cosmosDbConfigurationInfo = new ServiceCosmosDbConfigurationInfo(offerThroughput);
+            ServiceCosmosDbConfigurationInfo cosmosDbConfigurationInfo = new ServiceCosmosDbConfigurationInfo(offerThroughput, keyVaultKeyUri);
             ServiceAuthenticationConfigurationInfo authenticationConfigurationInfo = new ServiceAuthenticationConfigurationInfo(authority, audience, smartOnFhirEnabled);
 
-            var serviceProperties = new ServicesProperties(accessPolicies, provisioningState, cosmosDbConfigurationInfo, authenticationConfigurationInfo);
+            var serviceProperties = new ServicesProperties(provisioningState, accessPolicies, cosmosDbConfigurationInfo, authenticationConfigurationInfo);
 
             return serviceProperties;
         }
@@ -128,9 +135,11 @@ namespace HealthcareApis.Tests.Helpers
                 Assert.Equal("https://login.microsoftonline.com/common", account.Properties.AuthenticationConfiguration.Authority);
                 Assert.Equal("https://azurehealthcareapis.com", account.Properties.AuthenticationConfiguration.Audience);
                 Assert.False(account.Properties.AuthenticationConfiguration.SmartProxyEnabled);
-                Assert.Equal(400, account.Properties.CosmosDbConfiguration.OfferThroughput);
+                Assert.Equal(offerThroughput, account.Properties.CosmosDbConfiguration.OfferThroughput);
+                Assert.Equal(keyVaultKeyUri, account.Properties.CosmosDbConfiguration.KeyVaultKeyUri);
                 Assert.Equal(1, account.Properties.AccessPolicies.Count);
                 Assert.Equal(ProvisioningState.Succeeded, account.Properties.ProvisioningState);
+                Assert.Equal(Kind.FhirR4, account.Kind);
             }
         }
 

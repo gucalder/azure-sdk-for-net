@@ -11,6 +11,7 @@
 namespace Microsoft.Azure.Management.DataBox.Models
 {
     using Microsoft.Rest;
+    using Microsoft.Rest.Azure;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
     using System.Collections;
@@ -34,12 +35,15 @@ namespace Microsoft.Azure.Management.DataBox.Models
         /// <summary>
         /// Initializes a new instance of the AddressValidationOutput class.
         /// </summary>
+        /// <param name="error">Error code and message of validation
+        /// response.</param>
         /// <param name="validationStatus">The address validation status.
         /// Possible values include: 'Valid', 'Invalid', 'Ambiguous'</param>
         /// <param name="alternateAddresses">List of alternate
         /// addresses.</param>
-        public AddressValidationOutput(AddressValidationStatus? validationStatus = default(AddressValidationStatus?), IList<ShippingAddress> alternateAddresses = default(IList<ShippingAddress>))
+        public AddressValidationOutput(CloudError error = default(CloudError), AddressValidationStatus? validationStatus = default(AddressValidationStatus?), IList<ShippingAddress> alternateAddresses = default(IList<ShippingAddress>))
         {
+            Error = error;
             ValidationStatus = validationStatus;
             AlternateAddresses = alternateAddresses;
             CustomInit();
@@ -49,6 +53,12 @@ namespace Microsoft.Azure.Management.DataBox.Models
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
         partial void CustomInit();
+
+        /// <summary>
+        /// Gets error code and message of validation response.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.error")]
+        public CloudError Error { get; private set; }
 
         /// <summary>
         /// Gets the address validation status. Possible values include:

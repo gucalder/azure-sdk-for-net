@@ -117,15 +117,15 @@
         {
           "Key": {
             "Type": "int?",
-            "Name": "MaxTasksPerComputeNode",
-            "SummaryComment": "The maximum number of tasks that can run concurrently on a single compute node in the pool.",
+            "Name": "TaskSlotsPerNode",
+            "SummaryComment": "The number of task slots that can be used to run concurrent tasks on a single compute node in the pool.",
             "RemarksComment": "The default value is 1. The maximum value is the smaller of 4 times the number of cores of the <see cref=\"VirtualMachineSize\"/> of the pool or 256.",
             "BoundAccess": "read,write",
             "UnboundAccess": "read,write"
           },
           "Value": {
             "Type": "int?",
-            "Name": "MaxTasksPerNode"
+            "Name": "TaskSlotsPerNode"
           }
         },
         {
@@ -252,6 +252,20 @@
             "UnboundAccess": "read,write"
           },
           "Value": null
+        },
+        {
+          "Key": {
+            "Type": "IList<MountConfiguration>",
+            "Name": "MountConfiguration",
+            "SummaryComment": "A list of file systems to mount on each node in the pool.",
+            "RemarksComment": "This supports Azure Files, NFS, CIFS/SMB, and Blobfuse.",
+            "BoundAccess": "read",
+            "UnboundAccess": "read,write"
+          },
+          "Value": {
+            "Type": "IList<Models.MountConfiguration>",
+            "Name": "MountConfiguration"
+          }
         }
       ]
     }

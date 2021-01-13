@@ -58,7 +58,7 @@ namespace Microsoft.Azure.Batch
         /// Gets the SKU of the Azure Virtual Machines Marketplace Image.
         /// </summary>
         /// <remarks>
-        /// For example, 14.04.0-LTS or 2012-R2-Datacenter.
+        /// For example, 18.04-LTS or 2019-Datacenter.
         /// </remarks>
         public string Sku { get; }
 
@@ -71,13 +71,13 @@ namespace Microsoft.Azure.Batch
         public string Version { get; }
 
         /// <summary>
-        /// Gets the ARM resource identifier of the Virtual Machine Image. Computes nodes of the pool will be created using 
-        /// this custom image. This is of the form /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Compute/images/{imageName}
+        /// Gets the ARM resource identifier of the Virtual Machine Image or Shared Image Gallery Image. Computes Compute 
+        /// Nodes of the Pool will be created using this Image Id. This is of the form /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Compute/galleries/{galleryName}/images/{imageDefinitionName}/versions/{versionId}.
         /// </summary>
         /// <remarks>
-        /// This property is mutually exclusive with other ImageReference properties. The virtual machine image must be in 
-        /// the same region and subscription as the Azure Batch account. For information about the firewall settings for 
-        /// the Batch Node Agent to communicate with Batch service see https://docs.microsoft.com/en-us/azure/batch/batch-api-basics#virtual-network-vnet-and-firewall-configuration.
+        /// This property is mutually exclusive with other <see cref="ImageReference"/> properties. The Shared Image Gallery 
+        /// image must have replicas in the same region as the Azure Batch account. For information about the firewall settings 
+        /// for the Batch Compute Node agent to communicate with the Batch service see https://docs.microsoft.com/en-us/azure/batch/batch-api-basics#virtual-network-vnet-and-firewall-configuration.
         /// </remarks>
         public string VirtualMachineImageId { get; }
 

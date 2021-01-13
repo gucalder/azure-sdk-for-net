@@ -82,8 +82,9 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// gender and age. ImageType - detects if image is clipart or a line
         /// drawing. Color - determines the accent color, dominant color, and
         /// whether an image is black&amp;white. Adult - detects if the image
-        /// is pornographic in nature (depicts nudity or a sex act).  Sexually
-        /// suggestive content is also detected. Objects - detects various
+        /// is pornographic in nature (depicts nudity or a sex act), or is gory
+        /// (depicts extreme violence or blood). Sexually suggestive content
+        /// (aka racy content) is also detected. Objects - detects various
         /// objects within an image, including the approximate location. The
         /// Objects argument is only available in English. Brands - detects
         /// various brands within an image, including the approximate location.
@@ -102,21 +103,25 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// es - Spanish, ja - Japanese, pt - Portuguese, zh - Simplified
         /// Chinese. Possible values include: 'en', 'es', 'ja', 'pt', 'zh'
         /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageWithHttpMessagesAsync(string url, IList<VisualFeatureTypes> visualFeatures = default(IList<VisualFeatureTypes>), IList<Details> details = default(IList<Details>), string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageWithHttpMessagesAsync(string url, IList<VisualFeatureTypes?> visualFeatures = default(IList<VisualFeatureTypes?>), IList<Details?> details = default(IList<Details?>), string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// This operation generates a description of an image in human
         /// readable language with complete sentences. The description is based
         /// on a collection of content tags, which are also returned by the
         /// operation. More than one description can be generated for each
-        /// image. Descriptions are ordered by their confidence score. All
-        /// descriptions are in English.
+        /// image. Descriptions are ordered by their confidence score.
+        /// Descriptions may include results from celebrity and landmark domain
+        /// models, if applicable.
         /// Two input methods are supported -- (1) Uploading an image or (2)
         /// specifying an image URL.
         /// A successful response will be returned in JSON. If the request
@@ -137,13 +142,16 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// es - Spanish, ja - Japanese, pt - Portuguese, zh - Simplified
         /// Chinese. Possible values include: 'en', 'es', 'ja', 'pt', 'zh'
         /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ImageDescription>> DescribeImageWithHttpMessagesAsync(string url, int? maxCandidates = 1, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ImageDescription>> DescribeImageWithHttpMessagesAsync(string url, int? maxCandidates = 1, string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Performs object detection on the specified image.
@@ -255,8 +263,8 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// actions found in images. Unlike categories, tags are not organized
         /// according to a hierarchical classification system, but correspond
         /// to image content. Tags may contain hints to avoid ambiguity or
-        /// provide context, for example the tag "cello" may be accompanied by
-        /// the hint "musical instrument". All tags are in English.
+        /// provide context, for example the tag "ascomycete" may be
+        /// accompanied by the hint "fungus".
         /// Two input methods are supported -- (1) Uploading an image or (2)
         /// specifying an image URL.
         /// A successful response will be returned in JSON. If the request
@@ -341,82 +349,6 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         Task<HttpOperationResponse<AreaOfInterestResult>> GetAreaOfInterestWithHttpMessagesAsync(string url, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Recognize Text operation. When you use the Recognize Text
-        /// interface, the response contains a field called
-        /// 'Operation-Location'. The 'Operation-Location' field contains the
-        /// URL that you must use for your Get Recognize Text Operation Result
-        /// operation.
-        /// </summary>
-        /// <param name='mode'>
-        /// Type of text to recognize. Possible values include: 'Handwritten',
-        /// 'Printed'
-        /// </param>
-        /// <param name='url'>
-        /// Publicly reachable URL of an image.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationHeaderResponse<RecognizeTextHeaders>> RecognizeTextWithHttpMessagesAsync(string url, TextRecognitionMode mode, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// This interface is used for getting text operation result. The URL
-        /// to this interface should be retrieved from 'Operation-Location'
-        /// field returned from Recognize Text interface.
-        /// </summary>
-        /// <param name='operationId'>
-        /// Id of the text operation returned in the response of the 'Recognize
-        /// Text'
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationResponse<TextOperationResult>> GetTextOperationResultWithHttpMessagesAsync(string operationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Use this interface to get the result of a Read operation, employing
-        /// the state-of-the-art Optical Character Recognition (OCR) algorithms
-        /// optimized for text-heavy documents. When you use the Read File
-        /// interface, the response contains a field called
-        /// 'Operation-Location'. The 'Operation-Location' field contains the
-        /// URL that you must use for your 'GetReadOperationResult' operation
-        /// to access OCR results.​
-        /// </summary>
-        /// <param name='url'>
-        /// Publicly reachable URL of an image.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationHeaderResponse<BatchReadFileHeaders>> BatchReadFileWithHttpMessagesAsync(string url, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// This interface is used for getting OCR results of Read operation.
-        /// The URL to this interface should be retrieved from
-        /// 'Operation-Location' field returned from Batch Read File interface.
-        /// </summary>
-        /// <param name='operationId'>
-        /// Id of read operation returned in the response of the 'Batch Read
-        /// File' interface.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationResponse<ReadOperationResult>> GetReadOperationResultWithHttpMessagesAsync(string operationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
         /// This operation extracts a rich set of visual features based on the
         /// image content.
         /// Two input methods are supported -- (1) Uploading an image or (2)
@@ -441,8 +373,9 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// gender and age. ImageType - detects if image is clipart or a line
         /// drawing. Color - determines the accent color, dominant color, and
         /// whether an image is black&amp;white. Adult - detects if the image
-        /// is pornographic in nature (depicts nudity or a sex act).  Sexually
-        /// suggestive content is also detected. Objects - detects various
+        /// is pornographic in nature (depicts nudity or a sex act), or is gory
+        /// (depicts extreme violence or blood). Sexually suggestive content
+        /// (aka racy content) is also detected. Objects - detects various
         /// objects within an image, including the approximate location. The
         /// Objects argument is only available in English. Brands - detects
         /// various brands within an image, including the approximate location.
@@ -461,13 +394,16 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// es - Spanish, ja - Japanese, pt - Portuguese, zh - Simplified
         /// Chinese. Possible values include: 'en', 'es', 'ja', 'pt', 'zh'
         /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageInStreamWithHttpMessagesAsync(Stream image, IList<VisualFeatureTypes> visualFeatures = default(IList<VisualFeatureTypes>), IList<Details> details = default(IList<Details>), string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ImageAnalysis>> AnalyzeImageInStreamWithHttpMessagesAsync(Stream image, IList<VisualFeatureTypes?> visualFeatures = default(IList<VisualFeatureTypes?>), IList<Details?> details = default(IList<Details?>), string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// This operation returns a bounding box around the most important
@@ -496,8 +432,9 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// readable language with complete sentences. The description is based
         /// on a collection of content tags, which are also returned by the
         /// operation. More than one description can be generated for each
-        /// image. Descriptions are ordered by their confidence score. All
-        /// descriptions are in English.
+        /// image. Descriptions are ordered by their confidence score.
+        /// Descriptions may include results from celebrity and landmark domain
+        /// models, if applicable.
         /// Two input methods are supported -- (1) Uploading an image or (2)
         /// specifying an image URL.
         /// A successful response will be returned in JSON. If the request
@@ -518,13 +455,16 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// es - Spanish, ja - Japanese, pt - Portuguese, zh - Simplified
         /// Chinese. Possible values include: 'en', 'es', 'ja', 'pt', 'zh'
         /// </param>
+        /// <param name='descriptionExclude'>
+        /// Turn off specified domain models when generating the description.
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ImageDescription>> DescribeImageInStreamWithHttpMessagesAsync(Stream image, int? maxCandidates = 1, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ImageDescription>> DescribeImageInStreamWithHttpMessagesAsync(Stream image, int? maxCandidates = 1, string language = default(string), IList<DescriptionExclude?> descriptionExclude = default(IList<DescriptionExclude?>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Performs object detection on the specified image.
@@ -656,8 +596,8 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// actions found in images. Unlike categories, tags are not organized
         /// according to a hierarchical classification system, but correspond
         /// to image content. Tags may contain hints to avoid ambiguity or
-        /// provide context, for example the tag "cello" may be accompanied by
-        /// the hint "musical instrument". All tags are in English.
+        /// provide context, for example the tag "ascomycete" may be
+        /// accompanied by the hint "fungus".
         /// Two input methods are supported -- (1) Uploading an image or (2)
         /// specifying an image URL.
         /// A successful response will be returned in JSON. If the request
@@ -683,18 +623,25 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         Task<HttpOperationResponse<TagResult>> TagImageInStreamWithHttpMessagesAsync(Stream image, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Recognize Text operation. When you use the Recognize Text
+        /// Use this interface to get the result of a Read operation, employing
+        /// the state-of-the-art Optical Character Recognition (OCR) algorithms
+        /// optimized for text-heavy documents. When you use the Read
         /// interface, the response contains a field called
         /// 'Operation-Location'. The 'Operation-Location' field contains the
-        /// URL that you must use for your Get Recognize Text Operation Result
-        /// operation.
+        /// URL that you must use for your 'GetReadResult' operation to access
+        /// OCR results.​
         /// </summary>
-        /// <param name='image'>
-        /// An image stream.
+        /// <param name='url'>
+        /// Publicly reachable URL of an image.
         /// </param>
-        /// <param name='mode'>
-        /// Type of text to recognize. Possible values include: 'Handwritten',
-        /// 'Printed'
+        /// <param name='language'>
+        /// The BCP-47 language code of the text in the document. Currently,
+        /// only English ('en'), Dutch (‘nl’), French (‘fr’), German (‘de’),
+        /// Italian (‘it’), Portuguese (‘pt), and Spanish ('es') are supported.
+        /// Read supports auto language identification and multi-language
+        /// documents, so only provide a language code if you would like to
+        /// force the documented to be processed as that specific language.
+        /// Possible values include: 'en', 'es', 'fr', 'de', 'it', 'nl', 'pt'
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -702,19 +649,16 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationHeaderResponse<RecognizeTextInStreamHeaders>> RecognizeTextInStreamWithHttpMessagesAsync(Stream image, TextRecognitionMode mode, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationHeaderResponse<ReadHeaders>> ReadWithHttpMessagesAsync(string url, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Use this interface to get the result of a Read Document operation,
-        /// employing the state-of-the-art Optical Character Recognition (OCR)
-        /// algorithms optimized for text-heavy documents. When you use the
-        /// Read Document interface, the response contains a field called
-        /// 'Operation-Location'. The 'Operation-Location' field contains the
-        /// URL that you must use for your 'Get Read Result operation' to
-        /// access OCR results.​
+        /// This interface is used for getting OCR results of Read operation.
+        /// The URL to this interface should be retrieved from
+        /// 'Operation-Location' field returned from Read interface.
         /// </summary>
-        /// <param name='image'>
-        /// An image stream.
+        /// <param name='operationId'>
+        /// Id of read operation returned in the response of the 'Read'
+        /// interface.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -722,7 +666,36 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationHeaderResponse<BatchReadFileInStreamHeaders>> BatchReadFileInStreamWithHttpMessagesAsync(Stream image, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ReadOperationResult>> GetReadResultWithHttpMessagesAsync(System.Guid operationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Use this interface to get the result of a Read operation, employing
+        /// the state-of-the-art Optical Character Recognition (OCR) algorithms
+        /// optimized for text-heavy documents. When you use the Read
+        /// interface, the response contains a field called
+        /// 'Operation-Location'. The 'Operation-Location' field contains the
+        /// URL that you must use for your 'GetReadResult' operation to access
+        /// OCR results.​
+        /// </summary>
+        /// <param name='image'>
+        /// An image stream.
+        /// </param>
+        /// <param name='language'>
+        /// The BCP-47 language code of the text in the document. Currently,
+        /// only English ('en'), Dutch (‘nl’), French (‘fr’), German (‘de’),
+        /// Italian (‘it’), Portuguese (‘pt), and Spanish ('es') are supported.
+        /// Read supports auto language identification and multi-language
+        /// documents, so only provide a language code if you would like to
+        /// force the documented to be processed as that specific language.
+        /// Possible values include: 'en', 'es', 'fr', 'de', 'it', 'nl', 'pt'
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationHeaderResponse<ReadInStreamHeaders>> ReadInStreamWithHttpMessagesAsync(Stream image, string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

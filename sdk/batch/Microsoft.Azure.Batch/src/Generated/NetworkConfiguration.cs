@@ -26,12 +26,14 @@ namespace Microsoft.Azure.Batch
         {
             public readonly PropertyAccessor<Common.DynamicVNetAssignmentScope?> DynamicVNetAssignmentScopeProperty;
             public readonly PropertyAccessor<PoolEndpointConfiguration> EndpointConfigurationProperty;
+            public readonly PropertyAccessor<PublicIPAddressConfiguration> PublicIPAddressConfigurationProperty;
             public readonly PropertyAccessor<string> SubnetIdProperty;
 
             public PropertyContainer() : base(BindingState.Unbound)
             {
                 this.DynamicVNetAssignmentScopeProperty = this.CreatePropertyAccessor<Common.DynamicVNetAssignmentScope?>(nameof(DynamicVNetAssignmentScope), BindingAccess.Read | BindingAccess.Write);
                 this.EndpointConfigurationProperty = this.CreatePropertyAccessor<PoolEndpointConfiguration>(nameof(EndpointConfiguration), BindingAccess.Read | BindingAccess.Write);
+                this.PublicIPAddressConfigurationProperty = this.CreatePropertyAccessor<PublicIPAddressConfiguration>(nameof(PublicIPAddressConfiguration), BindingAccess.Read | BindingAccess.Write);
                 this.SubnetIdProperty = this.CreatePropertyAccessor<string>(nameof(SubnetId), BindingAccess.Read | BindingAccess.Write);
             }
 
@@ -44,6 +46,10 @@ namespace Microsoft.Azure.Batch
                 this.EndpointConfigurationProperty = this.CreatePropertyAccessor(
                     UtilitiesInternal.CreateObjectWithNullCheck(protocolObject.EndpointConfiguration, o => new PoolEndpointConfiguration(o).Freeze()),
                     nameof(EndpointConfiguration),
+                    BindingAccess.Read);
+                this.PublicIPAddressConfigurationProperty = this.CreatePropertyAccessor(
+                    UtilitiesInternal.CreateObjectWithNullCheck(protocolObject.PublicIPAddressConfiguration, o => new PublicIPAddressConfiguration(o).Freeze()),
+                    nameof(PublicIPAddressConfiguration),
                     BindingAccess.Read);
                 this.SubnetIdProperty = this.CreatePropertyAccessor(
                     protocolObject.SubnetId,
@@ -95,6 +101,18 @@ namespace Microsoft.Azure.Batch
         {
             get { return this.propertyContainer.EndpointConfigurationProperty.Value; }
             set { this.propertyContainer.EndpointConfigurationProperty.Value = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the Public IPAddress configuration for Compute Nodes in the Batch Pool.
+        /// </summary>
+        /// <remarks>
+        /// Public IP configuration property is only supported on Pools created with a <see cref="CloudPool.VirtualMachineConfiguration"/>.
+        /// </remarks>
+        public PublicIPAddressConfiguration PublicIPAddressConfiguration
+        {
+            get { return this.propertyContainer.PublicIPAddressConfigurationProperty.Value; }
+            set { this.propertyContainer.PublicIPAddressConfigurationProperty.Value = value; }
         }
 
         /// <summary>
@@ -152,6 +170,7 @@ namespace Microsoft.Azure.Batch
             {
                 DynamicVNetAssignmentScope = UtilitiesInternal.MapNullableEnum<Common.DynamicVNetAssignmentScope, Models.DynamicVNetAssignmentScope>(this.DynamicVNetAssignmentScope),
                 EndpointConfiguration = UtilitiesInternal.CreateObjectWithNullCheck(this.EndpointConfiguration, (o) => o.GetTransportObject()),
+                PublicIPAddressConfiguration = UtilitiesInternal.CreateObjectWithNullCheck(this.PublicIPAddressConfiguration, (o) => o.GetTransportObject()),
                 SubnetId = this.SubnetId,
             };
 

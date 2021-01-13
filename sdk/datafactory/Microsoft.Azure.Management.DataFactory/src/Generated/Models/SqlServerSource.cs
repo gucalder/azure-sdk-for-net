@@ -18,7 +18,7 @@ namespace Microsoft.Azure.Management.DataFactory.Models
     /// <summary>
     /// A copy activity SQL server source.
     /// </summary>
-    public partial class SqlServerSource : CopySource
+    public partial class SqlServerSource : TabularSource
     {
         /// <summary>
         /// Initializes a new instance of the SqlServerSource class.
@@ -41,6 +41,12 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// <param name="maxConcurrentConnections">The maximum concurrent
         /// connection count for the source data store. Type: integer (or
         /// Expression with resultType integer).</param>
+        /// <param name="queryTimeout">Query timeout. Type: string (or
+        /// Expression with resultType string), pattern:
+        /// ((\d+)\.)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).</param>
+        /// <param name="additionalColumns">Specifies the additional columns to
+        /// be added to source data. Type: array of objects (or Expression with
+        /// resultType array of objects).</param>
         /// <param name="sqlReaderQuery">SQL reader query. Type: string (or
         /// Expression with resultType string).</param>
         /// <param name="sqlReaderStoredProcedureName">Name of the stored
@@ -52,13 +58,20 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// type: "int"}}".</param>
         /// <param name="produceAdditionalTypes">Which additional types to
         /// produce.</param>
-        public SqlServerSource(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object sourceRetryCount = default(object), object sourceRetryWait = default(object), object maxConcurrentConnections = default(object), object sqlReaderQuery = default(object), object sqlReaderStoredProcedureName = default(object), IDictionary<string, StoredProcedureParameter> storedProcedureParameters = default(IDictionary<string, StoredProcedureParameter>), object produceAdditionalTypes = default(object))
-            : base(additionalProperties, sourceRetryCount, sourceRetryWait, maxConcurrentConnections)
+        /// <param name="partitionOption">The partition mechanism that will be
+        /// used for Sql read in parallel. Possible values include: "None",
+        /// "PhysicalPartitionsOfTable", "DynamicRange".</param>
+        /// <param name="partitionSettings">The settings that will be leveraged
+        /// for Sql source partitioning.</param>
+        public SqlServerSource(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object sourceRetryCount = default(object), object sourceRetryWait = default(object), object maxConcurrentConnections = default(object), object queryTimeout = default(object), IList<AdditionalColumns> additionalColumns = default(IList<AdditionalColumns>), object sqlReaderQuery = default(object), object sqlReaderStoredProcedureName = default(object), IDictionary<string, StoredProcedureParameter> storedProcedureParameters = default(IDictionary<string, StoredProcedureParameter>), object produceAdditionalTypes = default(object), object partitionOption = default(object), SqlPartitionSettings partitionSettings = default(SqlPartitionSettings))
+            : base(additionalProperties, sourceRetryCount, sourceRetryWait, maxConcurrentConnections, queryTimeout, additionalColumns)
         {
             SqlReaderQuery = sqlReaderQuery;
             SqlReaderStoredProcedureName = sqlReaderStoredProcedureName;
             StoredProcedureParameters = storedProcedureParameters;
             ProduceAdditionalTypes = produceAdditionalTypes;
+            PartitionOption = partitionOption;
+            PartitionSettings = partitionSettings;
             CustomInit();
         }
 
@@ -94,6 +107,21 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// </summary>
         [JsonProperty(PropertyName = "produceAdditionalTypes")]
         public object ProduceAdditionalTypes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the partition mechanism that will be used for Sql read
+        /// in parallel. Possible values include: "None",
+        /// "PhysicalPartitionsOfTable", "DynamicRange".
+        /// </summary>
+        [JsonProperty(PropertyName = "partitionOption")]
+        public object PartitionOption { get; set; }
+
+        /// <summary>
+        /// Gets or sets the settings that will be leveraged for Sql source
+        /// partitioning.
+        /// </summary>
+        [JsonProperty(PropertyName = "partitionSettings")]
+        public SqlPartitionSettings PartitionSettings { get; set; }
 
     }
 }

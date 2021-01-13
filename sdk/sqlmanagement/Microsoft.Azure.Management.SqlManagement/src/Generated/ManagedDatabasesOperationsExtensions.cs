@@ -22,57 +22,13 @@ namespace Microsoft.Azure.Management.Sql
     public static partial class ManagedDatabasesOperationsExtensions
     {
             /// <summary>
-            /// Completes the restore operation on a managed database.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='locationName'>
-            /// The name of the region where the resource is located.
-            /// </param>
-            /// <param name='operationId'>
-            /// Management operation id that this request tries to complete.
-            /// </param>
-            /// <param name='parameters'>
-            /// The definition for completing the restore of this managed database.
-            /// </param>
-            public static void CompleteRestore(this IManagedDatabasesOperations operations, string locationName, System.Guid operationId, CompleteDatabaseRestoreDefinition parameters)
-            {
-                operations.CompleteRestoreAsync(locationName, operationId, parameters).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Completes the restore operation on a managed database.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='locationName'>
-            /// The name of the region where the resource is located.
-            /// </param>
-            /// <param name='operationId'>
-            /// Management operation id that this request tries to complete.
-            /// </param>
-            /// <param name='parameters'>
-            /// The definition for completing the restore of this managed database.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task CompleteRestoreAsync(this IManagedDatabasesOperations operations, string locationName, System.Guid operationId, CompleteDatabaseRestoreDefinition parameters, CancellationToken cancellationToken = default(CancellationToken))
-            {
-                (await operations.CompleteRestoreWithHttpMessagesAsync(locationName, operationId, parameters, null, cancellationToken).ConfigureAwait(false)).Dispose();
-            }
-
-            /// <summary>
             /// Gets a list of managed databases.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -89,8 +45,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -113,8 +68,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -134,8 +88,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -161,8 +114,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -185,8 +137,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -215,8 +166,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -236,8 +186,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -260,8 +209,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -284,8 +232,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -308,23 +255,43 @@ namespace Microsoft.Azure.Management.Sql
             }
 
             /// <summary>
-            /// Completes the restore operation on a managed database.
+            /// Gets a list of inaccessible managed databases in a managed instance
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='locationName'>
-            /// The name of the region where the resource is located.
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
-            /// <param name='operationId'>
-            /// Management operation id that this request tries to complete.
+            /// <param name='managedInstanceName'>
+            /// The name of the managed instance.
             /// </param>
-            /// <param name='parameters'>
-            /// The definition for completing the restore of this managed database.
-            /// </param>
-            public static void BeginCompleteRestore(this IManagedDatabasesOperations operations, string locationName, System.Guid operationId, CompleteDatabaseRestoreDefinition parameters)
+            public static IPage<ManagedDatabase> ListInaccessibleByInstance(this IManagedDatabasesOperations operations, string resourceGroupName, string managedInstanceName)
             {
-                operations.BeginCompleteRestoreAsync(locationName, operationId, parameters).GetAwaiter().GetResult();
+                return operations.ListInaccessibleByInstanceAsync(resourceGroupName, managedInstanceName).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Gets a list of inaccessible managed databases in a managed instance
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group. The name is case insensitive.
+            /// </param>
+            /// <param name='managedInstanceName'>
+            /// The name of the managed instance.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IPage<ManagedDatabase>> ListInaccessibleByInstanceAsync(this IManagedDatabasesOperations operations, string resourceGroupName, string managedInstanceName, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ListInaccessibleByInstanceWithHttpMessagesAsync(resourceGroupName, managedInstanceName, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -333,11 +300,37 @@ namespace Microsoft.Azure.Management.Sql
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='locationName'>
-            /// The name of the region where the resource is located.
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
-            /// <param name='operationId'>
-            /// Management operation id that this request tries to complete.
+            /// <param name='managedInstanceName'>
+            /// The name of the managed instance.
+            /// </param>
+            /// <param name='databaseName'>
+            /// The name of the database.
+            /// </param>
+            /// <param name='parameters'>
+            /// The definition for completing the restore of this managed database.
+            /// </param>
+            public static void CompleteRestore(this IManagedDatabasesOperations operations, string resourceGroupName, string managedInstanceName, string databaseName, CompleteDatabaseRestoreDefinition parameters)
+            {
+                operations.CompleteRestoreAsync(resourceGroupName, managedInstanceName, databaseName, parameters).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Completes the restore operation on a managed database.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group. The name is case insensitive.
+            /// </param>
+            /// <param name='managedInstanceName'>
+            /// The name of the managed instance.
+            /// </param>
+            /// <param name='databaseName'>
+            /// The name of the database.
             /// </param>
             /// <param name='parameters'>
             /// The definition for completing the restore of this managed database.
@@ -345,9 +338,9 @@ namespace Microsoft.Azure.Management.Sql
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task BeginCompleteRestoreAsync(this IManagedDatabasesOperations operations, string locationName, System.Guid operationId, CompleteDatabaseRestoreDefinition parameters, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task CompleteRestoreAsync(this IManagedDatabasesOperations operations, string resourceGroupName, string managedInstanceName, string databaseName, CompleteDatabaseRestoreDefinition parameters, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.BeginCompleteRestoreWithHttpMessagesAsync(locationName, operationId, parameters, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                (await operations.CompleteRestoreWithHttpMessagesAsync(resourceGroupName, managedInstanceName, databaseName, parameters, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
             /// <summary>
@@ -357,8 +350,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -381,8 +373,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -411,8 +402,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -432,8 +422,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -456,8 +445,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -480,8 +468,7 @@ namespace Microsoft.Azure.Management.Sql
             /// The operations group for this extension method.
             /// </param>
             /// <param name='resourceGroupName'>
-            /// The name of the resource group that contains the resource. You can obtain
-            /// this value from the Azure Resource Manager API or the portal.
+            /// The name of the resource group. The name is case insensitive.
             /// </param>
             /// <param name='managedInstanceName'>
             /// The name of the managed instance.
@@ -501,6 +488,55 @@ namespace Microsoft.Azure.Management.Sql
                 {
                     return _result.Body;
                 }
+            }
+
+            /// <summary>
+            /// Completes the restore operation on a managed database.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group. The name is case insensitive.
+            /// </param>
+            /// <param name='managedInstanceName'>
+            /// The name of the managed instance.
+            /// </param>
+            /// <param name='databaseName'>
+            /// The name of the database.
+            /// </param>
+            /// <param name='parameters'>
+            /// The definition for completing the restore of this managed database.
+            /// </param>
+            public static void BeginCompleteRestore(this IManagedDatabasesOperations operations, string resourceGroupName, string managedInstanceName, string databaseName, CompleteDatabaseRestoreDefinition parameters)
+            {
+                operations.BeginCompleteRestoreAsync(resourceGroupName, managedInstanceName, databaseName, parameters).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Completes the restore operation on a managed database.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group. The name is case insensitive.
+            /// </param>
+            /// <param name='managedInstanceName'>
+            /// The name of the managed instance.
+            /// </param>
+            /// <param name='databaseName'>
+            /// The name of the database.
+            /// </param>
+            /// <param name='parameters'>
+            /// The definition for completing the restore of this managed database.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task BeginCompleteRestoreAsync(this IManagedDatabasesOperations operations, string resourceGroupName, string managedInstanceName, string databaseName, CompleteDatabaseRestoreDefinition parameters, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.BeginCompleteRestoreWithHttpMessagesAsync(resourceGroupName, managedInstanceName, databaseName, parameters, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
             /// <summary>
@@ -532,6 +568,40 @@ namespace Microsoft.Azure.Management.Sql
             public static async Task<IPage<ManagedDatabase>> ListByInstanceNextAsync(this IManagedDatabasesOperations operations, string nextPageLink, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ListByInstanceNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Gets a list of inaccessible managed databases in a managed instance
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='nextPageLink'>
+            /// The NextLink from the previous successful call to List operation.
+            /// </param>
+            public static IPage<ManagedDatabase> ListInaccessibleByInstanceNext(this IManagedDatabasesOperations operations, string nextPageLink)
+            {
+                return operations.ListInaccessibleByInstanceNextAsync(nextPageLink).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Gets a list of inaccessible managed databases in a managed instance
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='nextPageLink'>
+            /// The NextLink from the previous successful call to List operation.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IPage<ManagedDatabase>> ListInaccessibleByInstanceNextAsync(this IManagedDatabasesOperations operations, string nextPageLink, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ListInaccessibleByInstanceNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

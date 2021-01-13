@@ -75,14 +75,14 @@ namespace Microsoft.Azure.Search.Models
         /// <see href="https://docs.microsoft.com/azure/search/search-howto-indexing-azure-blob-storage" />
         /// </remarks>
         /// <param name="parameters">IndexingParameters to configure.</param>
-        /// <param name="extractionMode">A <c cref="BlobExtractionMode">BlobExtractionMode</c> value specifying what to index.</param>
+        /// <param name="extractionMode">A <see cref="BlobExtractionMode" /> value specifying what to index.</param>
         /// <returns>The IndexingParameters instance.</returns>
         public static IndexingParameters SetBlobExtractionMode(this IndexingParameters parameters, BlobExtractionMode extractionMode) =>
             Configure(parameters, "dataToExtract", (string)extractionMode);
 
         /// <summary>
         /// Tells the indexer to assume that all blobs contain JSON, which it will then parse such that each blob's JSON will map to a single
-        /// document in the Azure Search index.
+        /// document in the search index.
         /// See <see href="https://docs.microsoft.com/azure/search/search-howto-index-json-blobs/" /> for details.
         /// </summary>
         /// <param name="parameters">IndexingParameters to configure.</param>
@@ -95,7 +95,7 @@ namespace Microsoft.Azure.Search.Models
 
         /// <summary>
         /// Tells the indexer to assume that all blobs contain new-line separated JSON, which it will then parse such that individual JSON entities in each blob
-        /// will map to a single document in the Azure Search index.
+        /// will map to a single document in the search index.
         /// See <see href="https://docs.microsoft.com/azure/search/search-howto-index-json-blobs/" /> for details.
         /// </summary>
         /// <param name="parameters">IndexingParameters to configure.</param>
@@ -108,7 +108,7 @@ namespace Microsoft.Azure.Search.Models
 
         /// <summary>
         /// Tells the indexer to assume that all blobs contain JSON arrays, which it will then parse such that each JSON object in each array will
-        /// map to a single document in the Azure Search index.
+        /// map to a single document in the search index.
         /// See <see href="https://docs.microsoft.com/azure/search/search-howto-index-json-blobs" /> for details.
         /// </summary>
         /// <param name="parameters">IndexingParameters to configure.</param>
@@ -139,7 +139,7 @@ namespace Microsoft.Azure.Search.Models
         /// </summary>
         /// <param name="parameters">IndexingParameters to configure.</param>
         /// <param name="headers">
-        /// Specifies column headers that the indexer will use to map values to specific fields in the Azure Search index. If you don't specify any
+        /// Specifies column headers that the indexer will use to map values to specific fields in the search index. If you don't specify any
         /// headers, the indexer assumes that the first non-blank line of each blob contains comma-separated headers.
         /// </param>
         /// <remarks>
@@ -164,7 +164,7 @@ namespace Microsoft.Azure.Search.Models
 
         /// <summary>
         /// Tells the indexer to assume that blobs should be parsed as text files in UTF-8 encoding.
-        /// See <see href="https://docs.microsoft.com/azure/search/search-howto-indexing-azure-blob-storage#indexing-plain-text"/>
+        /// See <see href="https://docs.microsoft.com/azure/search/search-howto-indexing-azure-blob-storage#indexing-plain-text">Indexing plain text</see> for details.
         /// </summary>
         /// <param name="parameters">IndexingParameters to configure.</param>
         /// <returns>The IndexingParameters instance.</returns>
@@ -173,7 +173,7 @@ namespace Microsoft.Azure.Search.Models
 
         /// <summary>
         /// Tells the indexer to assume that blobs should be parsed as text files in the desired encoding.
-        /// See <see href="https://docs.microsoft.com/azure/search/search-howto-indexing-azure-blob-storage#indexing-plain-text"/>
+        /// See <see href="https://docs.microsoft.com/azure/search/search-howto-indexing-azure-blob-storage#indexing-plain-text">Indexing plain text</see> for details.
         /// </summary>
         /// <param name="parameters">IndexingParameters to configure.</param>
         /// <param name="encoding">Encoding used to read the text stored in blobs.</param>
@@ -188,7 +188,7 @@ namespace Microsoft.Azure.Search.Models
         }
 
         /// <summary>
-        /// Specifies that <c cref="BlobExtractionMode.StorageMetadata">BlobExtractionMode.StorageMetadata</c> blob extraction mode will be
+        /// Specifies that <see cref="BlobExtractionMode.StorageMetadata" /> blob extraction mode will be
         /// automatically used for blobs of unsupported content types. This behavior is enabled by default.
         /// </summary>
         /// <remarks>

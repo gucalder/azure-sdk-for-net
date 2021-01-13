@@ -35,7 +35,8 @@ namespace Microsoft.Azure.Management.Network.Models
         /// Initializes a new instance of the SecurityRule class.
         /// </summary>
         /// <param name="protocol">Network protocol this rule applies to.
-        /// Possible values include: 'Tcp', 'Udp', 'Icmp', 'Esp', '*'</param>
+        /// Possible values include: 'Tcp', 'Udp', 'Icmp', 'Esp', '*',
+        /// 'Ah'</param>
         /// <param name="access">The network traffic is allowed or denied.
         /// Possible values include: 'Allow', 'Deny'</param>
         /// <param name="direction">The direction of the rule. The direction
@@ -75,14 +76,15 @@ namespace Microsoft.Azure.Management.Network.Models
         /// rule in the collection. The lower the priority number, the higher
         /// the priority of the rule.</param>
         /// <param name="provisioningState">The provisioning state of the
-        /// public IP resource. Possible values are: 'Updating', 'Deleting',
-        /// and 'Failed'.</param>
+        /// security rule resource. Possible values include: 'Succeeded',
+        /// 'Updating', 'Deleting', 'Failed'</param>
         /// <param name="name">The name of the resource that is unique within a
         /// resource group. This name can be used to access the
         /// resource.</param>
         /// <param name="etag">A unique read-only string that changes whenever
         /// the resource is updated.</param>
-        public SecurityRule(string protocol, string access, string direction, string id = default(string), string description = default(string), string sourcePortRange = default(string), string destinationPortRange = default(string), string sourceAddressPrefix = default(string), IList<string> sourceAddressPrefixes = default(IList<string>), IList<ApplicationSecurityGroup> sourceApplicationSecurityGroups = default(IList<ApplicationSecurityGroup>), string destinationAddressPrefix = default(string), IList<string> destinationAddressPrefixes = default(IList<string>), IList<ApplicationSecurityGroup> destinationApplicationSecurityGroups = default(IList<ApplicationSecurityGroup>), IList<string> sourcePortRanges = default(IList<string>), IList<string> destinationPortRanges = default(IList<string>), int? priority = default(int?), string provisioningState = default(string), string name = default(string), string etag = default(string))
+        /// <param name="type">The type of the resource.</param>
+        public SecurityRule(string protocol, string access, string direction, string id = default(string), string description = default(string), string sourcePortRange = default(string), string destinationPortRange = default(string), string sourceAddressPrefix = default(string), IList<string> sourceAddressPrefixes = default(IList<string>), IList<ApplicationSecurityGroup> sourceApplicationSecurityGroups = default(IList<ApplicationSecurityGroup>), string destinationAddressPrefix = default(string), IList<string> destinationAddressPrefixes = default(IList<string>), IList<ApplicationSecurityGroup> destinationApplicationSecurityGroups = default(IList<ApplicationSecurityGroup>), IList<string> sourcePortRanges = default(IList<string>), IList<string> destinationPortRanges = default(IList<string>), int? priority = default(int?), string provisioningState = default(string), string name = default(string), string etag = default(string), string type = default(string))
             : base(id)
         {
             Description = description;
@@ -103,6 +105,7 @@ namespace Microsoft.Azure.Management.Network.Models
             ProvisioningState = provisioningState;
             Name = name;
             Etag = etag;
+            Type = type;
             CustomInit();
         }
 
@@ -119,7 +122,7 @@ namespace Microsoft.Azure.Management.Network.Models
 
         /// <summary>
         /// Gets or sets network protocol this rule applies to. Possible values
-        /// include: 'Tcp', 'Udp', 'Icmp', 'Esp', '*'
+        /// include: 'Tcp', 'Udp', 'Icmp', 'Esp', '*', 'Ah'
         /// </summary>
         [JsonProperty(PropertyName = "properties.protocol")]
         public string Protocol { get; set; }
@@ -221,11 +224,11 @@ namespace Microsoft.Azure.Management.Network.Models
         public string Direction { get; set; }
 
         /// <summary>
-        /// Gets or sets the provisioning state of the public IP resource.
-        /// Possible values are: 'Updating', 'Deleting', and 'Failed'.
+        /// Gets the provisioning state of the security rule resource. Possible
+        /// values include: 'Succeeded', 'Updating', 'Deleting', 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
         /// Gets or sets the name of the resource that is unique within a
@@ -235,11 +238,17 @@ namespace Microsoft.Azure.Management.Network.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets a unique read-only string that changes whenever the
-        /// resource is updated.
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the type of the resource.
+        /// </summary>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
 
         /// <summary>
         /// Validate the object.

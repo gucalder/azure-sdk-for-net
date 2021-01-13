@@ -1,19 +1,22 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Azure.Core.Http;
+using System;
 using NUnit.Framework;
 
 namespace Azure.Core.Tests
 {
     public class ETagTests
     {
-        [Test]
-        public void StringRoundtrips()
+        [Theory]
+        [TestCase("tag")]
+        [TestCase("\"tag\"")]
+        [TestCase("W/\"weakETag\"")]
+        public void StringRoundtrips(string value)
         {
-            var s = "tag";
-            var eTag = new ETag(s);
-            Assert.AreSame(s, eTag.ToString());
+            var eTag = new ETag(value);
+            Assert.AreSame(value, eTag.ToString());
+            Assert.AreSame(value, eTag.ToString("G"));
         }
 
         [Test]
@@ -66,15 +69,59 @@ namespace Azure.Core.Tests
             Assert.False(eTag.Equals((object)new ETag("A")));
         }
 
-
         [Test]
         public void EqualityMembersDefault()
         {
             var eTag = new ETag();
 
-            Assert.True(eTag.Equals(new ETag(null)));;
+            Assert.True(eTag.Equals(new ETag(null)));
 
             Assert.True(eTag.Equals((object)new ETag(null)));
+        }
+
+        [Theory]
+        [TestCase("lalala")]
+        [TestCase("\"lalala")]
+        [TestCase("lalala\"")]
+        [TestCase("W/\"lalala")]
+        [TestCase("W/lalala\"")]
+        public void ThrowsForEtagsWithoutQuotes(string value)
+        {
+            Assert.Throws<ArgumentException>(() => ETag.Parse(value));
+        }
+
+        [Theory]
+        [TestCase("*", "*")]
+        [TestCase("\"A\"", "A")]
+        [TestCase("\"\"", "")]
+        [TestCase("W/\"weakETag\"", "W/\"weakETag\"")]
+        public void ParsesEtag(string value, string expectedValue)
+        {
+            ETag tag = ETag.Parse(value);
+            Assert.AreEqual(expectedValue, tag.ToString());
+            Assert.AreEqual(expectedValue, tag.ToString("G"));
+        }
+
+        [Theory]
+        [TestCase("*", "*")]
+        [TestCase("\"A\"", "\"A\"")]
+        [TestCase("\"\"", "\"\"")]
+        [TestCase("W/\"weakETag\"", "W/\"weakETag\"")]
+        public void ParsesEtagToFormattedString(string value, string expectedValue)
+        {
+            ETag tag = ETag.Parse(value);
+            Assert.AreEqual(expectedValue, tag.ToString("H"));
+        }
+
+        [Theory]
+        [TestCase("A")]
+        [TestCase(null)]
+        [TestCase("g")]
+        [TestCase("h")]
+        public void InvalidFormatThrows(string format)
+        {
+            ETag tag  = new ETag("foo");
+            Assert.Throws<ArgumentException>(() => tag.ToString(format));
         }
     }
 }

@@ -11,6 +11,7 @@
 namespace Microsoft.Azure.Management.DataBox.Models
 {
     using Microsoft.Rest;
+    using Microsoft.Rest.Azure;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
     using System.Collections;
@@ -40,41 +41,57 @@ namespace Microsoft.Azure.Management.DataBox.Models
         /// changed once it is created, but if an identical region is specified
         /// on update the request will succeed.</param>
         /// <param name="sku">The sku type.</param>
+        /// <param name="transferType">Type of the data transfer. Possible
+        /// values include: 'ImportToAzure', 'ExportFromAzure'</param>
         /// <param name="tags">The list of key value pairs that describe the
         /// resource. These tags can be used in viewing and grouping this
         /// resource (across resource groups).</param>
+        /// <param name="identity">Msi identity of the resource</param>
         /// <param name="isCancellable">Describes whether the job is
         /// cancellable or not.</param>
         /// <param name="isDeletable">Describes whether the job is deletable or
         /// not.</param>
         /// <param name="isShippingAddressEditable">Describes whether the
         /// shipping address is editable or not.</param>
+        /// <param name="isPrepareToShipEnabled">Is Prepare To Ship Enabled on
+        /// this job</param>
         /// <param name="status">Name of the stage which is in progress.
         /// Possible values include: 'DeviceOrdered', 'DevicePrepared',
         /// 'Dispatched', 'Delivered', 'PickedUp', 'AtAzureDC', 'DataCopy',
         /// 'Completed', 'CompletedWithErrors', 'Cancelled',
         /// 'Failed_IssueReportedAtCustomer', 'Failed_IssueDetectedAtAzureDC',
-        /// 'Aborted'</param>
+        /// 'Aborted', 'CompletedWithWarnings', 'ReadyToDispatchFromAzureDC',
+        /// 'ReadyToReceiveAtAzureDC'</param>
         /// <param name="startTime">Time at which the job was started in UTC
         /// ISO 8601 format.</param>
         /// <param name="error">Top level error for the job.</param>
         /// <param name="details">Details of a job run. This field will only be
         /// sent for expand details filter.</param>
         /// <param name="cancellationReason">Reason for cancellation.</param>
+        /// <param name="deliveryType">Delivery type of Job. Possible values
+        /// include: 'NonScheduled', 'Scheduled'</param>
+        /// <param name="deliveryInfo">Delivery Info of Job.</param>
+        /// <param name="isCancellableWithoutFee">Flag to indicate cancellation
+        /// of scheduled job.</param>
         /// <param name="name">Name of the object.</param>
         /// <param name="id">Id of the object.</param>
         /// <param name="type">Type of the object.</param>
-        public JobResource(string location, Sku sku, IDictionary<string, string> tags = default(IDictionary<string, string>), bool? isCancellable = default(bool?), bool? isDeletable = default(bool?), bool? isShippingAddressEditable = default(bool?), StageName? status = default(StageName?), System.DateTime? startTime = default(System.DateTime?), Error error = default(Error), JobDetails details = default(JobDetails), string cancellationReason = default(string), string name = default(string), string id = default(string), string type = default(string))
-            : base(location, sku, tags)
+        public JobResource(string location, Sku sku, TransferType transferType, IDictionary<string, string> tags = default(IDictionary<string, string>), ResourceIdentity identity = default(ResourceIdentity), bool? isCancellable = default(bool?), bool? isDeletable = default(bool?), bool? isShippingAddressEditable = default(bool?), bool? isPrepareToShipEnabled = default(bool?), StageName? status = default(StageName?), System.DateTime? startTime = default(System.DateTime?), CloudError error = default(CloudError), JobDetails details = default(JobDetails), string cancellationReason = default(string), JobDeliveryType? deliveryType = default(JobDeliveryType?), JobDeliveryInfo deliveryInfo = default(JobDeliveryInfo), bool? isCancellableWithoutFee = default(bool?), string name = default(string), string id = default(string), string type = default(string))
+            : base(location, sku, tags, identity)
         {
+            TransferType = transferType;
             IsCancellable = isCancellable;
             IsDeletable = isDeletable;
             IsShippingAddressEditable = isShippingAddressEditable;
+            IsPrepareToShipEnabled = isPrepareToShipEnabled;
             Status = status;
             StartTime = startTime;
             Error = error;
             Details = details;
             CancellationReason = cancellationReason;
+            DeliveryType = deliveryType;
+            DeliveryInfo = deliveryInfo;
+            IsCancellableWithoutFee = isCancellableWithoutFee;
             Name = name;
             Id = id;
             Type = type;
@@ -85,6 +102,13 @@ namespace Microsoft.Azure.Management.DataBox.Models
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
         partial void CustomInit();
+
+        /// <summary>
+        /// Gets or sets type of the data transfer. Possible values include:
+        /// 'ImportToAzure', 'ExportFromAzure'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.transferType")]
+        public TransferType TransferType { get; set; }
 
         /// <summary>
         /// Gets describes whether the job is cancellable or not.
@@ -105,12 +129,19 @@ namespace Microsoft.Azure.Management.DataBox.Models
         public bool? IsShippingAddressEditable { get; private set; }
 
         /// <summary>
+        /// Gets is Prepare To Ship Enabled on this job
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.isPrepareToShipEnabled")]
+        public bool? IsPrepareToShipEnabled { get; private set; }
+
+        /// <summary>
         /// Gets name of the stage which is in progress. Possible values
         /// include: 'DeviceOrdered', 'DevicePrepared', 'Dispatched',
         /// 'Delivered', 'PickedUp', 'AtAzureDC', 'DataCopy', 'Completed',
         /// 'CompletedWithErrors', 'Cancelled',
         /// 'Failed_IssueReportedAtCustomer', 'Failed_IssueDetectedAtAzureDC',
-        /// 'Aborted'
+        /// 'Aborted', 'CompletedWithWarnings', 'ReadyToDispatchFromAzureDC',
+        /// 'ReadyToReceiveAtAzureDC'
         /// </summary>
         [JsonProperty(PropertyName = "properties.status")]
         public StageName? Status { get; private set; }
@@ -125,7 +156,7 @@ namespace Microsoft.Azure.Management.DataBox.Models
         /// Gets top level error for the job.
         /// </summary>
         [JsonProperty(PropertyName = "properties.error")]
-        public Error Error { get; private set; }
+        public CloudError Error { get; private set; }
 
         /// <summary>
         /// Gets or sets details of a job run. This field will only be sent for
@@ -139,6 +170,25 @@ namespace Microsoft.Azure.Management.DataBox.Models
         /// </summary>
         [JsonProperty(PropertyName = "properties.cancellationReason")]
         public string CancellationReason { get; private set; }
+
+        /// <summary>
+        /// Gets or sets delivery type of Job. Possible values include:
+        /// 'NonScheduled', 'Scheduled'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.deliveryType")]
+        public JobDeliveryType? DeliveryType { get; set; }
+
+        /// <summary>
+        /// Gets or sets delivery Info of Job.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.deliveryInfo")]
+        public JobDeliveryInfo DeliveryInfo { get; set; }
+
+        /// <summary>
+        /// Gets flag to indicate cancellation of scheduled job.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.isCancellableWithoutFee")]
+        public bool? IsCancellableWithoutFee { get; private set; }
 
         /// <summary>
         /// Gets name of the object.

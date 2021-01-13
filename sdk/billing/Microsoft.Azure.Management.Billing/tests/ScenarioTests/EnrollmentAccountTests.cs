@@ -22,10 +22,10 @@ namespace Billing.Tests.ScenarioTests
         public void ListEnrollmentAccounts()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var billingMgmtClient = BillingTestUtilities.GetBillingManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
-                var enrollmentAccounts = billingMgmtClient.EnrollmentAccounts.List().Value;
+                var enrollmentAccounts = billingMgmtClient.EnrollmentAccounts.List();
                 Assert.NotNull(enrollmentAccounts);
                 Assert.True(enrollmentAccounts.Any());
             }
@@ -35,7 +35,7 @@ namespace Billing.Tests.ScenarioTests
         public void GetEnrollmentAccountWithName()
         {
             HttpMockServer.RecordsDirectory = GetSessionsDirectoryPath();
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var billingMgmtClient = BillingTestUtilities.GetBillingManagementClient(context, new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
                 var enrollmentAccount = billingMgmtClient.EnrollmentAccounts.Get(EnrollmentAccountName);

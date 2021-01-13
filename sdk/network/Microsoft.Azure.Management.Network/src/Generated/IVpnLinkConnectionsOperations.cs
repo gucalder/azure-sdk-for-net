@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Management.Network
         /// wan vpn gateway vpn connection.
         /// </summary>
         /// <param name='resourceGroupName'>
-        /// The resource group name of the VpnGateway.
+        /// The resource group name of the vpn gateway.
         /// </param>
         /// <param name='gatewayName'>
         /// The name of the gateway.
@@ -42,7 +42,7 @@ namespace Microsoft.Azure.Management.Network
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        /// <exception cref="ErrorException">
+        /// <exception cref="Microsoft.Rest.Azure.CloudException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
         /// <exception cref="Microsoft.Rest.SerializationException">
@@ -65,7 +65,7 @@ namespace Microsoft.Azure.Management.Network
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        /// <exception cref="ErrorException">
+        /// <exception cref="Microsoft.Rest.Azure.CloudException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
         /// <exception cref="Microsoft.Rest.SerializationException">

@@ -12,12 +12,12 @@ comments.
 
 ## Azure SDK Design Guidelines for .NET
 
-These libraries follow the [Azure SDK Design Guidelines for .NET](https://azuresdkspecs.z5.web.core.windows.net/DotNetSpec.html)
+These libraries follow the [Azure SDK Design Guidelines for .NET](https://azure.github.io/azure-sdk/dotnet_introduction.html)
 and share a number of core features such as HTTP retries, logging, transport
 protocols, authentication protocols, etc., so that once you learn how to use
 these features in one client library, you will know how to use them in other
 client libraries.  You can learn about these shared features in the
-[Azure.Core README](/sdk/core/Azure.Core/README.md).
+[Azure.Core README](https://github.com/Azure/azure-sdk-for-net/blob/master/sdk/core/Azure.Core/README.md).
 
 ## Code Generation
 
@@ -34,7 +34,11 @@ PS C:\src\azure-sdk-for-net\sdk\storage> .\generate.ps1
 ```
 
 The generator uses [AutoRest](https://github.com/Azure/autorest) which requires
-node.js.  There's known flakiness that results in an `ERROR: Did not find any
+node.js. It is recommended to use the beta version as it increases the max usable memory:
+```
+npm install -g autorest@beta
+```
+There's known flakiness that results in an `ERROR: Did not find any
 input files to generate!` message that can be safely ignored -- just run the
 generator one more time.
 
@@ -44,14 +48,11 @@ exercise any new features that you've added.
 
 ### Frameworks
 
-We use [nUnit 3](https://github.com/nunit/docs/wiki) as our testing framework.
+We use [NUnit 3](https://github.com/nunit/docs/wiki) as our testing framework.
 
-[Azure.Core's testing framework](../core/Azure.Core/tests/TestFramework) is
-copied into our projects' `/TestFramework` folders by the build.  _(Please be
-sure to run all of the unit tests in `../../core/Azure.Core/Azure.Core.All.sln`
-if you make any changes here.)_
+[Azure.Core.TestFramework's testing framework][core_tests] provides a set of reusable primitives that simplify writing tests for new Azure SDK libraries.
 
-We also have [common test code](./Azure.Storage.Common/tests/Shared) in our
+We also have [common test code](https://github.com/Azure/azure-sdk-for-net/blob/master/sdk/storage/Azure.Storage.Common/tests/Shared) in our
 projects' `/Shared` folders that provides helpful Storage specific
 infrastructure.
 
@@ -62,13 +63,15 @@ different service features.  We specify all of them via a
 `TestConfigurations.xml` file.  It includes:
 
 * `TargetTestTenant` - the default Storage account for our tests
-* `TargetSecondaryTestTenant` - a Storage account with Read Access Geo-Redundant Storage enabled
+* `TargetSecondaryTestTenant` - A Storage account with Read Access Geo-Redundant Storage enabled
 * `TargetPremiumBlobTenant` - A Storage account using Premium SSDs
 * `TargetPreviewBlobTenant` - A Storage account with access to preview features
 * `TargetOAuthTenant` - A Storage account configured to authenticate with Azure Active Directory
+* `TargetHierarchicalNamespaceTenant` - A Storage account with hierarchical namespace enabled
+   and configured to authenticate with Azure Active Directory (OAuth access)
 
 If you want to run live tests against your own account, you can edit the
-[`TestConfigurationsTemplate.xml`](.\Azure.Storage.Common\tests\Shared\TestConfigurationsTemplate.xml)
+[`TestConfigurationsTemplate.xml`](https://github.com/Azure/azure-sdk-for-net/blob/master/sdk/storage/Azure.Storage.Common/tests/Shared/TestConfigurationsTemplate.xml)
 file and rename it to `TestConfigurations.xml` in the same folder.  The build
 will automatically copy it to each test project.  If you're working with
 multiple enlistments or want to change between multiple configuration files,
@@ -99,7 +102,7 @@ All random values should be obtained via `this.Recording.Random` since we use
 the same seed on test playback to ensure our client code generates the same
 "random" values each time.  You can't share any state between tests or rely on
 ordering because you don't know the order they'll be recorded or replayed.  Any
-sensitive values are redacted via the [`StorageRecordedTestSanitizer`](.\Azure.Storage.Common\tests\Shared\StorageRecordedTestSanitizer.cs).
+sensitive values are redacted via the [`StorageRecordedTestSanitizer`](https://github.com/Azure/azure-sdk-for-net/blob/master/sdk/storage/Azure.Storage.Common/tests/Shared/StorageRecordedTestSanitizer.cs).
 
 ### Running tests
 
@@ -128,3 +131,4 @@ of test infrastructure to keep them easy to read.
 [coc]: https://opensource.microsoft.com/codeofconduct/
 [coc_faq]: https://opensource.microsoft.com/codeofconduct/faq/
 [coc_contact]: mailto:opencode@microsoft.com
+[core_tests]: https://github.com/Azure/azure-sdk-for-net/tree/master/sdk/core/Azure.Core.TestFramework

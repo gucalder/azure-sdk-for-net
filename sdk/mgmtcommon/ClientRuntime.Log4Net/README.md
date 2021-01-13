@@ -1,7 +1,7 @@
 Using Log4Net for AutoRest Generated Clients:
 ---------------------------------------------
 1- Configure the log4net in your app.config/web.config (or your preferred way).
-   For more examples on the available configurations check [config examples](http://logging.apache.org/log4net/release/config-examples.html)
+   For more examples on the available configurations check [config examples](https://logging.apache.org/log4net/release/config-examples.html)
    Here's an example of app.config for the logger used with ConsoleAppender:
 
 
@@ -41,4 +41,4 @@ Using Log4Net for AutoRest Generated Clients:
 	ServiceClientTracing.IsEnabled = true;
 ```
 
-![Impressions](https://azure-sdk-impressions.azurewebsites.net/api/impressions/azure-sdk-for-net%2Fsrc%2FSdkCommon%2FClientRuntime.Log4Net%2FREADME.png)
+![Impressions](https://azure-sdk-impressions.azurewebsites.net/api/impressions/azure-sdk-for-net%2Fsdk%2Fmgmtcommon%2FClientRuntime.Log4Net%2FREADME.png)

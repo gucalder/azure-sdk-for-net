@@ -20,6 +20,8 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
     using System.Linq;
     using System.Net;
     using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Open API 2.0 Specs for Azure RecoveryServices Backup service
@@ -70,19 +72,64 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         public bool? GenerateClientRequestId { get; set; }
 
         /// <summary>
-        /// Gets the IProtectionIntentOperations.
+        /// Gets the IBackupResourceVaultConfigsOperations.
         /// </summary>
-        public virtual IProtectionIntentOperations ProtectionIntent { get; private set; }
+        public virtual IBackupResourceVaultConfigsOperations BackupResourceVaultConfigs { get; private set; }
 
         /// <summary>
-        /// Gets the IBackupStatusOperations.
+        /// Gets the IBackupResourceEncryptionConfigsOperations.
         /// </summary>
-        public virtual IBackupStatusOperations BackupStatus { get; private set; }
+        public virtual IBackupResourceEncryptionConfigsOperations BackupResourceEncryptionConfigs { get; private set; }
 
         /// <summary>
-        /// Gets the IFeatureSupportOperations.
+        /// Gets the IPrivateEndpointConnectionOperations.
         /// </summary>
-        public virtual IFeatureSupportOperations FeatureSupport { get; private set; }
+        public virtual IPrivateEndpointConnectionOperations PrivateEndpointConnection { get; private set; }
+
+        /// <summary>
+        /// Gets the IPrivateEndpointOperations.
+        /// </summary>
+        public virtual IPrivateEndpointOperations PrivateEndpoint { get; private set; }
+
+        /// <summary>
+        /// Gets the IBMSPrepareDataMoveOperationResultOperations.
+        /// </summary>
+        public virtual IBMSPrepareDataMoveOperationResultOperations BMSPrepareDataMoveOperationResult { get; private set; }
+
+        /// <summary>
+        /// Gets the IProtectedItemsOperations.
+        /// </summary>
+        public virtual IProtectedItemsOperations ProtectedItems { get; private set; }
+
+        /// <summary>
+        /// Gets the IProtectedItemOperationResultsOperations.
+        /// </summary>
+        public virtual IProtectedItemOperationResultsOperations ProtectedItemOperationResults { get; private set; }
+
+        /// <summary>
+        /// Gets the IRecoveryPointsOperations.
+        /// </summary>
+        public virtual IRecoveryPointsOperations RecoveryPoints { get; private set; }
+
+        /// <summary>
+        /// Gets the IRestoresOperations.
+        /// </summary>
+        public virtual IRestoresOperations Restores { get; private set; }
+
+        /// <summary>
+        /// Gets the IBackupPoliciesOperations.
+        /// </summary>
+        public virtual IBackupPoliciesOperations BackupPolicies { get; private set; }
+
+        /// <summary>
+        /// Gets the IProtectionPoliciesOperations.
+        /// </summary>
+        public virtual IProtectionPoliciesOperations ProtectionPolicies { get; private set; }
+
+        /// <summary>
+        /// Gets the IProtectionPolicyOperationResultsOperations.
+        /// </summary>
+        public virtual IProtectionPolicyOperationResultsOperations ProtectionPolicyOperationResults { get; private set; }
 
         /// <summary>
         /// Gets the IBackupJobsOperations.
@@ -95,6 +142,16 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         public virtual IJobDetailsOperations JobDetails { get; private set; }
 
         /// <summary>
+        /// Gets the IJobCancellationsOperations.
+        /// </summary>
+        public virtual IJobCancellationsOperations JobCancellations { get; private set; }
+
+        /// <summary>
+        /// Gets the IJobOperationResultsOperations.
+        /// </summary>
+        public virtual IJobOperationResultsOperations JobOperationResults { get; private set; }
+
+        /// <summary>
         /// Gets the IExportJobsOperationResultsOperations.
         /// </summary>
         public virtual IExportJobsOperationResultsOperations ExportJobsOperationResults { get; private set; }
@@ -105,34 +162,14 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         public virtual IJobsOperations Jobs { get; private set; }
 
         /// <summary>
-        /// Gets the IBackupPoliciesOperations.
-        /// </summary>
-        public virtual IBackupPoliciesOperations BackupPolicies { get; private set; }
-
-        /// <summary>
         /// Gets the IBackupProtectedItemsOperations.
         /// </summary>
         public virtual IBackupProtectedItemsOperations BackupProtectedItems { get; private set; }
 
         /// <summary>
-        /// Gets the IBackupProtectionIntentOperations.
-        /// </summary>
-        public virtual IBackupProtectionIntentOperations BackupProtectionIntent { get; private set; }
-
-        /// <summary>
-        /// Gets the IBackupUsageSummariesOperations.
-        /// </summary>
-        public virtual IBackupUsageSummariesOperations BackupUsageSummaries { get; private set; }
-
-        /// <summary>
         /// Gets the IOperationOperations.
         /// </summary>
         public virtual IOperationOperations Operation { get; private set; }
-
-        /// <summary>
-        /// Gets the IBackupResourceVaultConfigsOperations.
-        /// </summary>
-        public virtual IBackupResourceVaultConfigsOperations BackupResourceVaultConfigs { get; private set; }
 
         /// <summary>
         /// Gets the IBackupEnginesOperations.
@@ -165,19 +202,9 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         public virtual IProtectionContainerOperationResultsOperations ProtectionContainerOperationResults { get; private set; }
 
         /// <summary>
-        /// Gets the IProtectedItemsOperations.
-        /// </summary>
-        public virtual IProtectedItemsOperations ProtectedItems { get; private set; }
-
-        /// <summary>
         /// Gets the IBackupsOperations.
         /// </summary>
         public virtual IBackupsOperations Backups { get; private set; }
-
-        /// <summary>
-        /// Gets the IProtectedItemOperationResultsOperations.
-        /// </summary>
-        public virtual IProtectedItemOperationResultsOperations ProtectedItemOperationResults { get; private set; }
 
         /// <summary>
         /// Gets the IProtectedItemOperationStatusesOperations.
@@ -185,29 +212,9 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         public virtual IProtectedItemOperationStatusesOperations ProtectedItemOperationStatuses { get; private set; }
 
         /// <summary>
-        /// Gets the IRecoveryPointsOperations.
-        /// </summary>
-        public virtual IRecoveryPointsOperations RecoveryPoints { get; private set; }
-
-        /// <summary>
         /// Gets the IItemLevelRecoveryConnectionsOperations.
         /// </summary>
         public virtual IItemLevelRecoveryConnectionsOperations ItemLevelRecoveryConnections { get; private set; }
-
-        /// <summary>
-        /// Gets the IRestoresOperations.
-        /// </summary>
-        public virtual IRestoresOperations Restores { get; private set; }
-
-        /// <summary>
-        /// Gets the IJobCancellationsOperations.
-        /// </summary>
-        public virtual IJobCancellationsOperations JobCancellations { get; private set; }
-
-        /// <summary>
-        /// Gets the IJobOperationResultsOperations.
-        /// </summary>
-        public virtual IJobOperationResultsOperations JobOperationResults { get; private set; }
 
         /// <summary>
         /// Gets the IBackupOperationResultsOperations.
@@ -218,16 +225,6 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         /// Gets the IBackupOperationStatusesOperations.
         /// </summary>
         public virtual IBackupOperationStatusesOperations BackupOperationStatuses { get; private set; }
-
-        /// <summary>
-        /// Gets the IProtectionPoliciesOperations.
-        /// </summary>
-        public virtual IProtectionPoliciesOperations ProtectionPolicies { get; private set; }
-
-        /// <summary>
-        /// Gets the IProtectionPolicyOperationResultsOperations.
-        /// </summary>
-        public virtual IProtectionPolicyOperationResultsOperations ProtectionPolicyOperationResults { get; private set; }
 
         /// <summary>
         /// Gets the IProtectionPolicyOperationStatusesOperations.
@@ -250,9 +247,74 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         public virtual ISecurityPINsOperations SecurityPINs { get; private set; }
 
         /// <summary>
+        /// Gets the IAadPropertiesOperations.
+        /// </summary>
+        public virtual IAadPropertiesOperations AadProperties { get; private set; }
+
+        /// <summary>
+        /// Gets the ICrossRegionRestoreOperations.
+        /// </summary>
+        public virtual ICrossRegionRestoreOperations CrossRegionRestore { get; private set; }
+
+        /// <summary>
+        /// Gets the IBackupCrrJobDetailsOperations.
+        /// </summary>
+        public virtual IBackupCrrJobDetailsOperations BackupCrrJobDetails { get; private set; }
+
+        /// <summary>
+        /// Gets the IBackupCrrJobsOperations.
+        /// </summary>
+        public virtual IBackupCrrJobsOperations BackupCrrJobs { get; private set; }
+
+        /// <summary>
+        /// Gets the ICrrOperationResultsOperations.
+        /// </summary>
+        public virtual ICrrOperationResultsOperations CrrOperationResults { get; private set; }
+
+        /// <summary>
+        /// Gets the ICrrOperationStatusOperations.
+        /// </summary>
+        public virtual ICrrOperationStatusOperations CrrOperationStatus { get; private set; }
+
+        /// <summary>
         /// Gets the IBackupResourceStorageConfigsOperations.
         /// </summary>
         public virtual IBackupResourceStorageConfigsOperations BackupResourceStorageConfigs { get; private set; }
+
+        /// <summary>
+        /// Gets the IRecoveryPointsCrrOperations.
+        /// </summary>
+        public virtual IRecoveryPointsCrrOperations RecoveryPointsCrr { get; private set; }
+
+        /// <summary>
+        /// Gets the IBackupProtectedItemsCrrOperations.
+        /// </summary>
+        public virtual IBackupProtectedItemsCrrOperations BackupProtectedItemsCrr { get; private set; }
+
+        /// <summary>
+        /// Gets the IProtectionIntentOperations.
+        /// </summary>
+        public virtual IProtectionIntentOperations ProtectionIntent { get; private set; }
+
+        /// <summary>
+        /// Gets the IBackupStatusOperations.
+        /// </summary>
+        public virtual IBackupStatusOperations BackupStatus { get; private set; }
+
+        /// <summary>
+        /// Gets the IFeatureSupportOperations.
+        /// </summary>
+        public virtual IFeatureSupportOperations FeatureSupport { get; private set; }
+
+        /// <summary>
+        /// Gets the IBackupProtectionIntentOperations.
+        /// </summary>
+        public virtual IBackupProtectionIntentOperations BackupProtectionIntent { get; private set; }
+
+        /// <summary>
+        /// Gets the IBackupUsageSummariesOperations.
+        /// </summary>
+        public virtual IBackupUsageSummariesOperations BackupUsageSummaries { get; private set; }
 
         /// <summary>
         /// Gets the IOperations.
@@ -500,43 +562,55 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
         /// </summary>
         private void Initialize()
         {
-            ProtectionIntent = new ProtectionIntentOperations(this);
-            BackupStatus = new BackupStatusOperations(this);
-            FeatureSupport = new FeatureSupportOperations(this);
+            BackupResourceVaultConfigs = new BackupResourceVaultConfigsOperations(this);
+            BackupResourceEncryptionConfigs = new BackupResourceEncryptionConfigsOperations(this);
+            PrivateEndpointConnection = new PrivateEndpointConnectionOperations(this);
+            PrivateEndpoint = new PrivateEndpointOperations(this);
+            BMSPrepareDataMoveOperationResult = new BMSPrepareDataMoveOperationResultOperations(this);
+            ProtectedItems = new ProtectedItemsOperations(this);
+            ProtectedItemOperationResults = new ProtectedItemOperationResultsOperations(this);
+            RecoveryPoints = new RecoveryPointsOperations(this);
+            Restores = new RestoresOperations(this);
+            BackupPolicies = new BackupPoliciesOperations(this);
+            ProtectionPolicies = new ProtectionPoliciesOperations(this);
+            ProtectionPolicyOperationResults = new ProtectionPolicyOperationResultsOperations(this);
             BackupJobs = new BackupJobsOperations(this);
             JobDetails = new JobDetailsOperations(this);
+            JobCancellations = new JobCancellationsOperations(this);
+            JobOperationResults = new JobOperationResultsOperations(this);
             ExportJobsOperationResults = new ExportJobsOperationResultsOperations(this);
             Jobs = new JobsOperations(this);
-            BackupPolicies = new BackupPoliciesOperations(this);
             BackupProtectedItems = new BackupProtectedItemsOperations(this);
-            BackupProtectionIntent = new BackupProtectionIntentOperations(this);
-            BackupUsageSummaries = new BackupUsageSummariesOperations(this);
             Operation = new OperationOperations(this);
-            BackupResourceVaultConfigs = new BackupResourceVaultConfigsOperations(this);
             BackupEngines = new BackupEnginesOperations(this);
             ProtectionContainerRefreshOperationResults = new ProtectionContainerRefreshOperationResultsOperations(this);
             ProtectableContainers = new ProtectableContainersOperations(this);
             ProtectionContainers = new ProtectionContainersOperations(this);
             BackupWorkloadItems = new BackupWorkloadItemsOperations(this);
             ProtectionContainerOperationResults = new ProtectionContainerOperationResultsOperations(this);
-            ProtectedItems = new ProtectedItemsOperations(this);
             Backups = new BackupsOperations(this);
-            ProtectedItemOperationResults = new ProtectedItemOperationResultsOperations(this);
             ProtectedItemOperationStatuses = new ProtectedItemOperationStatusesOperations(this);
-            RecoveryPoints = new RecoveryPointsOperations(this);
             ItemLevelRecoveryConnections = new ItemLevelRecoveryConnectionsOperations(this);
-            Restores = new RestoresOperations(this);
-            JobCancellations = new JobCancellationsOperations(this);
-            JobOperationResults = new JobOperationResultsOperations(this);
             BackupOperationResults = new BackupOperationResultsOperations(this);
             BackupOperationStatuses = new BackupOperationStatusesOperations(this);
-            ProtectionPolicies = new ProtectionPoliciesOperations(this);
-            ProtectionPolicyOperationResults = new ProtectionPolicyOperationResultsOperations(this);
             ProtectionPolicyOperationStatuses = new ProtectionPolicyOperationStatusesOperations(this);
             BackupProtectableItems = new BackupProtectableItemsOperations(this);
             BackupProtectionContainers = new BackupProtectionContainersOperations(this);
             SecurityPINs = new SecurityPINsOperations(this);
+            AadProperties = new AadPropertiesOperations(this);
+            CrossRegionRestore = new CrossRegionRestoreOperations(this);
+            BackupCrrJobDetails = new BackupCrrJobDetailsOperations(this);
+            BackupCrrJobs = new BackupCrrJobsOperations(this);
+            CrrOperationResults = new CrrOperationResultsOperations(this);
+            CrrOperationStatus = new CrrOperationStatusOperations(this);
             BackupResourceStorageConfigs = new BackupResourceStorageConfigsOperations(this);
+            RecoveryPointsCrr = new RecoveryPointsCrrOperations(this);
+            BackupProtectedItemsCrr = new BackupProtectedItemsCrrOperations(this);
+            ProtectionIntent = new ProtectionIntentOperations(this);
+            BackupStatus = new BackupStatusOperations(this);
+            FeatureSupport = new FeatureSupportOperations(this);
+            BackupProtectionIntent = new BackupProtectionIntentOperations(this);
+            BackupUsageSummaries = new BackupUsageSummariesOperations(this);
             Operations = new Operations(this);
             BaseUri = new System.Uri("https://management.azure.com");
             AcceptLanguage = "en-US";
@@ -571,18 +645,18 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<SchedulePolicy>("schedulePolicyType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<RetentionPolicy>("retentionPolicyType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<RetentionPolicy>("retentionPolicyType"));
-            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<FeatureSupportRequest>("featureType"));
-            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<FeatureSupportRequest>("featureType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<Job>("jobType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<Job>("jobType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<OperationResultInfoBase>("objectType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<OperationResultInfoBase>("objectType"));
+            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<VaultStorageConfigOperationResultResponse>("objectType"));
+            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<VaultStorageConfigOperationResultResponse>("objectType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<ProtectedItem>("protectedItemType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<ProtectedItem>("protectedItemType"));
-            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<ProtectionIntent>("protectionIntentItemType"));
-            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<ProtectionIntent>("protectionIntentItemType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<ProtectionPolicy>("backupManagementType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<ProtectionPolicy>("backupManagementType"));
+            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<RecoveryPoint>("objectType"));
+            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<RecoveryPoint>("objectType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<RestoreRequest>("objectType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<RestoreRequest>("objectType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<ValidateOperationRequest>("objectType"));
@@ -599,14 +673,642 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<ProtectableContainer>("protectableContainerType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<ProtectionContainer>("containerType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<ProtectionContainer>("containerType"));
-            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<RecoveryPoint>("objectType"));
-            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<RecoveryPoint>("objectType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<WorkloadItem>("workloadItemType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<WorkloadItem>("workloadItemType"));
             SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<WorkloadProtectableItem>("protectableItemType"));
             DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<WorkloadProtectableItem>("protectableItemType"));
+            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<CrrAccessToken>("objectType"));
+            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<CrrAccessToken>("objectType"));
+            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<FeatureSupportRequest>("featureType"));
+            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<FeatureSupportRequest>("featureType"));
+            SerializationSettings.Converters.Add(new PolymorphicSerializeJsonConverter<ProtectionIntent>("protectionIntentItemType"));
+            DeserializationSettings.Converters.Add(new PolymorphicDeserializeJsonConverter<ProtectionIntent>("protectionIntentItemType"));
             CustomInitialize();
             DeserializationSettings.Converters.Add(new CloudErrorJsonConverter());
         }
+        /// <summary>
+        /// Fetches operation status for data move operation on vault
+        /// </summary>
+        /// <param name='vaultName'>
+        /// The name of the recovery services vault.
+        /// </param>
+        /// <param name='resourceGroupName'>
+        /// The name of the resource group where the recovery services vault is
+        /// present.
+        /// </param>
+        /// <param name='operationId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="NewErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<AzureOperationResponse<OperationStatus>> GetOperationStatusWithHttpMessagesAsync(string vaultName, string resourceGroupName, string operationId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (vaultName == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "vaultName");
+            }
+            if (resourceGroupName == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "resourceGroupName");
+            }
+            if (SubscriptionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.SubscriptionId");
+            }
+            if (operationId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "operationId");
+            }
+            string apiVersion = "2020-10-01";
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("apiVersion", apiVersion);
+                tracingParameters.Add("vaultName", vaultName);
+                tracingParameters.Add("resourceGroupName", resourceGroupName);
+                tracingParameters.Add("operationId", operationId);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "GetOperationStatus", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = BaseUri.AbsoluteUri;
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{vaultName}/backupstorageconfig/vaultstorageconfig/operationStatus/{operationId}").ToString();
+            _url = _url.Replace("{vaultName}", System.Uri.EscapeDataString(vaultName));
+            _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
+            _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(SubscriptionId));
+            _url = _url.Replace("{operationId}", System.Uri.EscapeDataString(operationId));
+            List<string> _queryParameters = new List<string>();
+            if (apiVersion != null)
+            {
+                _queryParameters.Add(string.Format("api-version={0}", System.Uri.EscapeDataString(apiVersion)));
+            }
+            if (_queryParameters.Count > 0)
+            {
+                _url += (_url.Contains("?") ? "&" : "?") + string.Join("&", _queryParameters);
+            }
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("GET");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+            if (GenerateClientRequestId != null && GenerateClientRequestId.Value)
+            {
+                _httpRequest.Headers.TryAddWithoutValidation("x-ms-client-request-id", System.Guid.NewGuid().ToString());
+            }
+            if (AcceptLanguage != null)
+            {
+                if (_httpRequest.Headers.Contains("accept-language"))
+                {
+                    _httpRequest.Headers.Remove("accept-language");
+                }
+                _httpRequest.Headers.TryAddWithoutValidation("accept-language", AcceptLanguage);
+            }
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            // Set Credentials
+            if (Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            System.Net.HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new NewErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    NewErrorResponse _errorBody =  SafeJsonConvert.DeserializeObject<NewErrorResponse>(_responseContent, DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new AzureOperationResponse<OperationStatus>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            if (_httpResponse.Headers.Contains("x-ms-request-id"))
+            {
+                _result.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<OperationStatus>(_responseContent, DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Prepares source vault for Data Move operation
+        /// </summary>
+        /// <param name='vaultName'>
+        /// The name of the recovery services vault.
+        /// </param>
+        /// <param name='resourceGroupName'>
+        /// The name of the resource group where the recovery services vault is
+        /// present.
+        /// </param>
+        /// <param name='parameters'>
+        /// Prepare data move request
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        public async Task<AzureOperationResponse> BMSPrepareDataMoveWithHttpMessagesAsync(string vaultName, string resourceGroupName, PrepareDataMoveRequest parameters, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // Send request
+            AzureOperationResponse _response = await BeginBMSPrepareDataMoveWithHttpMessagesAsync(vaultName, resourceGroupName, parameters, customHeaders, cancellationToken).ConfigureAwait(false);
+            return await this.GetPostOrDeleteOperationResultAsync(_response, customHeaders, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Triggers Data Move Operation on target vault
+        /// </summary>
+        /// <param name='vaultName'>
+        /// The name of the recovery services vault.
+        /// </param>
+        /// <param name='resourceGroupName'>
+        /// The name of the resource group where the recovery services vault is
+        /// present.
+        /// </param>
+        /// <param name='parameters'>
+        /// Trigger data move request
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        public async Task<AzureOperationResponse> BMSTriggerDataMoveWithHttpMessagesAsync(string vaultName, string resourceGroupName, TriggerDataMoveRequest parameters, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // Send request
+            AzureOperationResponse _response = await BeginBMSTriggerDataMoveWithHttpMessagesAsync(vaultName, resourceGroupName, parameters, customHeaders, cancellationToken).ConfigureAwait(false);
+            return await this.GetPostOrDeleteOperationResultAsync(_response, customHeaders, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Prepares source vault for Data Move operation
+        /// </summary>
+        /// <param name='vaultName'>
+        /// The name of the recovery services vault.
+        /// </param>
+        /// <param name='resourceGroupName'>
+        /// The name of the resource group where the recovery services vault is
+        /// present.
+        /// </param>
+        /// <param name='parameters'>
+        /// Prepare data move request
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="NewErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<AzureOperationResponse> BeginBMSPrepareDataMoveWithHttpMessagesAsync(string vaultName, string resourceGroupName, PrepareDataMoveRequest parameters, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (vaultName == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "vaultName");
+            }
+            if (resourceGroupName == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "resourceGroupName");
+            }
+            if (SubscriptionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.SubscriptionId");
+            }
+            if (parameters == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "parameters");
+            }
+            if (parameters != null)
+            {
+                parameters.Validate();
+            }
+            string apiVersion = "2020-10-01";
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("apiVersion", apiVersion);
+                tracingParameters.Add("vaultName", vaultName);
+                tracingParameters.Add("resourceGroupName", resourceGroupName);
+                tracingParameters.Add("parameters", parameters);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "BeginBMSPrepareDataMove", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = BaseUri.AbsoluteUri;
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{vaultName}/backupstorageconfig/vaultstorageconfig/prepareDataMove").ToString();
+            _url = _url.Replace("{vaultName}", System.Uri.EscapeDataString(vaultName));
+            _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
+            _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(SubscriptionId));
+            List<string> _queryParameters = new List<string>();
+            if (apiVersion != null)
+            {
+                _queryParameters.Add(string.Format("api-version={0}", System.Uri.EscapeDataString(apiVersion)));
+            }
+            if (_queryParameters.Count > 0)
+            {
+                _url += (_url.Contains("?") ? "&" : "?") + string.Join("&", _queryParameters);
+            }
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("POST");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+            if (GenerateClientRequestId != null && GenerateClientRequestId.Value)
+            {
+                _httpRequest.Headers.TryAddWithoutValidation("x-ms-client-request-id", System.Guid.NewGuid().ToString());
+            }
+            if (AcceptLanguage != null)
+            {
+                if (_httpRequest.Headers.Contains("accept-language"))
+                {
+                    _httpRequest.Headers.Remove("accept-language");
+                }
+                _httpRequest.Headers.TryAddWithoutValidation("accept-language", AcceptLanguage);
+            }
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(parameters != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(parameters, SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            System.Net.HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200 && (int)_statusCode != 202)
+            {
+                var ex = new NewErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    NewErrorResponse _errorBody =  SafeJsonConvert.DeserializeObject<NewErrorResponse>(_responseContent, DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new AzureOperationResponse();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            if (_httpResponse.Headers.Contains("x-ms-request-id"))
+            {
+                _result.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Triggers Data Move Operation on target vault
+        /// </summary>
+        /// <param name='vaultName'>
+        /// The name of the recovery services vault.
+        /// </param>
+        /// <param name='resourceGroupName'>
+        /// The name of the resource group where the recovery services vault is
+        /// present.
+        /// </param>
+        /// <param name='parameters'>
+        /// Trigger data move request
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="NewErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<AzureOperationResponse> BeginBMSTriggerDataMoveWithHttpMessagesAsync(string vaultName, string resourceGroupName, TriggerDataMoveRequest parameters, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (vaultName == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "vaultName");
+            }
+            if (resourceGroupName == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "resourceGroupName");
+            }
+            if (SubscriptionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.SubscriptionId");
+            }
+            if (parameters == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "parameters");
+            }
+            if (parameters != null)
+            {
+                parameters.Validate();
+            }
+            string apiVersion = "2020-10-01";
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("apiVersion", apiVersion);
+                tracingParameters.Add("vaultName", vaultName);
+                tracingParameters.Add("resourceGroupName", resourceGroupName);
+                tracingParameters.Add("parameters", parameters);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "BeginBMSTriggerDataMove", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = BaseUri.AbsoluteUri;
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{vaultName}/backupstorageconfig/vaultstorageconfig/triggerDataMove").ToString();
+            _url = _url.Replace("{vaultName}", System.Uri.EscapeDataString(vaultName));
+            _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
+            _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(SubscriptionId));
+            List<string> _queryParameters = new List<string>();
+            if (apiVersion != null)
+            {
+                _queryParameters.Add(string.Format("api-version={0}", System.Uri.EscapeDataString(apiVersion)));
+            }
+            if (_queryParameters.Count > 0)
+            {
+                _url += (_url.Contains("?") ? "&" : "?") + string.Join("&", _queryParameters);
+            }
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("POST");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+            if (GenerateClientRequestId != null && GenerateClientRequestId.Value)
+            {
+                _httpRequest.Headers.TryAddWithoutValidation("x-ms-client-request-id", System.Guid.NewGuid().ToString());
+            }
+            if (AcceptLanguage != null)
+            {
+                if (_httpRequest.Headers.Contains("accept-language"))
+                {
+                    _httpRequest.Headers.Remove("accept-language");
+                }
+                _httpRequest.Headers.TryAddWithoutValidation("accept-language", AcceptLanguage);
+            }
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(parameters != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(parameters, SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            System.Net.HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200 && (int)_statusCode != 202)
+            {
+                var ex = new NewErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    NewErrorResponse _errorBody =  SafeJsonConvert.DeserializeObject<NewErrorResponse>(_responseContent, DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new AzureOperationResponse();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            if (_httpResponse.Headers.Contains("x-ms-request-id"))
+            {
+                _result.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
     }
 }
